@@ -13,8 +13,8 @@
  * - 3コスト以上: +3剣気
  * - 剣気蓄積専用カード: +4剣気
  *
- * 【剣気の効果】
- * - 物理攻撃ダメージ = 基本威力 + (剣気×5)
+ * 【剣気の効果】（ナーフ後）
+ * - 物理攻撃ダメージ = 基本威力 + (剣気×2)
  * - 剣気5以上: クリティカル率+20%
  * - 剣気8以上: 物理攻撃に貫通+30%
  * - 剣気10(最大): 次の物理攻撃が確定クリティカル+貫通50%
@@ -26,7 +26,7 @@ export interface SwordEnergyState {
 }
 
 export const SWORD_ENERGY_MAX = 10;
-export const SWORD_ENERGY_DAMAGE_MULTIPLIER = 5; // 剣気×5のダメージ加算
+export const SWORD_ENERGY_DAMAGE_MULTIPLIER = 2; // 剣気×2のダメージ加算（5から2にナーフ）
 
 /**
  * 剣気システムの初期状態

@@ -1,7 +1,7 @@
 // src/components/CardComponent.tsx
 import React from "react";
-import type { Card, Depth } from "../../cards/type/cardType";
-import { calculateEffectivePower } from "../../cards/state/card";
+import type { Card, Depth } from "../type/cardType";
+import { calculateEffectivePower } from "../state/card";
 
 interface CardComponentProps {
   card: Card;

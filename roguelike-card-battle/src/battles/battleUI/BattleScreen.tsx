@@ -3,7 +3,7 @@ import type { Depth } from "../../cards/type/cardType";
 import { useBattleLogic } from "../logic/useBattleLogic";
 import { selectRandomEnemy } from "../logic/enemyAI";
 import StatusEffectDisplay from "../../components/StatusEffect";
-import { CardComponent } from "../../cards/component/CardComponent";
+import { CardComponent } from "../../cards/cardUI/CardComponent";
 import { BattlingCardPileModal } from "../../cards/cardUI/CardModalDisplay";
 import EnemyDisplay from "./EnemyDisplay";
 import VictoryScreen from "./VictoryScreen";
@@ -291,7 +291,7 @@ const BattleScreen = ({
               <div className="sword-energy-label">
                 剣気
                 <span className="sword-energy-bonus">
-                  +{swordEnergy.current * 5} DMG
+                  +{swordEnergy.current * 2} DMG
                 </span>
               </div>
 

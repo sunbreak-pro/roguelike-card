@@ -69,6 +69,7 @@ export function determineEnemyAction(
 export function enemyActionToCard(action: EnemyAction): Card {
   return {
     id: `enemy_action_${action.name}`,
+    cardTypeId: `enemy_action_${action.name}`,
     name: action.name,
     description: "",
     cost: 0,

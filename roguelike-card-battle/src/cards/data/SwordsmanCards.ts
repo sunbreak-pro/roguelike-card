@@ -12,6 +12,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 01. 迅雷斬（コスト0）
   sw_001: {
     id: "sw_001",
+    cardTypeId: "sw_001",
     name: "Swift Slash",
     description: "素早い一撃。剣気+1",
     cost: 0,
@@ -30,6 +31,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 02. 疾風斬（コスト0）
   sw_002: {
     id: "sw_002",
+    cardTypeId: "sw_002",
     name: "Gale Slash",
     description: "風のような一撃。剣気+1、次のカードコスト-1",
     cost: 0,
@@ -49,6 +51,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 03. 連撃（コスト1）
   sw_003: {
     id: "sw_003",
+    cardTypeId: "sw_003",
     name: "Combo Strike",
     description: "3連続攻撃。剣気+1",
     cost: 1,
@@ -68,6 +71,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 04. 三段突き（コスト1）
   sw_004: {
     id: "sw_004",
+    cardTypeId: "sw_004",
     name: "Triple Thrust",
     description: "貫通力のある3連突き。剣気+1、貫通20%",
     cost: 1,
@@ -88,6 +92,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 05. 居合斬り（コスト1）
   sw_005: {
     id: "sw_005",
+    cardTypeId: "sw_005",
     name: "Iaido Slash",
     description: "先制の一撃。剣気+1",
     cost: 1,
@@ -107,6 +112,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 06. 双剣乱舞（コスト1）
   sw_006: {
     id: "sw_006",
+    cardTypeId: "sw_006",
     name: "Twin Blade Dance",
     description: "6連続のランダム攻撃。剣気+1",
     cost: 1,
@@ -126,6 +132,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 07. 斬撃（コスト1）
   sw_007: {
     id: "sw_007",
+    cardTypeId: "sw_007",
     name: "Slash",
     description: "基本の斬撃。剣気+1",
     cost: 1,
@@ -144,6 +151,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 08. 袈裟斬り（コスト1）
   sw_008: {
     id: "sw_008",
+    cardTypeId: "sw_008",
     name: "Diagonal Slash",
     description: "出血を与える斬撃。剣気+1、出血1",
     cost: 1,
@@ -163,6 +171,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 09. 回転斬り（コスト1）
   sw_009: {
     id: "sw_009",
+    cardTypeId: "sw_009",
     name: "Spinning Slash",
     description: "全体攻撃。剣気+1",
     cost: 1,
@@ -181,6 +190,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 10. 牙突（コスト1）
   sw_010: {
     id: "sw_010",
+    cardTypeId: "sw_010",
     name: "Fang Thrust",
     description: "高貫通の突き。剣気+1、貫通30%",
     cost: 1,
@@ -200,6 +210,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 11. 龍牙（コスト1）
   sw_011: {
     id: "sw_011",
+    cardTypeId: "sw_011",
     name: "Dragon Fang",
     description: "次の攻撃威力+50%。剣気+1",
     cost: 1,
@@ -219,6 +230,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 12. 流水剣（コスト1）
   sw_012: {
     id: "sw_012",
+    cardTypeId: "sw_012",
     name: "Flowing Water Blade",
     description: "回避+30%。剣気+1",
     cost: 1,
@@ -242,12 +254,14 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 13. 剣気集中（コスト1）
   sw_013: {
     id: "sw_013",
+    cardTypeId: "sw_013",
     name: "Sword Energy Focus",
     description: "剣気+4、手札+1",
     cost: 1,
     category: "swordEnergy",
     depthCurveType: "neutral",
     swordEnergyGain: 4,
+    drawCards: 1,
     tags: ["swordsman", "energy", "draw"],
     rarity: "rare",
     useCount: 0,
@@ -259,6 +273,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 14. 瞑想（コスト1）
   sw_014: {
     id: "sw_014",
+    cardTypeId: "sw_014",
     name: "Meditation",
     description: "剣気+3、HP+10",
     cost: 1,
@@ -277,6 +292,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 15. 闘気解放（コスト2）
   sw_015: {
     id: "sw_015",
+    cardTypeId: "sw_015",
     name: "Fighting Spirit Release",
     description: "剣気+7、次ターン物理攻撃+30%",
     cost: 2,
@@ -295,12 +311,14 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 16. 気合（コスト0）
   sw_016: {
     id: "sw_016",
+    cardTypeId: "sw_016",
     name: "Fighting Spirit",
     description: "剣気+2、エナジー+1",
     cost: 0,
     category: "swordEnergy",
     depthCurveType: "neutral",
     swordEnergyGain: 2,
+    energyGain: 1,
     tags: ["swordsman", "energy", "resource"],
     rarity: "rare",
     useCount: 0,
@@ -316,6 +334,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 17. 断空斬（コスト2）
   sw_017: {
     id: "sw_017",
+    cardTypeId: "sw_017",
     name: "Sky Cleaver",
     description: "貫通30%の強撃。剣気+2",
     cost: 2,
@@ -335,6 +354,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 18. 鋼鉄斬（コスト2）
   sw_018: {
     id: "sw_018",
+    cardTypeId: "sw_018",
     name: "Steel Slash",
     description: "攻防一体。剣気+2、Guard+15",
     cost: 2,
@@ -354,6 +374,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 19. 旋風剣（コスト2）
   sw_019: {
     id: "sw_019",
+    cardTypeId: "sw_019",
     name: "Whirlwind Blade",
     description: "全体攻撃。剣気+2",
     cost: 2,
@@ -372,6 +393,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 20. 閃光剣（コスト2）
   sw_020: {
     id: "sw_020",
+    cardTypeId: "sw_020",
     name: "Flash Blade",
     description: "先制攻撃。剣気+3",
     cost: 2,
@@ -391,6 +413,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 21. 爆砕剣（コスト2）
   sw_021: {
     id: "sw_021",
+    cardTypeId: "sw_021",
     name: "Crushing Blade",
     description: "敵Guard-20。剣気+2",
     cost: 2,
@@ -410,6 +433,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 22. 影斬り（コスト2）
   sw_022: {
     id: "sw_022",
+    cardTypeId: "sw_022",
     name: "Shadow Slash",
     description: "回避+40%。剣気+2",
     cost: 2,
@@ -429,6 +453,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 23. 裂空斬（コスト2）
   sw_023: {
     id: "sw_023",
+    cardTypeId: "sw_023",
     name: "Sky Rend",
     description: "出血2スタック。剣気+3",
     cost: 2,
@@ -448,6 +473,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 24. 烈火剣（コスト2）
   sw_024: {
     id: "sw_024",
+    cardTypeId: "sw_024",
     name: "Blazing Blade",
     description: "火傷1スタック。剣気+2",
     cost: 2,
@@ -467,6 +493,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 25. 大地斬（コスト2）
   sw_025: {
     id: "sw_025",
+    cardTypeId: "sw_025",
     name: "Earth Cleaver",
     description: "よろめき2ターン。剣気+2",
     cost: 2,
@@ -486,6 +513,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 26. 獅子奮迅（コスト2）
   sw_026: {
     id: "sw_026",
+    cardTypeId: "sw_026",
     name: "Lion's Fury",
     description: "2連撃、各攻撃に剣気ダメージ。剣気+3",
     cost: 2,
@@ -509,6 +537,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 27. 剣気解放（コスト1）
   sw_027: {
     id: "sw_027",
+    cardTypeId: "sw_027",
     name: "Sword Energy Release",
     description: "剣気3消費。威力15+(消費×10)",
     cost: 1,
@@ -528,6 +557,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 28. 剣気刃（コスト1）
   sw_028: {
     id: "sw_028",
+    cardTypeId: "sw_028",
     name: "Sword Energy Blade",
     description: "剣気3消費、貫通40%。威力12+(消費×8)",
     cost: 1,
@@ -548,6 +578,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 29. 剣気連斬（コスト2）
   sw_029: {
     id: "sw_029",
+    cardTypeId: "sw_029",
     name: "Sword Energy Chain",
     description: "剣気5消費、3連撃。威力10+(消費×6)×3",
     cost: 2,
@@ -568,6 +599,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 30. 剣気爆発（コスト2）
   sw_030: {
     id: "sw_030",
+    cardTypeId: "sw_030",
     name: "Sword Energy Burst",
     description: "剣気5消費、全体攻撃。威力20+(消費×12)",
     cost: 2,
@@ -587,6 +619,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 31. 剣気貫通（コスト1）
   sw_031: {
     id: "sw_031",
+    cardTypeId: "sw_031",
     name: "Sword Energy Pierce",
     description: "剣気3消費、貫通50%。威力18+(消費×9)",
     cost: 1,
@@ -607,6 +640,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 32. 剣気衝撃波（コスト2）
   sw_032: {
     id: "sw_032",
+    cardTypeId: "sw_032",
     name: "Sword Energy Shockwave",
     description: "剣気3消費、よろめき2ターン。威力16+(消費×10)",
     cost: 2,
@@ -631,6 +665,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 33. 剣神降臨（コスト3）
   sw_033: {
     id: "sw_033",
+    cardTypeId: "sw_033",
     name: "Sword God Descent",
     description: "剣気全消費、全体攻撃、出血3。威力30+(消費×20)",
     cost: 3,
@@ -651,6 +686,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 34. 究極奥義（コスト4）
   sw_034: {
     id: "sw_034",
+    cardTypeId: "sw_034",
     name: "Ultimate Secret Art",
     description: "剣気全消費、貫通60%、出血3。威力40+(消費×25)",
     cost: 4,
@@ -672,6 +708,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 35. 剣気天昇（コスト3）
   sw_035: {
     id: "sw_035",
+    cardTypeId: "sw_035",
     name: "Sword Energy Ascension",
     description: "剣気全消費、出血3、次ターン剣気+5。威力35+(消費×22)",
     cost: 3,
@@ -692,6 +729,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 36. 剣気殲滅（コスト3）
   sw_036: {
     id: "sw_036",
+    cardTypeId: "sw_036",
     name: "Sword Energy Annihilation",
     description: "剣気全消費、3連撃、出血3。威力25+(消費×18)×3",
     cost: 3,
@@ -717,6 +755,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 37. 剣気結界（コスト1）
   sw_037: {
     id: "sw_037",
+    cardTypeId: "sw_037",
     name: "Sword Energy Barrier",
     description: "Guard = 剣気×8（剣気消費なし）",
     cost: 1,
@@ -733,6 +772,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 38. 反撃の構え（コスト1）
   sw_038: {
     id: "sw_038",
+    cardTypeId: "sw_038",
     name: "Counter Stance",
     description: "Guard+15、剣気+2、被ダメージ時剣気+3",
     cost: 1,
@@ -752,6 +792,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 39. 不屈の闘志（コスト2）
   sw_039: {
     id: "sw_039",
+    cardTypeId: "sw_039",
     name: "Indomitable Spirit",
     description: "HP+20、デバフ全解除、Guard = 剣気×2",
     cost: 2,
@@ -769,6 +810,7 @@ export const SWORDSMAN_CARDS: Record<string, Card> = {
   // 40. 剣気吸収（コスト2）
   sw_040: {
     id: "sw_040",
+    cardTypeId: "sw_040",
     name: "Sword Energy Drain",
     description: "HP吸収50%、Guard = 剣気×3。剣気+3",
     cost: 2,

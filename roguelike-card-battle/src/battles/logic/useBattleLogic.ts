@@ -1,7 +1,20 @@
-import { useState, useRef, useReducer, useEffect, useCallback } from "react";
+import { useState, useRef, useReducer, useEffect, useCallback, createRef, useMemo } from "react";
 import type { Card, Depth } from "../../cards/type/cardType";
 import type { BuffDebuffMap } from "../../cards/type/baffType";
 import type { Enemy } from "../../Character/data/EnemyData";
+
+// 複数敵用の状態インターフェース
+export interface EnemyBattleState {
+    enemy: Enemy;
+    hp: number;
+    maxHp: number;
+    ap: number;
+    maxAp: number;
+    guard: number;
+    buffs: BuffDebuffMap;
+    turnCount: number;
+    ref: React.RefObject<HTMLDivElement | null>;
+}
 import {
     type SwordEnergyState,
     createInitialSwordEnergy,
@@ -44,6 +57,12 @@ import { createInitialDeck, drawCards } from "../../battles/decks/deck";
 import { SWORDSMAN_CARDS_ARRAY } from "../../cards/data/SwordsmanCards";
 import { useCardAnimation } from "../battleUI/animations/useCardAnimation";
 import { useTurnTransition } from "../battleUI/animations/useTurnTransition";
+import {
+    createMasteryStore,
+    incrementCardMastery,
+    applyMasteryToCards,
+    type MasteryStore,
+} from "../../cards/state/masteryManager";
 
 // 初期デッキ設定（剣士用カード）
 const INITIAL_DECK_COUNTS: Record<string, number> = {
@@ -57,7 +76,22 @@ const INITIAL_DECK_COUNTS: Record<string, number> = {
     sw_014: 2,  // Meditation (剣気+HP回復)
 };
 
-export const useBattleLogic = (depth: Depth, initialEnemy?: Enemy) => {
+// 敵の初期状態を作成するヘルパー関数
+function createEnemyState(enemy: Enemy): EnemyBattleState {
+    return {
+        enemy,
+        hp: enemy.maxHp,
+        maxHp: enemy.maxHp,
+        ap: enemy.maxAp,
+        maxAp: enemy.maxAp,
+        guard: enemy.startingGuard,
+        buffs: new Map(),
+        turnCount: 1,
+        ref: createRef<HTMLDivElement>(),
+    };
+}
+
+export const useBattleLogic = (depth: Depth, initialEnemies?: Enemy[]) => {
     // --- アニメーションフック ---
     const {
         drawCardsWithAnimation,
@@ -73,19 +107,33 @@ export const useBattleLogic = (depth: Depth, initialEnemy?: Enemy) => {
 
     // --- Refs ---
     const playerRef = useRef<HTMLDivElement>(null);
-    const enemyRef = useRef<HTMLDivElement>(null);
+    const enemyRef = useRef<HTMLDivElement>(null); // 後方互換性のため維持
     const drawnCardsRef = useRef<Card[]>([]);
 
-    // --- 敵データ State ---
-    const [currentEnemy, setCurrentEnemy] = useState<Enemy>(() => {
-        if (initialEnemy) {
-            return initialEnemy;
+    // --- 複数敵データ State ---
+    const [enemies, setEnemies] = useState<EnemyBattleState[]>(() => {
+        if (initialEnemies && initialEnemies.length > 0) {
+            return initialEnemies.map(createEnemyState);
         }
         // デフォルトで通常敵をランダム選択
-        const { enemies } = selectRandomEnemy(depth, "normal");
-        return enemies[0];
+        const { enemies: selectedEnemies } = selectRandomEnemy(depth, "normal");
+        return selectedEnemies.map(createEnemyState);
     });
-    const [enemyTurnCount, setEnemyTurnCount] = useState(1);
+
+    // 現在のターゲット敵インデックス（0が最初の敵）
+    // TODO: 複数敵ターゲティング実装時に使用
+    // const [_targetEnemyIndex, _setTargetEnemyIndex] = useState(0);
+
+    // --- 後方互換性のための派生値 ---
+    const currentEnemy = enemies[0]?.enemy;
+    const enemyHp = enemies[0]?.hp ?? 0;
+    const enemyMaxHp = enemies[0]?.maxHp ?? 0;
+    const enemyAp = enemies[0]?.ap ?? 0;
+    const enemyMaxAp = enemies[0]?.maxAp ?? 0;
+    const enemyGuard = enemies[0]?.guard ?? 0;
+    const enemyBuffs = useMemo(() => {
+        return enemies[0]?.buffs ?? new Map();
+    }, [enemies]); const enemyTurnCount = enemies[0]?.turnCount ?? 1;
 
     // --- 基本ステータス State ---
     const [playerHp, setPlayerHp] = useState(80);
@@ -93,11 +141,6 @@ export const useBattleLogic = (depth: Depth, initialEnemy?: Enemy) => {
     const [playerAp, setPlayerAp] = useState(30); // AP（装備耐久値）
     const [playerMaxAp] = useState(30);
     const [playerGuard, setPlayerGuard] = useState(0); // Guard（一時的な防御）
-    const [enemyHp, setEnemyHp] = useState(currentEnemy.maxHp);
-    const [enemyMaxHp, setEnemyMaxHp] = useState(currentEnemy.maxHp);
-    const [enemyAp, setEnemyAp] = useState(currentEnemy.maxAp); // 敵のAP
-    const [enemyMaxAp, setEnemyMaxAp] = useState(currentEnemy.maxAp);
-    const [enemyGuard, setEnemyGuard] = useState(currentEnemy.startingGuard); // 敵のGuard
     const [energy, setEnergy] = useState(3);
     const [maxEnergy] = useState(3);
     const [turn, setTurn] = useState(1);
@@ -105,7 +148,48 @@ export const useBattleLogic = (depth: Depth, initialEnemy?: Enemy) => {
 
     // --- バフ State ---
     const [playerBuffs, setPlayerBuffs] = useState<BuffDebuffMap>(new Map());
-    const [enemyBuffs, setEnemyBuffs] = useState<BuffDebuffMap>(new Map());
+
+    // 敵の状態を更新するヘルパー関数
+    const updateEnemy = useCallback((index: number, updater: (state: EnemyBattleState) => Partial<EnemyBattleState>) => {
+        setEnemies(prev => prev.map((e, i) => i === index ? { ...e, ...updater(e) } : e));
+    }, []);
+
+    // 全ての敵の状態を更新するヘルパー関数（全体攻撃用）
+    const updateAllEnemies = useCallback((updater: (state: EnemyBattleState) => Partial<EnemyBattleState>) => {
+        setEnemies(prev => prev.map(e => ({ ...e, ...updater(e) })));
+    }, []);
+
+    // 後方互換性のためのセッター（最初の敵を更新）
+    const setEnemyHp = useCallback((updater: number | ((prev: number) => number)) => {
+        updateEnemy(0, (e) => ({
+            hp: typeof updater === 'function' ? updater(e.hp) : updater
+        }));
+    }, [updateEnemy]);
+
+    const setEnemyAp = useCallback((updater: number | ((prev: number) => number)) => {
+        updateEnemy(0, (e) => ({
+            ap: typeof updater === 'function' ? updater(e.ap) : updater
+        }));
+    }, [updateEnemy]);
+
+    const setEnemyGuard = useCallback((updater: number | ((prev: number) => number)) => {
+        updateEnemy(0, (e) => ({
+            guard: typeof updater === 'function' ? updater(e.guard) : updater
+        }));
+    }, [updateEnemy]);
+
+    const setEnemyBuffs = useCallback((updater: BuffDebuffMap | ((prev: BuffDebuffMap) => BuffDebuffMap)) => {
+        updateEnemy(0, (e) => ({
+            buffs: typeof updater === 'function' ? updater(e.buffs) : updater
+        }));
+    }, [updateEnemy]);
+
+
+    const setEnemyTurnCount = useCallback((updater: number | ((prev: number) => number)) => {
+        updateEnemy(0, (e) => ({
+            turnCount: typeof updater === 'function' ? updater(e.turnCount) : updater
+        }));
+    }, [updateEnemy]);
 
     // --- 剣気システム State ---
     const [swordEnergy, setSwordEnergy] = useState<SwordEnergyState>(createInitialSwordEnergy());
@@ -249,7 +333,65 @@ export const useBattleLogic = (depth: Depth, initialEnemy?: Enemy) => {
             setPlayerGuard(g => g + effect.shieldGain!);
             if (playerRef.current) showShieldEffect(playerRef.current, effect.shieldGain);
         }
-        // 効果適用: 回復
+
+        // === カード固有効果の処理 ===
+
+        // guardAmount: カードに設定されたGuard付与量
+        if (card.guardAmount && card.guardAmount > 0) {
+            setPlayerGuard(g => g + card.guardAmount!);
+            if (playerRef.current) showShieldEffect(playerRef.current, card.guardAmount);
+        }
+
+        // 剣気結界（sw_037）: Guard = 剣気×8
+        if (card.cardTypeId === "sw_037") {
+            const guardFromEnergy = swordEnergy.current * 8;
+            setPlayerGuard(g => g + guardFromEnergy);
+            if (playerRef.current) showShieldEffect(playerRef.current, guardFromEnergy);
+        }
+
+        // 不屈の闘志（sw_039）: Guard = 剣気×2
+        if (card.cardTypeId === "sw_039") {
+            const guardFromEnergy = swordEnergy.current * 2;
+            setPlayerGuard(g => g + guardFromEnergy);
+            if (playerRef.current) showShieldEffect(playerRef.current, guardFromEnergy);
+        }
+
+        // 剣気吸収（sw_040）: Guard = 剣気×3
+        if (card.cardTypeId === "sw_040") {
+            const guardFromEnergy = swordEnergy.current * 3;
+            setPlayerGuard(g => g + guardFromEnergy);
+            if (playerRef.current) showShieldEffect(playerRef.current, guardFromEnergy);
+        }
+
+        // healAmount: カードに設定された回復量
+        if (card.healAmount && card.healAmount > 0) {
+            const newHp = applyHeal(card.healAmount, playerHp, playerMaxHp);
+            setPlayerHp(newHp);
+            if (playerRef.current) showHealEffect(playerRef.current, card.healAmount);
+        }
+
+        // energyGain: エナジー回復
+        if (card.energyGain && card.energyGain > 0) {
+            setEnergy(e => Math.min(maxEnergy, e + card.energyGain!));
+        }
+
+        // drawCards: 手札追加
+        if (card.drawCards && card.drawCards > 0) {
+            const currentDeck = deckStateRef.current;
+            const { drawnCards: newCards, newDrawPile, newDiscardPile } = drawCards(
+                card.drawCards,
+                currentDeck.drawPile,
+                currentDeck.discardPile
+            );
+            if (newCards.length > 0) {
+                dispatch({ type: "SET_PILES", newDrawPile, newDiscardPile });
+                drawCardsWithAnimation(newCards, (cards) => {
+                    dispatch({ type: "ADD_TO_HAND", cards });
+                }, 150);
+            }
+        }
+
+        // 効果適用: 回復（calculateCardEffectからの結果）
         if (effect.hpGain) {
             const newHp = applyHeal(effect.hpGain, playerHp, playerMaxHp);
             setPlayerHp(newHp);
@@ -341,7 +483,7 @@ export const useBattleLogic = (depth: Depth, initialEnemy?: Enemy) => {
         } else if (drawnCards.length > 0) {
             setIsDrawingAnimation(true);
         }
-    }, [playerBuffs, playerMaxHp, showMessage, maxEnergy, showHealEffect, showShieldEffect]);
+    }, [playerBuffs, playerMaxHp, showMessage, maxEnergy, showHealEffect, showShieldEffect, setEnemyBuffs]);
 
     // --- ロジック: 敵のターン実行 ---
     const executeEnemyTurn = useCallback(async () => {
@@ -481,9 +623,11 @@ export const useBattleLogic = (depth: Depth, initialEnemy?: Enemy) => {
         playerMaxAp,
         playerGuard,
         playerBuffs,
-        // depth,
         startPlayerTurn,
         showDamageEffect,
+        setEnemyHp,
+        setEnemyGuard,
+        setEnemyTurnCount,
     ]);
 
     // --- ロジック: ターン終了 ---
@@ -541,17 +685,11 @@ export const useBattleLogic = (depth: Depth, initialEnemy?: Enemy) => {
     const openDiscardPile = () => setOpenedPileType("discard");
     const closePileModal = () => setOpenedPileType(null);
 
-    // --- 次の敵へのリセット関数 ---
-    const resetForNextEnemy = useCallback((nextEnemy: Enemy) => {
+    // --- 次の敵へのリセット関数（複数敵対応）---
+    const resetForNextEnemy = useCallback((nextEnemy: Enemy | Enemy[]) => {
         // === 敵データのリセット ===
-        setCurrentEnemy(nextEnemy);
-        setEnemyHp(nextEnemy.maxHp);
-        setEnemyMaxHp(nextEnemy.maxHp);
-        setEnemyAp(nextEnemy.maxAp);
-        setEnemyMaxAp(nextEnemy.maxAp);
-        setEnemyGuard(nextEnemy.startingGuard);
-        setEnemyBuffs(new Map());
-        setEnemyTurnCount(1);
+        const nextEnemies = Array.isArray(nextEnemy) ? nextEnemy : [nextEnemy];
+        setEnemies(nextEnemies.map(createEnemyState));
 
         // === プレイヤーのバトル状態リセット（HP/APは維持）===
         setPlayerGuard(0); // Guardはリセット
@@ -581,20 +719,29 @@ export const useBattleLogic = (depth: Depth, initialEnemy?: Enemy) => {
     }, [maxEnergy]);
 
     // --- 勝敗判定 (derived state) ---
-    // useEffectではなく、HPに基づいて計算
+    // useEffectではなく、HPに基づいて計算（複数敵対応：全ての敵のHPが0以下で勝利）
     const actualBattleResult = (() => {
         if (battleResult !== "ongoing") return battleResult;
-        if (enemyHp <= 0) return "victory";
+        const allEnemiesDead = enemies.every(e => e.hp <= 0);
+        if (allEnemiesDead) return "victory";
         if (playerHp <= 0) return "defeat";
         return "ongoing";
     })();
 
+    // 生存している敵のリスト
+    const aliveEnemies = enemies.filter(e => e.hp > 0);
+
     return {
         // Refs
         playerRef, enemyRef,
-        // Enemy Data
+        // Enemy Data（後方互換性）
         currentEnemy,
-        // Stats
+        // 複数敵データ
+        enemies,
+        aliveEnemies,
+        updateEnemy,
+        updateAllEnemies,
+        // Stats（後方互換性）
         playerHp, playerMaxHp, playerAp, playerMaxAp, playerGuard, playerBuffs,
         enemyHp, enemyMaxHp, enemyAp, enemyMaxAp, enemyGuard, enemyBuffs,
         energy, maxEnergy, turn, turnPhase,

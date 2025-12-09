@@ -14,7 +14,8 @@ export type GemLevel = 0 | 1 | 2;
 export type Rarity = 'common' | 'rare' | 'epic' | 'legend';
 
 export interface Card {
-    id: string;
+    id: string;           // ユニークなインスタンスID（例: "sw_001_1", "sw_001_2"）
+    cardTypeId: string;   // カード種類ID（例: "sw_001"） - 熟練度共有に使用
     name: string;
     description: string;
     cost: number;
@@ -51,6 +52,8 @@ export interface Card {
     isPreemptive?: boolean;        // 先制攻撃
     healAmount?: number;           // 回復量
     guardAmount?: number;          // シールド付与量
+    drawCards?: number;            // 手札追加枚数
+    energyGain?: number;           // エナジー回復量
     nextCardCostReduction?: number; // 次のカードのコスト軽減
     characterClass?: 'swordsman' | 'mage' | 'summoner'; // キャラクター専用
 }

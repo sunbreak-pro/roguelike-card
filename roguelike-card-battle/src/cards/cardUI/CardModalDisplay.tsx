@@ -1,7 +1,7 @@
 // src/components/CardPileModal.tsx
 import React from "react";
 import type { Card, Depth } from "../type/cardType";
-import { CardComponent } from "../component/CardComponent"; // さっき作ったファイルをインポート
+import { CardComponent } from "./CardComponent"; // さっき作ったファイルをインポート
 import "../../battles/battleUI/BattleScreen.css"; // CSSは既存のファイルに追記する形でOK
 
 interface CardPileModalProps {

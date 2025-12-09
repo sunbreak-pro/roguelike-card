@@ -121,13 +121,15 @@ export const createInitialDeck = (
 ): Card[] => {
   const deck: Card[] = [];
   Object.entries(cardCounts).forEach(([cardId, count]) => {
-    const card = allCards.find((c) => c.id === cardId);
+    const card = allCards.find((c) => c.id === cardId || c.cardTypeId === cardId);
     if (card) {
       for (let i = 0; i < count; i++) {
         // 各カードインスタンスにユニークなIDを付与
+        // cardTypeIdは元のカード種類IDを保持（熟練度共有用）
         deck.push({
           ...card,
-          id: generateCardInstanceId(card.id),
+          id: generateCardInstanceId(card.cardTypeId || card.id),
+          cardTypeId: card.cardTypeId || card.id,
         });
       }
     }
