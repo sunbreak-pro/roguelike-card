@@ -57,12 +57,12 @@ import { createInitialDeck, drawCards } from "../../battles/decks/deck";
 import { SWORDSMAN_CARDS_ARRAY } from "../../cards/data/SwordsmanCards";
 import { useCardAnimation } from "../battleUI/animations/useCardAnimation";
 import { useTurnTransition } from "../battleUI/animations/useTurnTransition";
-import {
-    createMasteryStore,
-    incrementCardMastery,
-    applyMasteryToCards,
-    type MasteryStore,
-} from "../../cards/state/masteryManager";
+// import {
+//     createMasteryStore,
+//     incrementCardMastery,
+//     applyMasteryToCards,
+//     type MasteryStore,
+// } from "../../cards/state/masteryManager";
 
 // 初期デッキ設定（剣士用カード）
 const INITIAL_DECK_COUNTS: Record<string, number> = {
@@ -639,7 +639,9 @@ export const useBattleLogic = (depth: Depth, initialEnemies?: Enemy[]) => {
         const dotDamage = calculateEndTurnDamage(playerBuffs);
         if (dotDamage > 0) {
             setPlayerHp(h => Math.max(0, h - dotDamage));
-            // TODO: ダメージエフェクトを表示
+            if (playerRef.current) {
+                showDamageEffect(playerRef.current, dotDamage, false);
+            }
         }
 
         // Momentumバフのスタック増加

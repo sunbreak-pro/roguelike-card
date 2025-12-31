@@ -1,26 +1,23 @@
 export type BuffDebuffType =
   // デバフ - 持続ダメージ系
-  | "burn" // 火傷
-  | "bleed" // 出血
-  | "poison" // 毒
-  | "curse" // 呪い
+  | "bleed" // 出血（特殊実装: カード使用/行動毎に最大HPの5%）
+  | "poison" // 毒（毎ターン終了時、スタック×2ダメージ）
+  | "curse" // 呪い（回復効果-50%、毎ターン終了時スタック×2ダメージ）
   // デバフ - 状態異常系
-  | "slow" // スロウ（エナジー減少）
-  | "freeze" // 凍結（行動不可）
-  | "paralyze" // 麻痺（攻撃力減少）
+  | "slow" // スロウ（速度-10/スタック）
   | "stun" // 気絶（行動不可）
-  | "weak" // 弱体化（攻撃力減少）
+  | "weak" // 弱体化（攻撃力-30%）
   // デバフ - 能力減少系
-  | "defDown" // 防御力低下
-  | "atkDown" // 攻撃力低下
+  | "atkDown" // 攻撃力低下（value%低下）
+  | "speedDown" // 速度低下（Ver 4.0新規）
   | "healingDown" // 回復効果減少
   // バフ - 能力上昇系
-  | "atkUp" // 攻撃力上昇
-  | "defUp" // 防御力上昇
-  | "magicUp" // 魔力上昇
-  | "physicalUp" // 物理攻撃力上昇
+  | "atkUp" // 攻撃力上昇（value%上昇）
   | "penetrationUp" // 貫通力上昇
   | "critical" // クリティカル率上昇
+  | "speedUp" // 速度上昇（Ver 4.0新規）
+  | "haste" // 加速（速度+30、Ver 4.0新規）
+  | "guardUp" // 防御強化（Guard獲得量+value%）
   // バフ - 回復・防御系
   | "regeneration" // 再生（毎ターン回復）
   | "shieldRegen" // シールド再生
