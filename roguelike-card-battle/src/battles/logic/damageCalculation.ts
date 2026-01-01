@@ -10,6 +10,8 @@ import type { Card } from "../../cards/type/cardType";
  * キャラクター（プレイヤーまたは敵）のインターフェース
  */
 export interface Character {
+  name?: string;
+  className?: string;
   hp: number;
   maxHp: number;
   ap: number; // Armor Points（装備耐久値）
@@ -86,8 +88,6 @@ export function calculateAttackMultiplier(buffDebuffs: BuffDebuffMap): number {
     multiplier += buff.value / 100;
   }
 
-
-
   // Momentum（勢い）バフ - スタック数に応じて累積
   if (buffDebuffs.has("momentum")) {
     const momentum = buffDebuffs.get("momentum")!;
@@ -99,6 +99,7 @@ export function calculateAttackMultiplier(buffDebuffs: BuffDebuffMap): number {
     const weak = buffDebuffs.get("weak")!;
     multiplier *= 1 - weak.value / 100;
   }
+
 
   if (buffDebuffs.has("atkDown")) {
     const atkDown = buffDebuffs.get("atkDown")!;
@@ -132,13 +133,11 @@ function calculateDefenseModifier(buffDebuffs: BuffDebuffMap): {
   let vulnerabilityMod = 1.0;
   let damageReductionMod = 1.0;
 
-
   // ダメージ軽減バフ
   if (buffDebuffs.has("damageReduction")) {
     const reduction = buffDebuffs.get("damageReduction")!;
     damageReductionMod *= 1 - reduction.value / 100;
   }
-
 
   // 不屈バフ - デバフの効果を軽減
   if (buffDebuffs.has("tenacity")) {
