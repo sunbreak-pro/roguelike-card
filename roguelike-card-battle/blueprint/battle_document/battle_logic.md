@@ -46,10 +46,10 @@ Enemy Energy = 行動回数
 /**
  * 敵のエナジー計算（行動回数）
  */
-function calculateEnemyEnergy(enemy: Enemy, energyAddAction: number): number {
-  const baseEnergy = enemy.baseEnemyEnergy;
+function calculateEnemyEnergy(enemy: Enemy, addEnergy: number): number {
+  const baseEnergy = enemy.actEnergy;
   // energyAddActionは敵のスキルや行動によって変動
-  return Math.floor(baseEnergy * energyAddAction);
+  return Math.floor(baseEnergy * addEnergy);
 }
 ```
 
@@ -116,7 +116,7 @@ interface SpeedStats {
  * プレイヤーの速度計算
  */
 function calculatePlayerSpeed(buffs: BuffDebuffMap): number {
-  let speed = 50; // 基本速度
+  let speed = player.speed; // 基本速度
 
   // 速度上昇バフ
   if (buffs.has("speedUp")) {
@@ -134,11 +134,6 @@ function calculatePlayerSpeed(buffs: BuffDebuffMap): number {
   if (buffs.has("speedDown")) {
     const speedDown = buffs.get("speedDown")!;
     speed -= speedDown.value;
-  }
-
-  // 加速バフ
-  if (buffs.has("haste")) {
-    speed += 30;
   }
 
   return Math.max(0, speed);
@@ -522,90 +517,13 @@ interface BuffDebuff {
   isPermanent: boolean; // 永続フラグ
   source?: string; // 発生源（カードID、装備IDなど）
 }
-
 type BuffDebuffMap = Map<BuffDebuffType, BuffDebuff>;
 ```
 
-### 6.2 バフ/デバフのカテゴリ
+バフデバフの種類などは
+**roguelike-card-battle/blueprint/battle_document/buff_debuff_system.md** を確認
 
-#### A. デバフ - 持続ダメージ系
-
-```
-poison（毒）:        毎ターン終了時、スタック×2ダメージ（防御無視）
-bleed（出血）:       特殊実装
-  - プレイヤー: カード使用毎に最大HPの5%ダメージ
-  - 敵: 1回行動毎に最大HPの5%ダメージ
-curse（呪い）:       回復効果-50%、毎ターン終了時スタック×2ダメージ
-```
-
-#### B. デバフ - 状態異常系
-
-```
-slow（スロウ）:      プレイヤー: エナジー-1、両者: 速度-10/スタック
-stun（気絶）:        行動不可
-weak（弱体化）:      攻撃力-30%
-```
-
-#### C. デバフ - 能力減少系
-
-```
-atkDown（攻撃力低下）:     攻撃力がvalue%低下
-speedDown（速度低下）:     速度-value
-```
-
-#### D. バフ - 能力上昇系
-
-```
-atkUp（攻撃力上昇）:        攻撃力がvalue%上昇
-critical（クリティカル率上昇）: クリティカル率+value%
-speedUp（速度上昇）:        速度+value
-```
-
-#### E. バフ - 回復・防御系
-
-```
-regeneration（再生）:       毎ターン開始時、value HP回復
-guardUp（防御強化）:        Guard獲得量+value%
-```
-
-#### F. バフ - リソース管理系
-
-```
-energyRegen（エナジー再生）:   毎ターン開始時、valueエナジー回復
-drawPower（ドロー強化）:       毎ターン開始時、value枚追加ドロー
-```
-
-#### G. バフ - 戦闘スタイル変化系
-
-```
-lifesteal（吸血）:          与ダメージのvalue%をHP回復
-```
-
-#### H. バフ - キャラクター固有系
-
-```
-【剣士用】
-swordEnergyGain（剣気増幅）:      攻撃時の剣気獲得量+value
-swordEnergyEfficiency（剣気効率）: 剣気ダメージ+value%
-
-【魔術士用】
-resonanceExtension（共鳴延長）:   属性共鳴の持続+valueターン
-elementalMastery（属性熟練）:     共鳴ボーナス+value%
-
-【召喚士用】
-summonDuration（召喚延長）:       召喚獣の持続+valueターン
-summonPower（召喚強化）:          召喚獣の能力+value%
-sacrificeBonus（犠牲強化）:       犠牲効果+value%
-```
-
-#### I. バフ - 特殊効果系
-
-```
-barrier（バリア）:              valueダメージまで無効化する障壁
-focus（集中）:                  次のカードの効果+value%
-```
-
-### 6.3 スタックシステム
+### 6.2 スタックシステム
 
 ```typescript
 /**
@@ -614,7 +532,7 @@ focus（集中）:                  次のカードの効果+value%
 function addOrUpdateBuffDebuff(
   map: BuffDebuffMap,
   type: BuffDebuffType,
-  stacks: number,
+  stacks?: number,
   duration: number,
   value: number,
   isPermanent: boolean = false,
@@ -693,7 +611,7 @@ interface Character {
 
 interface Card {
   power: number;
-  category: "physical" | "magic" | "defense" | "heal";
+  category: "atk" | "def" | "buff" | "debuff" | "defense" | "heal";
   // その他のカード情報
 }
 
@@ -865,71 +783,8 @@ function calculateLifesteal(
 
 ### 7.3 ダメージ配分ロジック
 
-```typescript
-/**
- * ダメージを Guard → AP → HP の順に配分
- */
-function applyDamageAllocation(
-  defender: Character,
-  damage: number
-): { penetrationDamage: number; actualDamage: number } {
-  let remainingDmg = damage;
-  let penetrationDmg = 0;
-
-  // Step 1: バリア処理
-  if (defender.buffDebuffs.has("barrier")) {
-    const barrier = defender.buffDebuffs.get("barrier")!;
-    const barrierAmount = barrier.value * barrier.stacks;
-
-    if (barrierAmount >= remainingDmg) {
-      // バリアで全吸収
-      barrier.value -= remainingDmg;
-      return { penetrationDamage: 0, actualDamage: 0 };
-    } else {
-      // バリア破壊
-      remainingDmg -= barrierAmount;
-      defender.buffDebuffs.delete("barrier");
-    }
-  }
-
-  // Step 2: アーマーブレイク時の貫通処理
-  if (defender.ap <= 0) {
-    penetrationDmg = Math.floor(remainingDmg * 0.5);
-    defender.hp -= penetrationDmg;
-    remainingDmg -= penetrationDmg;
-  }
-
-  // Step 3: Guardでの受け
-  if (defender.guard > 0) {
-    if (defender.guard >= remainingDmg) {
-      defender.guard -= remainingDmg;
-      return { penetrationDamage: penetrationDmg, actualDamage: damage };
-    } else {
-      remainingDmg -= defender.guard;
-      defender.guard = 0;
-    }
-  }
-
-  // Step 4: APでの受け
-  if (defender.ap > 0) {
-    if (defender.ap >= remainingDmg) {
-      defender.ap -= remainingDmg;
-      return { penetrationDamage: penetrationDmg, actualDamage: damage };
-    } else {
-      remainingDmg -= defender.ap;
-      defender.ap = 0;
-      // アーマーブレイク発生
-    }
-  }
-
-  // Step 5: HPでの受け
-  if (remainingDmg > 0) {
-    defender.hp -= remainingDmg;
-  }
-
-  return { penetrationDamage: penetrationDmg, actualDamage: damage };
-}
-```
+- ダメージを Guard → AP → HP の順に配分
+- AP === 0 (アーマーブレイク)の時、Guard > 0 でもダメージは HP に 50%貫通する
 
 ---
 
@@ -953,7 +808,6 @@ function calculateEndTurnDamage(buffDebuffs: BuffDebuffMap): number {
     const curse = buffDebuffs.get("curse")!;
     totalDamage += curse.stacks * 2;
   }
-
   return totalDamage;
 }
 
@@ -1045,13 +899,13 @@ function removeDebuffs(buffDebuffs: BuffDebuffMap, count: number): void {
 各深度には固有の敵プールが存在し、深度が上がるほど強力な敵が出現する。
 敵のステータス（HP、エナジー、速度など）は敵個体データで直接定義される。
 
-| 深度 | 名称 | 出現する敵の特徴              |
-| ---- | ---- | ---------------------------- |
-| 1    | 腐食 | 基本的な敵、単純な行動パターン |
-| 2    | 狂乱 | デバフを使用する敵が増加       |
-| 3    | 混沌 | 2エナジー敵、複雑な行動パターン |
-| 4    | 虚無 | 高HP・高エナジー敵、強力な攻撃 |
-| 5    | 深淵 | 最強の敵、ボス級の能力         |
+| 深度 | 名称 | 出現する敵の特徴                 |
+| ---- | ---- | -------------------------------- |
+| 1    | 腐食 | 基本的な敵、単純な行動パターン   |
+| 2    | 狂乱 | デバフを使用する敵が増加         |
+| 3    | 混沌 | 2 エナジー敵、複雑な行動パターン |
+| 4    | 虚無 | 高 HP・高エナジー敵、強力な攻撃  |
+| 5    | 深淵 | 最強の敵、ボス級の能力           |
 
 ### 9.2 深度と敵の関係
 
@@ -1087,7 +941,7 @@ function getDepthInfo(depth: number): DepthInfo {
  */
 function selectEnemyForDepth(
   depth: number,
-  encounterType: 'normal' | 'elite' | 'boss'
+  encounterType: "normal" | "elite" | "boss"
 ): Enemy {
   const enemyPool = getEnemyPoolForDepth(depth, encounterType);
   return enemyPool[Math.floor(Math.random() * enemyPool.length)];
@@ -1096,11 +950,11 @@ function selectEnemyForDepth(
 
 ### 9.3 ダメージ計算への深度の影響（廃止）
 
-**Ver 4.0で変更:** 深度による自動的なダメージ倍率は廃止。
+**Ver 4.0 で変更:** 深度による自動的なダメージ倍率は廃止。
 
-- 深度1の敵: HP 40, baseDamage 7
-- 深度3の敵: HP 100, baseDamage 18
-- 深度5の敵: HP 250, baseDamage 40
+- 深度 1 の敵: HP 40, baseDamage 7
+- 深度 3 の敵: HP 100, baseDamage 18
+- 深度 5 の敵: HP 250, baseDamage 40
 
 このように、敵データで直接強さを定義する。
 
@@ -1113,8 +967,8 @@ function selectEnemyForDepth(
 - **Depth (深度)**: ダンジョンの階層（敵の強さ）
 - **Duration (持続時間)**: バフ/デバフの残りターン数
 - **Stacks (スタック)**: バフ/デバフの重ね掛け数
-- **Energy (プレイヤー)**: カードコスト支払い用リソース
-- **Enemy Energy (敵)**: 行動回数を表すリソース
+- **cardEnergy (プレイヤー)**: カードコスト支払い用リソース
+- **actEnergy (敵)**: 行動回数を表すリソース
 - **Speed (速度)**: 行動順序を決定するパラメータ
 
 ### 10.2 バフ/デバフの優先度
@@ -1126,7 +980,7 @@ function selectEnemyForDepth(
 3. 攻撃力低下デバフ (weak, atkDown)
 4. クリティカル判定
 5. 装備DEF軽減
-6. バリア・反撃・吸血処理
+6. 反撃・吸血処理
 ```
 
 ### 10.3 Guard の特殊処理
@@ -1350,45 +1204,35 @@ function previewEnemyActions(
 
 - **非対称エナジーシステム**: プレイヤー（カードコスト用）と敵（行動回数）で異なるエナジー概念を導入
 - **行動速度システム**: 速度パラメータによるターン順序決定
-- **速度差ボーナス**: 速度差30以上で「先制」、50以上で「電光石火」ボーナス
-- **敵の複数行動システム**: 敵エナジーによる1ターン内の複数回行動
-- **ターン順序UI**: 次のターンの行動順を可視化
+- **速度差ボーナス**: 速度差 30 以上で「先制」、50 以上で「電光石火」ボーナス
+- **敵の複数行動システム**: 敵エナジーによる 1 ターン内の複数回行動
+- **ターン順序 UI**: 次のターンの行動順を可視化
 - **敵の行動予告**: 敵の次の行動を事前表示
 
-### バフ/デバフ大幅削減
-
-**削除されたバフ/デバフ:**
-- burn（火傷）→ poisonに統合
-- freeze（凍結）→ 削除
-- paralyze（麻痺）→ 削除
-- defDown（防御力低下）→ 削除
-- defUp（防御力上昇）→ 削除
-- physicalUp（物理攻撃力上昇）→ atkUpに統合
-- magicUp（魔法攻撃力上昇）→ atkUpに統合
-- その他多数の重複効果
-
 **追加されたバフ/デバフ:**
+
 - `speedUp`: 速度+value
 - `speedDown`: 速度-value
 - `haste`: 速度+30（先制確定級）
 
 **特殊実装に変更:**
-- `bleed（出血）`: プレイヤーはカード使用毎に最大HPの5%、敵は1行動毎に最大HPの5%ダメージ
+
+- `bleed（出血）`: プレイヤーはカード使用毎に最大 HP の 5%、敵は 1 行動毎に最大 HP の 5%ダメージ
 
 ### 敵データ構造拡張
 
 - `baseEnemyEnergy`: 敵の基本エナジー（行動回数）
 - `speed`: 行動速度値（0-100）
 - `energyCost`: 各行動のエナジーコスト
-- `displayIcon`: UI表示用アイコン
+- `displayIcon`: UI 表示用アイコン
 - `priority`: 行動優先度
 
 ### システム仕様変更
 
-- **深度スケーリング廃止**: 深度による魔力倍率、物理倍率、HP倍率、エナジー倍率を全て削除
+- **深度スケーリング廃止**: 深度による魔力倍率、物理倍率、HP 倍率、エナジー倍率を全て削除
 - **深度の役割変更**: 深度は敵の種類（どの敵プールから選択するか）のみを決定
-- **敵ステータスの直接定義**: 各敵のHP、ダメージ、エナジーは敵データで直接設定
-- **Guard消滅タイミング**: 各キャラクターのターン開始時に0に
+- **敵ステータスの直接定義**: 各敵の HP、ダメージ、エナジーは敵データで直接設定
+- **Guard 消滅タイミング**: 各キャラクターのターン開始時に 0 に
 - **slow デバフ変更**: エナジー-1 → 速度-10/スタック
 - **ダメージ計算簡素化**: 深度補正を削除、防御関連バフの統合
 

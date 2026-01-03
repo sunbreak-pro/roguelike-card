@@ -26,7 +26,6 @@ export interface SwordEnergyState {
 }
 
 export const SWORD_ENERGY_MAX = 10;
-export const SWORD_ENERGY_DAMAGE_MULTIPLIER = 2; // 剣気×2のダメージ加算（5から2にナーフ）
 
 /**
  * 剣気システムの初期状態
@@ -113,13 +112,6 @@ export function consumeAllSwordEnergy(
 }
 
 /**
- * 剣気によるダメージボーナスを計算
- */
-export function calculateSwordEnergyDamageBonus(swordEnergy: number): number {
-  return swordEnergy * SWORD_ENERGY_DAMAGE_MULTIPLIER;
-}
-
-/**
  * 剣気によるクリティカル率ボーナスを計算
  */
 export function calculateSwordEnergyCritBonus(swordEnergy: number): number {
@@ -141,7 +133,6 @@ export function calculateSwordEnergyPenetration(swordEnergy: number): number {
  * 剣気の効果をまとめて取得
  */
 export interface SwordEnergyEffects {
-  damageBonus: number;
   critBonus: number;
   penetration: number;
   isMaxEnergy: boolean;
@@ -149,7 +140,6 @@ export interface SwordEnergyEffects {
 
 export function getSwordEnergyEffects(swordEnergy: number): SwordEnergyEffects {
   return {
-    damageBonus: calculateSwordEnergyDamageBonus(swordEnergy),
     critBonus: calculateSwordEnergyCritBonus(swordEnergy),
     penetration: calculateSwordEnergyPenetration(swordEnergy),
     isMaxEnergy: swordEnergy >= SWORD_ENERGY_MAX,

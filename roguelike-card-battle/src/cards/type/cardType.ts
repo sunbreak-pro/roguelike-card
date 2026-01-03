@@ -1,9 +1,12 @@
 // ==========================================
 // 型定義
+
+import type { CardBuffSpec } from "./baffType";
+
 // ==========================================
 export type Depth = 1 | 2 | 3 | 4 | 5;
 
-export type CardCategory = 'physical' | 'magic' | 'defense' | 'heal' | 'swordEnergy';
+export type CardCategory = 'atk' | 'def' | 'buff' | 'debuff' | 'heal' | 'swordEnergy';
 
 export type DepthCurveType = 'shallow' | 'neutral' | 'deep' | 'madness' | 'adversity';
 
@@ -28,21 +31,10 @@ export interface Card {
     effectivePower?: number;
     talentProgress?: number;
     talentThreshold?: number;
-    applyEnemyDebuff?: {
-        type: string;
-        stacks: number;
-        duration: number;
-        value: number;
-    }[];
-    applyPlayerBuff?: {
-        type: string;
-        stacks: number;
-        duration: number;
-        value: number;
-    }[];
+    applyEnemyDebuff?: CardBuffSpec[];
+    applyPlayerBuff?: CardBuffSpec[];
     tags: string[];
     rarity: Rarity;
-
     // 剣士固有プロパティ
     swordEnergyGain?: number;      // 剣気蓄積量
     swordEnergyConsume?: number;   // 剣気消費量（0=全消費）
@@ -86,9 +78,10 @@ export const MASTERY_BONUSES: Record<MasteryLevel, number> = {
 };
 
 export const CARD_CATEGORY_NAMES: Record<CardCategory, string> = {
-    physical: 'Physical',
-    magic: 'Magic',
-    defense: 'Defense',
+    atk: 'atk',
+    def: 'def',
+    buff: 'buff',
+    debuff: 'Debuff',
     heal: 'Heal',
     swordEnergy: 'Sword Energy',
 };

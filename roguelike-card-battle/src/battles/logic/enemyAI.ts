@@ -70,7 +70,7 @@ export function determineEnemyAction(
  * @param action 敵の行動
  * @returns Cardオブジェクト
  */
-export function enemyActionToCard(action: EnemyAction): Card {
+export function enemyAction(action: EnemyAction): Card {
   return {
     id: `enemy_action_${action.name}`,
     cardTypeId: `enemy_action_${action.name}`,
@@ -86,10 +86,11 @@ export function enemyActionToCard(action: EnemyAction): Card {
     masteryLevel: 0,
     gemLevel: 0,
     applyEnemyDebuff: action.applyDebuffs?.map((debuff) => ({
-      type: debuff.type,
+      name: debuff.name,
       stacks: debuff.stacks,
       duration: debuff.duration,
       value: debuff.value,
+      isPermanent: debuff.isPermanent,
     })),
   };
 }
@@ -120,7 +121,7 @@ export function selectRandomEnemy(
     case "group": {
       const group =
         DEPTH1_ENEMIES.groups[
-          Math.floor(Math.random() * DEPTH1_ENEMIES.groups.length)
+        Math.floor(Math.random() * DEPTH1_ENEMIES.groups.length)
         ];
       const enemies = Array(group.count).fill(group.enemy);
       return { enemies, isBoss: false };
