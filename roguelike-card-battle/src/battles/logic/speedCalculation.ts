@@ -13,64 +13,69 @@ export interface SpeedBonus {
 }
 
 /**
- * プレイヤーの速度計算
+ * Calculate player speed with buffs/debuffs
  */
 export function calculatePlayerSpeed(buffs: BuffDebuffMap): number {
-  let speed = 50; // 基本速度
+  let speed = 50; // Base speed
 
-  // 速度上昇バフ
-  if (buffs.has("speedUp")) {
-    const speedBuff = buffs.get("speedUp")!;
-    speed += speedBuff.value * speedBuff.stacks;
+  // Haste buff (+15 speed)
+  if (buffs.has("haste")) {
+    const hasteBuff = buffs.get("haste")!;
+    speed += hasteBuff.value;
   }
 
-  // スロウデバフ（速度-10/スタック）
+  // SuperFast buff (+30 speed)
+  if (buffs.has("superFast")) {
+    const superFastBuff = buffs.get("superFast")!;
+    speed += superFastBuff.value;
+  }
+
+  // Slow debuff (-10 speed)
   if (buffs.has("slow")) {
     const slowDebuff = buffs.get("slow")!;
-    speed -= 10 * slowDebuff.stacks;
+    speed -= slowDebuff.value;
   }
 
-  // 速度低下デバフ
-  if (buffs.has("speedDown")) {
-    const speedDown = buffs.get("speedDown")!;
-    speed -= speedDown.value * speedDown.stacks;
-  }
-
-  // 加速バフ（速度+30、先制確定級）
-  if (buffs.has("haste")) {
-    speed += 30;
+  // Stall debuff (-15 speed)
+  if (buffs.has("stall")) {
+    const stallDebuff = buffs.get("stall")!;
+    speed -= stallDebuff.value;
   }
 
   return Math.max(0, speed);
 }
 
 /**
- * 敵の速度計算
+ * Calculate enemy speed with buffs/debuffs
  */
 export function calculateEnemySpeed(
   enemy: Enemy,
   buffs: BuffDebuffMap
 ): number {
-  let speed = enemy.speed; // 敵固有の速度
+  let speed = enemy.speed; // Enemy base speed
 
-  // バフ/デバフ適用（プレイヤーと同じロジック）
-  if (buffs.has("speedUp")) {
-    const speedBuff = buffs.get("speedUp")!;
-    speed += speedBuff.value * speedBuff.stacks;
+  // Haste buff (+15 speed)
+  if (buffs.has("haste")) {
+    const hasteBuff = buffs.get("haste")!;
+    speed += hasteBuff.value;
   }
 
+  // SuperFast buff (+30 speed)
+  if (buffs.has("superFast")) {
+    const superFastBuff = buffs.get("superFast")!;
+    speed += superFastBuff.value;
+  }
+
+  // Slow debuff (-10 speed)
   if (buffs.has("slow")) {
     const slowDebuff = buffs.get("slow")!;
-    speed -= 10 * slowDebuff.stacks;
+    speed -= slowDebuff.value;
   }
 
-  if (buffs.has("speedDown")) {
-    const speedDown = buffs.get("speedDown")!;
-    speed -= speedDown.value * speedDown.stacks;
-  }
-
-  if (buffs.has("haste")) {
-    speed += 30;
+  // Stall debuff (-15 speed)
+  if (buffs.has("stall")) {
+    const stallDebuff = buffs.get("stall")!;
+    speed -= stallDebuff.value;
   }
 
   return Math.max(0, speed);

@@ -1,8 +1,8 @@
 // src/components/CardPileModal.tsx
 import React from "react";
 import type { Card, Depth } from "../type/cardType";
-import { CardComponent } from "./CardComponent"; // さっき作ったファイルをインポート
-import "../../battles/battleUI/UIcss/BattleScreen.css"; // CSSは既存のファイルに追記する形でOK
+import { CardComponent } from "./CardComponent";
+import "../../battles/battleUI/UIcss/BattleScreen.css"; // CSS for modal styling
 
 interface CardPileModalProps {
   isOpen: boolean;
@@ -23,7 +23,6 @@ export const BattlingCardPileModal: React.FC<CardPileModalProps> = ({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      {/* e.stopPropagation() で、中身をクリックしても閉じないようにする */}
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>
@@ -41,7 +40,6 @@ export const BattlingCardPileModal: React.FC<CardPileModalProps> = ({
             <div className="card-grid">
               {cards.map((card, index) => (
                 <div key={`${card.id}-${index}`} className="modal-card-wrapper">
-                  {/* モーダル内のカードはプレイ不可なので isPlayable={false} */}
                   <CardComponent card={card} depth={depth} isPlayable={false} />
                 </div>
               ))}

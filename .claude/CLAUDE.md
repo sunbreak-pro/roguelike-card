@@ -204,11 +204,12 @@ Use: `npm run lint --fix`
 
 ### Output Format Rules
 
-**Emoji Usage (STRICTLY LIMITED):**
+**1. Commentout is simple in English**
+
+**2. Emoji Usage (STRICTLY LIMITED):**
 
 - ✅ Allowed ONLY in: Code examples (✅ GOOD / ❌ BAD), critical warnings (🔒)
 - ❌ Forbidden in: Prose, explanations, casual responses, headings
-- Reason: Claude tends to overuse emojis. Maintain professional clarity.
 
 **Example:**
 
@@ -286,7 +287,3 @@ const handlePlay = useCallback((card) => {...}, []);
 4. **Game feel** over technical purity
 
 **This is a game first, code second. Maintainable code enables long-term fun.**
-
----
-
-**Version:** 2.0 | **Updated:** 2024-12-07 | **Maintainer:** こうだい

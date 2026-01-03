@@ -95,26 +95,23 @@ export const decreaseBuffDebuffDuration = (
  * ターン終了時の持続ダメージ計算
  */
 export const calculateEndTurnDamage = (map: BuffDebuffMap): number => {
-  let totalDamage = 0;
+  let buffDamage = 0;
 
   map.forEach((buff) => {
     switch (buff.name) {
       case "burn":
-        totalDamage += buff.stacks * 3;
-        break;
-      case "bleed":
-        totalDamage += buff.stacks * 2;
+        buffDamage += buff.value;
+        if (map.has("fireField")) {
+          buffDamage += buff.value * 0.5;
+        }
         break;
       case "poison":
-        totalDamage += buff.stacks * 2;
-        break;
-      case "curse":
-        totalDamage += buff.stacks * 2;
+        buffDamage += buff.value;
         break;
     }
   });
 
-  return totalDamage;
+  return buffDamage;
 };
 
 /**
@@ -139,34 +136,32 @@ export const calculateStartTurnHealing = (
 
   // 呪いによる回復効果減少
   if (map.has("curse")) {
-    hp = Math.floor(hp * 0.5);
+    hp = Math.floor(hp * 0.2);
   }
-
-  // 回復効果減少デバフ
-  if (map.has("healingDown")) {
-    const healingDown = map.get("healingDown")!;
-    hp = Math.floor(hp * (1 - healingDown.value / 100));
+  if (map.has("overCurse")) {
+    hp = Math.floor(hp * 0.5);
   }
 
   return { hp, shield };
 };
 
 /**
- * 攻撃力の倍率計算
+ * Calculate attack power multiplier from buffs/debuffs
  */
 export const calculateAttackMultiplier = (map: BuffDebuffMap): number => {
   let multiplier = 1.0;
 
   map.forEach((buff) => {
     switch (buff.name) {
-      case "atkUp":
-        multiplier *= 1 + buff.value / 100;
+      // Attack buffs (Minor/Major)
+      case "atkUpMinor":
+      case "atkUpMajor":
+        multiplier *= 1 + (buff.value / 100);
         break;
-      case "atkDown":
-        multiplier *= 1 - buff.value / 100;
-        break;
-      case "weak":
-        multiplier *= 0.7;
+      // Attack debuffs (Minor/Major)
+      case "atkDownMinor":
+      case "atkDownMajor":
+        multiplier *= 1 - (buff.value / 100);
         break;
     }
   });
@@ -174,7 +169,30 @@ export const calculateAttackMultiplier = (map: BuffDebuffMap): number => {
 };
 
 /**
- * 行動可能かどうか判定
+ * Calculate defense power multiplier from buffs/debuffs
+ */
+export const calculateDefenseMultiplier = (map: BuffDebuffMap): number => {
+  let multiplier = 1.0;
+
+  map.forEach((buff) => {
+    switch (buff.name) {
+      // Defense buffs (Minor/Major)
+      case "defUpMinor":
+      case "defUpMajor":
+        multiplier *= 1 + (buff.value / 100);
+        break;
+      // Defense debuffs (Minor/Major)
+      case "defDownMinor":
+      case "defDownMajor":
+        multiplier *= 1 - (buff.value / 100);
+        break;
+    }
+  });
+  return multiplier;
+};
+
+/**
+ * Check if entity can act (not stunned)
  */
 export const canAct = (map: BuffDebuffMap): boolean => {
   return !map.has("stun");

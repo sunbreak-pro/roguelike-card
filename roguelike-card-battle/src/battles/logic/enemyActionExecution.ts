@@ -1,5 +1,5 @@
 /**
- * 敵の行動実行ロジック
+ * enemy action execution logic
  * Battle System Ver 4.0
  */
 
@@ -7,15 +7,13 @@ import type { Enemy, EnemyAction } from "../../Character/data/EnemyData";
 import { determineEnemyAction } from "./enemyAI";
 
 /**
- * 敵のエナジー分の行動を実行
- *
- * @param enemy 敵データ
- * @param enemyHp 敵の現在HP
- * @param enemyMaxHp 敵の最大HP
- * @param turn 現在のターン数
- * @param enemyEnergy 敵のエナジー（行動回数）
- * @param onExecuteAction 行動実行時のコールバック
- * @param checkBattleEnd 戦闘終了チェック関数
+ * @param enemy enemy data
+ * @param enemyHp enemy's current HP
+ * @param enemyMaxHp enemy's max HP
+ * @param turn current turn number
+ * @param enemyEnergy enemy's action energy for this turn
+ * @param onExecuteAction callback when executing an action
+ * @param checkBattleEnd function to check if the battle has ended
  */
 export async function executeEnemyActions(
   enemy: Enemy,
@@ -29,7 +27,6 @@ export async function executeEnemyActions(
   let remainingEnergy = enemyEnergy;
   const actionsToExecute: EnemyAction[] = [];
 
-  // エナジーが尽きるまで行動を選択
   while (remainingEnergy > 0) {
     const action = determineEnemyAction(
       enemy,
@@ -42,7 +39,6 @@ export async function executeEnemyActions(
     const actionCost = action.energyCost ?? 1;
 
     if (actionCost > remainingEnergy) {
-      // エナジー不足なら低コスト行動を選択
       const fallbackAction = getFallbackAction(remainingEnergy);
       if (fallbackAction) {
         actionsToExecute.push(fallbackAction);
@@ -54,21 +50,21 @@ export async function executeEnemyActions(
     remainingEnergy -= actionCost;
   }
 
-  // 行動を順次実行（アニメーション付き）
+  // Execute actions sequentially (with animations)
   for (let i = 0; i < actionsToExecute.length; i++) {
-    // 戦闘終了チェック（事前チェック）
+    // Check if battle has ended (pre-check)
     if (checkBattleEnd()) {
       break;
     }
 
     await onExecuteAction(actionsToExecute[i]);
 
-    // 行動間のディレイ（最後の行動の後はディレイなし）
+    // Delay between actions (no delay after the last action)
     if (i < actionsToExecute.length - 1) {
       await delay(800);
     }
 
-    // 戦闘終了チェック（事後チェック）
+    // Check if battle has ended (post-check)
     if (checkBattleEnd()) {
       break;
     }
@@ -76,7 +72,7 @@ export async function executeEnemyActions(
 }
 
 /**
- * エナジー不足時のフォールバック行動
+ * Fallback action when energy is insufficient
  */
 function getFallbackAction(remainingEnergy: number): EnemyAction | null {
   if (remainingEnergy >= 1) {
@@ -89,28 +85,26 @@ function getFallbackAction(remainingEnergy: number): EnemyAction | null {
       energyCost: 1,
     };
   }
-
-  // エナジー0の場合は何もしない
   return null;
 }
 
 /**
- * ディレイ用ユーティリティ関数
+ * delay helper function
  */
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
- * 敵の次のターンの行動を予告
- * UI表示用
+ * Preview enemy actions for the next turn
+ * UI display
  */
 export function previewEnemyActions(
   enemy: Enemy,
   currentHp: number,
   nextTurn: number
 ): EnemyAction[] {
-  const totalEnergy = enemy.baseEnemyEnergy;
+  const totalEnergy = enemy.actEnergy;
   const actions: EnemyAction[] = [];
   let remainingEnergy = totalEnergy;
 

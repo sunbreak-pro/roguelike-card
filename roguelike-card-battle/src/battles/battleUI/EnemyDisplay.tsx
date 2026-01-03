@@ -1,8 +1,3 @@
-/**
- * 敵表示コンポーネント
- * - 次の行動をホバーで表示
- * - 1/2/3体の敵に対応したレイアウト
- */
 import React, { useState } from "react";
 import type { Enemy, EnemyAction } from "../../Character/data/EnemyData";
 import type { BuffDebuffMap } from "../../cards/type/baffType";
@@ -34,7 +29,7 @@ interface EnemyDisplayProps {
   };
 }
 
-// 単体の敵カード
+// Individual Enemy Card Component
 const EnemyCard: React.FC<{
   state: EnemyState;
   enemyRef: React.RefObject<HTMLDivElement | null>;
@@ -43,13 +38,13 @@ const EnemyCard: React.FC<{
 }> = ({ state, enemyRef, theme, size = "normal" }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  // 次の行動を予測（Ver 4.0対応）
+  // Preview next action (Ver 4.0)
   const nextAction: EnemyAction = determineEnemyAction(
     state.enemy,
     state.hp,
     state.maxHp,
     state.turnCount + 1,
-    state.enemy.actEnergy // 敵の基本エナジー
+    state.enemy.actEnergy // enemy energy
   );
 
   const sizeClass = size === "small" ? "enemy-card-small" : "";
@@ -72,7 +67,7 @@ const EnemyCard: React.FC<{
           <div className="enemy-emoji">👹</div>
         )}
 
-        {/* 次の行動ツールチップ */}
+        {/* next action tooltip */}
         {isHovered && (
           <div className="next-action-tooltip">
             <div className="tooltip-header">次の行動</div>
@@ -158,7 +153,7 @@ const EnemyCard: React.FC<{
   );
 };
 
-// メインの敵表示コンポーネント
+// main EnemyDisplay component
 const EnemyDisplay: React.FC<EnemyDisplayProps> = ({
   enemies,
   enemyRefs,
@@ -166,7 +161,7 @@ const EnemyDisplay: React.FC<EnemyDisplayProps> = ({
 }) => {
   const enemyCount = enemies.length;
 
-  // レイアウトクラスを決定
+  // determine layout class
   const getLayoutClass = () => {
     switch (enemyCount) {
       case 1:

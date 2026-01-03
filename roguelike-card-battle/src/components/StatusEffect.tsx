@@ -17,60 +17,60 @@ interface StatusEffectDisplayProps {
   };
 }
 
-// アイコンマッピング（簡易実装）
+// Icon mapping for buff/debuff types
 const BUFF_DEBUFF_ICONS: Record<BuffDebuffType, string> = {
-  // デバフ - 持続ダメージ
+  // Debuff - DoT
   burn: "🔥",
   bleed: "🩸",
   poison: "☠️",
   curse: "👿",
-  // デバフ - 状態異常
-  slow: "🐌",
+  overCurse: "💀",
+  // Debuff - Status
   stun: "💫",
-  weak: "💔",
-  // デバフ - 能力減少
-  atkDown: "⚔️↓",
-  healingDown: "💚↓",
-  defDown: "🛡️↓",
-  speedDown: "🐢",
-  // バフ - 能力上昇
-  atkUp: "⚔️↑",
+  // Debuff - Stat reduction (Minor/Major)
+  atkDownMinor: "⚔️↓",
+  atkDownMajor: "⚔️⬇️",
+  defDownMinor: "🛡️↓",
+  defDownMajor: "🛡️⬇️",
+  slow: "🐌",
+  stall: "🐢",
+  // Buff - Stat increase (Minor/Major)
+  atkUpMinor: "⚔️↑",
+  atkUpMajor: "⚔️⬆️",
+  defUpMinor: "🛡️↑",
+  defUpMajor: "🛡️⬆️",
   penetrationUp: "🎯↑",
-  critical: "⭐",
-  defUp: "🛡️↑",
-  // バフ - 回復・防御系
+  hitRateUp: "🎯",
+  criticalUp: "⭐",
+  haste: "⚡",
+  superFast: "⚡⚡",
+  // Buff - Heal/Defense
   regeneration: "💚",
   shieldRegen: "🛡️",
   reflect: "🔄",
-  evasion: "💨",
   immunity: "✨",
-  // バフ - リソース管理系
+  // Buff - Resource
   energyRegen: "⚡🔄",
   drawPower: "🃏",
   costReduction: "💰↓",
-  // バフ - 戦闘スタイル変化系
-  thorns: "🌹",
+  // Buff - Combat style
   lifesteal: "🩸💚",
   doubleStrike: "⚔️⚔️",
-  splash: "💥",
-  // バフ - キャラクター固有系（剣士）
+  // Buff - Swordsman
   swordEnergyGain: "⚔️⚡",
-  swordEnergyEfficiency: "⚔️✨",
-  // バフ - キャラクター固有系（魔術士）
-  resonanceExtension: "🔮⏳",
+  // Buff - Mage
   elementalMastery: "🔮✨",
-  // バフ - キャラクター固有系（召喚士）
-  summonDuration: "👻⏳",
+  fireField: "🔥🌐",
+  electroField: "⚡🌐",
+  // Buff - Summoner
   summonPower: "👻✨",
   sacrificeBonus: "💀",
-  // バフ - 特殊効果系
-  damageReduction: "🛡️",
+  // Buff - Special
   focus: "🎯",
   momentum: "🔥↑",
   cleanse: "✨💧",
   tenacity: "💪",
   lastStand: "⚔️🔥",
-  speedUp: "🐇",
 };
 
 const StatusEffectDisplay = ({

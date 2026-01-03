@@ -7,7 +7,7 @@ import type { BuffDebuffMap } from "../../cards/type/baffType";
 import type { Card } from "../../cards/type/cardType";
 
 /**
- * キャラクター（プレイヤーまたは敵）のインターフェース
+ * Character's interface for damage calculation
  */
 export interface Character {
   name?: string;
@@ -29,7 +29,6 @@ export interface DamageResult {
   isCritical: boolean; // クリティカルヒットかどうか
   reflectDamage: number; // 反撃ダメージ
   lifestealAmount: number; // 吸血回復量
-  thornsDamage: number; // 棘の鎧ダメージ
 }
 
 /**
@@ -72,54 +71,56 @@ export function getDepthInfo(depth: number): DepthInfo {
 }
 
 /**
- * 攻撃力の倍率計算（バフ/デバフ）
+ * Calculate attack multiplier from buffs/debuffs (Minor/Major system)
  */
 export function calculateAttackMultiplier(buffDebuffs: BuffDebuffMap): number {
   let multiplier = 1.0;
 
-  // 攻撃力上昇バフ
-  if (buffDebuffs.has("atkUp")) {
-    const buff = buffDebuffs.get("atkUp")!;
+  // Attack buffs (Minor: +15%, Major: +30%)
+  if (buffDebuffs.has("atkUpMinor")) {
+    const buff = buffDebuffs.get("atkUpMinor")!;
+    multiplier += buff.value / 100;
+  }
+  if (buffDebuffs.has("atkUpMajor")) {
+    const buff = buffDebuffs.get("atkUpMajor")!;
     multiplier += buff.value / 100;
   }
 
-  // Momentum（勢い）バフ - スタック数に応じて累積
+  // Momentum buff - stacks accumulate
   if (buffDebuffs.has("momentum")) {
     const momentum = buffDebuffs.get("momentum")!;
     multiplier += (momentum.value / 100) * momentum.stacks;
   }
 
-  // 攻撃力低下デバフ
-  if (buffDebuffs.has("weak")) {
-    const weak = buffDebuffs.get("weak")!;
-    multiplier *= 1 - weak.value / 100;
+  // Attack debuffs (Minor: -15%, Major: -30%)
+  if (buffDebuffs.has("atkDownMinor")) {
+    const buff = buffDebuffs.get("atkDownMinor")!;
+    multiplier *= 1 - buff.value / 100;
   }
-
-
-  if (buffDebuffs.has("atkDown")) {
-    const atkDown = buffDebuffs.get("atkDown")!;
-    multiplier *= 1 - atkDown.value / 100;
+  if (buffDebuffs.has("atkDownMajor")) {
+    const buff = buffDebuffs.get("atkDownMajor")!;
+    multiplier *= 1 - buff.value / 100;
   }
 
   return multiplier;
 }
 
 /**
- * Phase 3: クリティカル率の計算
+ * Calculate critical hit rate
  */
 export function calculateCriticalRate(buffDebuffs: BuffDebuffMap): number {
-  let rate = 0.1; // 基本クリティカル率10%
+  let rate = 0.1; // Base 10% critical rate
 
-  if (buffDebuffs.has("critical")) {
-    const buff = buffDebuffs.get("critical")!;
+  if (buffDebuffs.has("criticalUp")) {
+    const buff = buffDebuffs.get("criticalUp")!;
     rate += buff.value / 100;
   }
 
-  return Math.min(0.8, rate); // 最大80%
+  return Math.min(0.8, rate); // Max 80%
 }
 
 /**
- * Phase 5: 防御側のバフ/デバフ補正
+ * Calculate defense modifiers from buffs/debuffs
  */
 function calculateDefenseModifier(buffDebuffs: BuffDebuffMap): {
   vulnerabilityMod: number;
@@ -128,16 +129,29 @@ function calculateDefenseModifier(buffDebuffs: BuffDebuffMap): {
   let vulnerabilityMod = 1.0;
   let damageReductionMod = 1.0;
 
-  // ダメージ軽減バフ
-  if (buffDebuffs.has("damageReduction")) {
-    const reduction = buffDebuffs.get("damageReduction")!;
-    damageReductionMod *= 1 - reduction.value / 100;
+  // Defense buffs reduce incoming damage (Minor: +15%, Major: +30%)
+  if (buffDebuffs.has("defUpMinor")) {
+    const buff = buffDebuffs.get("defUpMinor")!;
+    damageReductionMod *= 1 - buff.value / 100;
+  }
+  if (buffDebuffs.has("defUpMajor")) {
+    const buff = buffDebuffs.get("defUpMajor")!;
+    damageReductionMod *= 1 - buff.value / 100;
   }
 
-  // 不屈バフ - デバフの効果を軽減
+  // Defense debuffs increase incoming damage (Minor: +15%, Major: +30%)
+  if (buffDebuffs.has("defDownMinor")) {
+    const buff = buffDebuffs.get("defDownMinor")!;
+    vulnerabilityMod *= 1 + buff.value / 100;
+  }
+  if (buffDebuffs.has("defDownMajor")) {
+    const buff = buffDebuffs.get("defDownMajor")!;
+    vulnerabilityMod *= 1 + buff.value / 100;
+  }
+
+  // Tenacity buff - reduces debuff effects when HP < 30%
   if (buffDebuffs.has("tenacity")) {
     const tenacity = buffDebuffs.get("tenacity")!;
-    // 脆弱性の効果を軽減
     if (vulnerabilityMod > 1.0) {
       const excessVuln = vulnerabilityMod - 1.0;
       vulnerabilityMod = 1.0 + excessVuln * (1 - tenacity.value / 100);
@@ -181,31 +195,6 @@ export function calculateLifesteal(
   return healAmount;
 }
 
-/**
- * Phase 7: 棘の鎧ダメージ計算
- */
-export function calculateThornsDamage(
-  buffDebuffs: BuffDebuffMap,
-  cardCategory: string
-): number {
-  let thornsDamage = 0;
-
-  if (buffDebuffs.has("thorns") && cardCategory === "physical") {
-    const thorns = buffDebuffs.get("thorns")!;
-    thornsDamage = thorns.value * thorns.stacks;
-  }
-
-  return thornsDamage;
-}
-
-/**
- * メイン: ダメージ計算関数
- *
- * シンプルなダメージ計算：
- * - カードの基本ダメージをそのまま使用
- * - バフ/デバフがある場合のみ補正
- * - クリティカルは明示的なバフがある場合のみ
- */
 export function calculateDamage(
   attacker: Character,
   defender: Character,
@@ -217,51 +206,49 @@ export function calculateDamage(
   // --- バフ/デバフによる攻撃力補正 ---
   const atkMultiplier = calculateAttackMultiplier(attacker.buffDebuffs);
 
-  // --- クリティカル判定（criticalバフがある場合のみ）---
+  // --- Critical check (only when criticalUp buff is present) ---
   let critMod = 1.0;
   let isCritical = false;
 
-  if (attacker.buffDebuffs.has("critical")) {
+  if (attacker.buffDebuffs.has("criticalUp")) {
     const critRate = calculateCriticalRate(attacker.buffDebuffs);
-    isCritical = Math.random() < critRate && !attacker.buffDebuffs.has("weak");
+    isCritical = Math.random() < critRate;
 
     if (isCritical) {
-      critMod = 1.5; // 基本クリティカルダメージ150%
-      const critBuff = attacker.buffDebuffs.get("critical")!;
+      critMod = 1.5; // Base critical damage 150%
+      const critBuff = attacker.buffDebuffs.get("criticalUp")!;
       critMod += critBuff.value / 100;
     }
   }
 
-  // --- 最終攻撃力 ---
+  // --- Final attack power ---
   const finalAtk = Math.floor(baseDmg * atkMultiplier * critMod);
 
-  // --- 防御側のバフ/デバフ補正 ---
+  // --- Defense side buff/debuff modifiers ---
   const { vulnerabilityMod, damageReductionMod } = calculateDefenseModifier(defender.buffDebuffs);
 
   const incomingDmg = Math.floor(finalAtk * vulnerabilityMod * damageReductionMod);
 
-  // --- 特殊効果処理 ---
+  // --- Special effect processing ---
   const reflectDamage = calculateReflectDamage(defender.buffDebuffs, incomingDmg);
   const lifestealAmount = calculateLifesteal(attacker.buffDebuffs, incomingDmg);
-  const thornsDamage = calculateThornsDamage(defender.buffDebuffs, card.category);
 
   return {
     finalDamage: incomingDmg,
     isCritical,
     reflectDamage,
     lifestealAmount,
-    thornsDamage,
   };
 }
 /**
- * ダメージ配分ロジック
+ * damage allocation logic
  *
- * ルール：
- * - Guardへのダメージ = ダメージそのまま
- * - Guardがある状態かつAPがある状態でダメージを受けた場合、貫通分は0%
- * - Guardがある状態かつAPがない状態でダメージを受けた場合、HPに75%の追加ダメージ
- * - AP（装備耐久値）でダメージを受ける
- * - APが0の場合は直接HPにダメージ
+ * rule：
+ * - damage to Guard = damage as is
+ * - If Guard and AP are present when taking damage, penetration is 0%
+ * - If Guard is present but AP is not when taking damage, additional 75% damage to HP
+ * - Damage is taken from AP (equipment durability)
+ * - If AP is 0, damage is taken directly to HP
  */
 
 export function applyDamageAllocation(
@@ -274,11 +261,11 @@ export function applyDamageAllocation(
   let hpDmg = 0;
   const hadGuard = defender.guard > 0;
 
-  // Step 2: Guardでの受け（ダメージそのまま）
+  // Step 2: Damage to Guard (damage as is)
   if (hadGuard) {
     if (defender.guard >= remainingDmg && defender.ap <= 0) {
       guardDmg = remainingDmg;
-      hpDmg = Math.floor(remainingDmg * 0.75); // Guardがある状態でAPがない場合、HPに75%追加ダメージ
+      hpDmg = Math.floor(remainingDmg * 0.75); // If Guard is present but AP is not, additional 75% damage to HP
       remainingDmg = 0;
       return { guardDamage: guardDmg, apDamage: apDmg, hpDamage: hpDmg };
     } else if (defender.guard >= remainingDmg) {
@@ -291,7 +278,7 @@ export function applyDamageAllocation(
       remainingDmg -= defender.guard;
     }
   }
-  // Step 4: APでの受け
+  // Step 4: Damage to AP (equipment durability)
   if (defender.ap > 0) {
     if (defender.ap >= remainingDmg) {
       apDmg = remainingDmg;
@@ -303,7 +290,7 @@ export function applyDamageAllocation(
     }
   }
 
-  // Step 5: HPでの受け（残りのダメージ）
+  // Step 5: Damage to HP (remaining damage)
   if (remainingDmg > 0) {
     hpDmg = remainingDmg;
   }

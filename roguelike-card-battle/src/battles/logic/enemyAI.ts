@@ -77,7 +77,7 @@ export function enemyAction(action: EnemyAction): Card {
     name: action.name,
     description: "",
     cost: 0,
-    category: "physical",
+    category: "atk",
     depthCurveType: "neutral",
     baseDamage: action.baseDamage,
     tags: [],
