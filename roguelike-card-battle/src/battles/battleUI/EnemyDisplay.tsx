@@ -17,6 +17,7 @@ interface EnemyState {
   maxAp: number;
   guard: number;
   buffs: BuffDebuffMap;
+  actEnergy: number;
   turnCount: number;
 }
 
@@ -48,7 +49,7 @@ const EnemyCard: React.FC<{
     state.hp,
     state.maxHp,
     state.turnCount + 1,
-    state.enemy.baseEnemyEnergy // 敵の基本エナジー
+    state.enemy.actEnergy // 敵の基本エナジー
   );
 
   const sizeClass = size === "small" ? "enemy-card-small" : "";
@@ -94,7 +95,9 @@ const EnemyCard: React.FC<{
             {nextAction.applyDebuffs && nextAction.applyDebuffs.length > 0 && (
               <div className="tooltip-debuffs">
                 {nextAction.applyDebuffs.map((d, i) => (
-                  <span key={i} className="debuff-tag">{d.type}</span>
+                  <span key={i} className="debuff-tag">
+                    {d.name}
+                  </span>
                 ))}
               </div>
             )}
@@ -118,7 +121,9 @@ const EnemyCard: React.FC<{
         {/* AP */}
         {state.ap > 0 && (
           <div className="status-row">
-            <span className="status-label ap-num">AP: {state.ap}/{state.maxAp}</span>
+            <span className="status-label ap-num">
+              AP: {state.ap}/{state.maxAp}
+            </span>
             <span className="bar-frame">
               <div
                 className="bar-gauge ap"
@@ -129,7 +134,9 @@ const EnemyCard: React.FC<{
         )}
         {/* HP */}
         <div className="status-row">
-          <span className="status-label hp-num">HP: {state.hp}/{state.maxHp}</span>
+          <span className="status-label hp-num">
+            HP: {state.hp}/{state.maxHp}
+          </span>
           <span className="bar-frame">
             <div
               className="bar-gauge hp"
@@ -137,6 +144,14 @@ const EnemyCard: React.FC<{
             />
           </span>
         </div>
+
+        {/* Enemy Energy Orbs (Ver 4.0) */}
+        <div className="enemy-energy-orbs">
+          {Array.from({ length: state.enemy.actEnergy }).map((_, i) => (
+            <div key={i} className="energy-orb filled" />
+          ))}
+        </div>
+
         <StatusEffectDisplay buffsDebuffs={state.buffs} theme={theme} />
       </div>
     </div>
@@ -144,16 +159,24 @@ const EnemyCard: React.FC<{
 };
 
 // メインの敵表示コンポーネント
-const EnemyDisplay: React.FC<EnemyDisplayProps> = ({ enemies, enemyRefs, theme }) => {
+const EnemyDisplay: React.FC<EnemyDisplayProps> = ({
+  enemies,
+  enemyRefs,
+  theme,
+}) => {
   const enemyCount = enemies.length;
 
   // レイアウトクラスを決定
   const getLayoutClass = () => {
     switch (enemyCount) {
-      case 1: return "enemy-layout-single";
-      case 2: return "enemy-layout-double";
-      case 3: return "enemy-layout-triple";
-      default: return "enemy-layout-single";
+      case 1:
+        return "enemy-layout-single";
+      case 2:
+        return "enemy-layout-double";
+      case 3:
+        return "enemy-layout-triple";
+      default:
+        return "enemy-layout-single";
     }
   };
 

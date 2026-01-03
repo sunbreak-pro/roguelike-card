@@ -27,7 +27,6 @@ export interface Character {
 export interface DamageResult {
   finalDamage: number; // 最終ダメージ量
   isCritical: boolean; // クリティカルヒットかどうか
-  penetrationDamage: number; // アーマーブレイクによる貫通ダメージ
   reflectDamage: number; // 反撃ダメージ
   lifestealAmount: number; // 吸血回復量
   thornsDamage: number; // 棘の鎧ダメージ
@@ -40,7 +39,6 @@ export interface DamageAllocation {
   guardDamage: number;
   apDamage: number;
   hpDamage: number;
-  penetrationDamage: number;
 }
 
 /**
@@ -49,20 +47,17 @@ export interface DamageAllocation {
 export interface DepthInfo {
   depth: number;
   name: string;
-  magicMultiplier: number;
-  physicalMultiplier: number;
-  hpMultiplier: number;
 }
 
 /**
  * 深度スケーリングテーブル
  */
 const DEPTH_TABLE: Map<number, DepthInfo> = new Map([
-  [1, { depth: 1, name: "腐食", magicMultiplier: 1.0, physicalMultiplier: 1.0, hpMultiplier: 1.0 }],
-  [2, { depth: 2, name: "狂乱", magicMultiplier: 2.0, physicalMultiplier: 1.2, hpMultiplier: 1.2 }],
-  [3, { depth: 3, name: "混沌", magicMultiplier: 4.0, physicalMultiplier: 1.5, hpMultiplier: 1.5 }],
-  [4, { depth: 4, name: "虚無", magicMultiplier: 8.0, physicalMultiplier: 2.0, hpMultiplier: 2.0 }],
-  [5, { depth: 5, name: "深淵", magicMultiplier: 16.0, physicalMultiplier: 3.0, hpMultiplier: 3.0 }],
+  [1, { depth: 1, name: "腐食" }],
+  [2, { depth: 2, name: "狂乱" }],
+  [3, { depth: 3, name: "混沌" }],
+  [4, { depth: 4, name: "虚無" }],
+  [5, { depth: 5, name: "深淵" }],
 ]);
 
 /**
@@ -150,84 +145,6 @@ function calculateDefenseModifier(buffDebuffs: BuffDebuffMap): {
   }
 
   return { vulnerabilityMod, damageReductionMod };
-}
-
-/**
- * Phase 6: ダメージ配分ロジック (Guard → AP → HP)
- *
- * ルール：
- * - Guardへのダメージ = ダメージそのまま
- * - Guardがある状態でダメージを受けた場合、貫通分は50%軽減
- * - AP（装備耐久値）でダメージを受ける
- * - APが0の場合は直接HPにダメージ
- */
-export function applyDamageAllocation(
-  defender: Character,
-  damage: number
-): DamageAllocation {
-  let remainingDmg = damage;
-  let guardDmg = 0;
-  let apDmg = 0;
-  let hpDmg = 0;
-  const hadGuard = defender.guard > 0;
-
-  // Step 1: バリア処理
-  if (defender.buffDebuffs.has("barrier")) {
-    const barrier = defender.buffDebuffs.get("barrier")!;
-    const barrierAmount = barrier.value * barrier.stacks;
-
-    if (barrierAmount >= remainingDmg) {
-      return {
-        guardDamage: 0,
-        apDamage: 0,
-        hpDamage: 0,
-        penetrationDamage: 0,
-      };
-    } else {
-      remainingDmg -= barrierAmount;
-    }
-  }
-
-  // Step 2: Guardでの受け（ダメージそのまま）
-  if (defender.guard > 0) {
-    if (defender.guard >= remainingDmg) {
-      guardDmg = remainingDmg;
-      remainingDmg = 0;
-      return { guardDamage: guardDmg, apDamage: 0, hpDamage: 0, penetrationDamage: 0 };
-    } else {
-      guardDmg = defender.guard;
-      remainingDmg -= defender.guard;
-    }
-  }
-
-  // Step 3: Guardを貫通した場合は50%軽減してからAP/HPへ
-  if (hadGuard && remainingDmg > 0) {
-    remainingDmg = Math.floor(remainingDmg * 0.5);
-  }
-
-  // Step 4: APでの受け
-  if (defender.ap > 0) {
-    if (defender.ap >= remainingDmg) {
-      apDmg = remainingDmg;
-      remainingDmg = 0;
-      return { guardDamage: guardDmg, apDamage: apDmg, hpDamage: 0, penetrationDamage: 0 };
-    } else {
-      apDmg = defender.ap;
-      remainingDmg -= defender.ap;
-    }
-  }
-
-  // Step 5: HPでの受け（残りのダメージ）
-  if (remainingDmg > 0) {
-    hpDmg = remainingDmg;
-  }
-
-  return {
-    guardDamage: guardDmg,
-    apDamage: apDmg,
-    hpDamage: hpDmg,
-    penetrationDamage: 0,
-  };
 }
 
 /**
@@ -331,55 +248,70 @@ export function calculateDamage(
   return {
     finalDamage: incomingDmg,
     isCritical,
-    penetrationDamage: 0,
     reflectDamage,
     lifestealAmount,
     thornsDamage,
   };
 }
-
 /**
- * ダメージを実際にキャラクターに適用
+ * ダメージ配分ロジック
+ *
+ * ルール：
+ * - Guardへのダメージ = ダメージそのまま
+ * - Guardがある状態かつAPがある状態でダメージを受けた場合、貫通分は0%
+ * - Guardがある状態かつAPがない状態でダメージを受けた場合、HPに75%の追加ダメージ
+ * - AP（装備耐久値）でダメージを受ける
+ * - APが0の場合は直接HPにダメージ
  */
-export function applyDamageToCharacter(
+
+export function applyDamageAllocation(
   defender: Character,
-  allocation: DamageAllocation
-): Character {
-  const newDefender = { ...defender };
+  damage: number
+): DamageAllocation {
+  let remainingDmg = damage;
+  let guardDmg = 0;
+  let apDmg = 0;
+  let hpDmg = 0;
+  const hadGuard = defender.guard > 0;
 
-  // バリアの処理
-  if (newDefender.buffDebuffs.has("barrier")) {
-    const barrier = newDefender.buffDebuffs.get("barrier")!;
-    const barrierAmount = barrier.value * barrier.stacks;
-    const totalDamage = allocation.guardDamage + allocation.apDamage + allocation.hpDamage;
-
-    if (barrierAmount >= totalDamage) {
-      // バリアで全吸収、バリア値を減少
-      const newBuffDebuffs = new Map(newDefender.buffDebuffs);
-      const newBarrier = { ...barrier, value: barrier.value - Math.ceil(totalDamage / barrier.stacks) };
-      if (newBarrier.value <= 0) {
-        newBuffDebuffs.delete("barrier");
-      } else {
-        newBuffDebuffs.set("barrier", newBarrier);
-      }
-      newDefender.buffDebuffs = newBuffDebuffs;
-      return newDefender;
+  // Step 2: Guardでの受け（ダメージそのまま）
+  if (hadGuard) {
+    if (defender.guard >= remainingDmg && defender.ap <= 0) {
+      guardDmg = remainingDmg;
+      hpDmg = Math.floor(remainingDmg * 0.75); // Guardがある状態でAPがない場合、HPに75%追加ダメージ
+      remainingDmg = 0;
+      return { guardDamage: guardDmg, apDamage: apDmg, hpDamage: hpDmg };
+    } else if (defender.guard >= remainingDmg) {
+      guardDmg = remainingDmg;
+      remainingDmg = 0;
+      return { guardDamage: guardDmg, apDamage: 0, hpDamage: 0 };
+    }
+    else {
+      guardDmg = defender.guard;
+      remainingDmg -= defender.guard;
+    }
+  }
+  // Step 4: APでの受け
+  if (defender.ap > 0) {
+    if (defender.ap >= remainingDmg) {
+      apDmg = remainingDmg;
+      remainingDmg = 0;
+      return { guardDamage: guardDmg, apDamage: apDmg, hpDamage: 0 };
     } else {
-      // バリア破壊
-      const newBuffDebuffs = new Map(newDefender.buffDebuffs);
-      newBuffDebuffs.delete("barrier");
-      newDefender.buffDebuffs = newBuffDebuffs;
+      apDmg = defender.ap;
+      remainingDmg -= defender.ap;
     }
   }
 
-  // Guard減少
-  newDefender.guard = Math.max(0, newDefender.guard - allocation.guardDamage);
+  // Step 5: HPでの受け（残りのダメージ）
+  if (remainingDmg > 0) {
+    hpDmg = remainingDmg;
+  }
 
-  // AP減少
-  newDefender.ap = Math.max(0, newDefender.ap - allocation.apDamage);
-
-  // HP減少
-  newDefender.hp = Math.max(0, newDefender.hp - allocation.hpDamage);
-
-  return newDefender;
+  return {
+    guardDamage: guardDmg,
+    apDamage: apDmg,
+    hpDamage: hpDmg,
+  };
 }
+

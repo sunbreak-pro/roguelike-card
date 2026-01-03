@@ -1,16 +1,10 @@
+/**
+ * @deprecated このファイルは非推奨です。card.ts の calculateCardEffect を使用してください。
+ */
 import type { Card } from "../type/cardType.ts";
 import { calculateEffectivePower } from "./card";
-import type { BuffDebuffType } from "../type/baffType.ts";
-
-/**
- * バフ/デバフ効果データ
- */
-export interface BuffDebuffEffect {
-  type: BuffDebuffType;
-  stacks: number;
-  duration: number;
-  value: number;
-}
+import type { BuffDebuffState } from "../type/baffType.ts";
+import { createBuffState } from "../type/baffType.ts";
 
 /**
  * カード効果の適用結果
@@ -19,58 +13,40 @@ export interface CardEffectResult {
   damageToEnemy?: number;
   shieldGain?: number;
   hpGain?: number;
-  // バフ/デバフ効果
-  enemyDebuffs?: BuffDebuffEffect[]; // 敵に付与するデバフ
-  playerBuffs?: BuffDebuffEffect[]; // プレイヤーに付与するバフ
+  enemyDebuffs?: BuffDebuffState[];
+  playerBuffs?: BuffDebuffState[];
 }
 
 /**
  * カードの効果を計算
- * @param card プレイするカード
- * @returns カード効果の結果
+ * @deprecated card.ts の calculateCardEffect を使用してください
  */
-export const calculateCardEffect = (
-  card: Card
-): CardEffectResult => {
+export const calculateCardEffect = (card: Card): CardEffectResult => {
   const effectivePower = calculateEffectivePower(card);
   const result: CardEffectResult = {};
 
-  // 基本効果
   switch (card.category) {
-    case "physical":
-    case "magic":
-      // 攻撃カード：敵にダメージ
+    case "atk":
       result.damageToEnemy = effectivePower;
       break;
-
-    case "defense":
-      // 防御カード:シールド付与
+    case "def":
       result.shieldGain = effectivePower;
       break;
-
     case "heal":
-      // 回復カード：HP回復
       result.hpGain = effectivePower;
       break;
   }
 
-  // バフ/デバフ効果を追加
   if (card.applyEnemyDebuff && card.applyEnemyDebuff.length > 0) {
-    result.enemyDebuffs = card.applyEnemyDebuff.map((debuff) => ({
-      type: debuff.type as BuffDebuffType,
-      stacks: debuff.stacks,
-      duration: debuff.duration,
-      value: debuff.value,
-    }));
+    result.enemyDebuffs = card.applyEnemyDebuff.map((spec) =>
+      createBuffState(spec, card.id)
+    );
   }
 
   if (card.applyPlayerBuff && card.applyPlayerBuff.length > 0) {
-    result.playerBuffs = card.applyPlayerBuff.map((buff) => ({
-      type: buff.type as BuffDebuffType,
-      stacks: buff.stacks,
-      duration: buff.duration,
-      value: buff.value,
-    }));
+    result.playerBuffs = card.applyPlayerBuff.map((spec) =>
+      createBuffState(spec, card.id)
+    );
   }
 
   return result;

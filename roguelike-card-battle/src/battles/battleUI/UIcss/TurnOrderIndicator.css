@@ -4,12 +4,18 @@
  */
 
 .turn-order-indicator {
-  background: rgba(0, 0, 0, 0.7);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 12px;
-  min-width: 280px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  /* 右上隅に固定配置 */
+  position: absolute;
+  top: 2vh;
+  right: 2vw;
+  z-index: 50;
+
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid var(--theme-accent, rgba(255, 255, 255, 0.3));
+  border-radius: 1vh;
+  padding: 1vh 1.5vw;
+  min-width: 12vw;
+  box-shadow: 0 0 1.5vh var(--theme-glow, rgba(0, 0, 0, 0.5));
 }
 
 .indicator-header {

@@ -7,6 +7,7 @@ import { CardComponent } from "../../cards/cardUI/CardComponent";
 import { BattlingCardPileModal } from "../../cards/cardUI/CardModalDisplay";
 import EnemyDisplay from "./EnemyDisplay";
 import { EnemyActionPreview } from "./EnemyActionPreview";
+import { TurnOrderIndicator } from "./TurnOrderIndicator";
 import VictoryScreen from "./VictoryScreen";
 import DefeatScreen from "./DefeatScreen";
 import "./UIcss/BattleScreen.css";
@@ -71,8 +72,8 @@ const BattleScreen = ({
 
   const {
     playerRef,
-    enemyRef,
-    currentEnemy,
+    // 複数敵データ (Ver 4.0)
+    aliveEnemies,
     playerName,
     playerClassName,
     playerHp,
@@ -81,13 +82,7 @@ const BattleScreen = ({
     playerMaxAp,
     playerGuard,
     playerBuffs,
-    enemyHp,
-    enemyMaxHp,
-    enemyAp,
-    enemyMaxAp,
-    enemyGuard,
-    enemyBuffs,
-    energy,
+    cardEnergy,
     maxEnergy,
     turn,
     turnMessage,
@@ -109,6 +104,12 @@ const BattleScreen = ({
     swordEnergy,
     enemyEnergy,
     nextEnemyActions,
+    // Ver 4.0: Speed System
+    playerNowSpeed,
+    enemyNowSpeed,
+    turnOrder,
+    speedBonusPlayer,
+    speedBonusEnemy,
   } = useBattleLogic(depth);
 
   // 次の敵に遷移する関数
@@ -125,12 +126,11 @@ const BattleScreen = ({
       encounterType = "group";
     }
 
-    // 次の敵を選択
-    const { enemies } = selectRandomEnemy(depth, encounterType);
-    const nextEnemy = enemies[0];
+    // 次の敵を選択（複数敵対応）
+    const { enemies: nextEnemies } = selectRandomEnemy(depth, encounterType);
 
-    // 敵データを更新してバトルを再開
-    resetForNextEnemy(nextEnemy);
+    // 敵データを更新してバトルを再開（配列全体を渡す）
+    resetForNextEnemy(nextEnemies);
   };
 
   // 勝利画面の処理
@@ -207,6 +207,15 @@ const BattleScreen = ({
         </div>
       </div>
 
+      {/* 行動順インジケーター（右上隅） */}
+      <TurnOrderIndicator
+        playerSpeed={playerNowSpeed}
+        enemySpeed={enemyNowSpeed}
+        turnOrder={turnOrder}
+        playerBonus={speedBonusPlayer}
+        enemyBonus={speedBonusEnemy}
+      />
+
       {/* 敵の次の行動プレビュー */}
       <EnemyActionPreview
         actions={nextEnemyActions}
@@ -215,21 +224,19 @@ const BattleScreen = ({
 
       {/* フィールド */}
       <div className="battle-field">
-        {/* 敵セクション（新コンポーネント） */}
+        {/* 敵セクション（複数敵対応 Ver 4.0） */}
         <EnemyDisplay
-          enemies={[
-            {
-              enemy: currentEnemy,
-              hp: enemyHp,
-              maxHp: enemyMaxHp,
-              ap: enemyAp,
-              maxAp: enemyMaxAp,
-              guard: enemyGuard,
-              buffs: enemyBuffs,
-              turnCount: turn,
-            },
-          ]}
-          enemyRefs={[enemyRef]}
+          enemies={aliveEnemies.map((e) => ({
+            enemy: e.enemy,
+            hp: e.hp,
+            maxHp: e.enemy.maxHp,
+            ap: e.ap,
+            maxAp: e.enemy.maxAp,
+            guard: e.guard,
+            buffs: e.buffs,
+            turnCount: turn,
+          }))}
+          enemyRefs={aliveEnemies.map((e) => e.ref)}
           theme={theme}
         />
 
@@ -293,7 +300,7 @@ const BattleScreen = ({
                 {Array.from({ length: maxEnergy }).map((_, i) => (
                   <div
                     key={i}
-                    className={`orb ${i < energy ? "filled" : ""}`}
+                    className={`orb ${i < cardEnergy ? "filled" : ""}`}
                   />
                 ))}
               </div>
@@ -306,7 +313,15 @@ const BattleScreen = ({
               <div className="sword-energy-bar-container">
                 <div className="sword-energy-bar">
                   <div
-                    className="sword-energy-fill"
+                    className={`sword-energy-fill ${
+                      swordEnergy.current >= 10
+                        ? "level-max"
+                        : swordEnergy.current >= 8
+                        ? "level-high"
+                        : swordEnergy.current >= 5
+                        ? "level-mid"
+                        : ""
+                    }`}
                     style={{
                       width: `${
                         (swordEnergy.current / swordEnergy.max) * 100
@@ -319,15 +334,27 @@ const BattleScreen = ({
                 </div>
               </div>
               <div className="sword-energy-effects">
-                {swordEnergy.current >= 5 && (
-                  <span className="effect-badge crit">Crit+20%</span>
-                )}
-                {swordEnergy.current >= 8 && (
-                  <span className="effect-badge pierce">貫通+30%</span>
-                )}
-                {swordEnergy.current >= 10 && (
-                  <span className="effect-badge max">MAX!</span>
-                )}
+                <span
+                  className={`effect-badge crit ${
+                    swordEnergy.current >= 5 ? "active" : "inactive"
+                  }`}
+                >
+                  {swordEnergy.current >= 5 ? "✓" : "○"} Crit+20%
+                </span>
+                <span
+                  className={`effect-badge pierce ${
+                    swordEnergy.current >= 8 ? "active" : "inactive"
+                  }`}
+                >
+                  {swordEnergy.current >= 8 ? "✓" : "○"} 貫通+30%
+                </span>
+                <span
+                  className={`effect-badge max ${
+                    swordEnergy.current >= 10 ? "active" : "inactive"
+                  }`}
+                >
+                  {swordEnergy.current >= 10 ? "✓" : "○"} MAX
+                </span>
               </div>
             </div>
           </div>
@@ -390,7 +417,7 @@ const BattleScreen = ({
               <CardComponent
                 card={card}
                 depth={depth}
-                isPlayable={card.cost <= energy && !isDiscarding}
+                isPlayable={card.cost <= cardEnergy && !isDiscarding}
               />
             </div>
           );

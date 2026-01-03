@@ -1,6 +1,10 @@
 import { useState } from "react";
-import type { BuffDebuffMap, BuffDebuffType } from "../cards/type/baffType";
-import { BuffDebuffEffects } from "../cards/data/BuffData";
+import {
+  type BuffDebuffMap,
+  type BuffDebuffType,
+  BUFF_EFFECTS,
+} from "../cards/type/baffType";
+// import { BuffDebuffEffects } from "../cards/data/BuffData";
 
 interface StatusEffectDisplayProps {
   buffsDebuffs: BuffDebuffMap;
@@ -22,21 +26,18 @@ const BUFF_DEBUFF_ICONS: Record<BuffDebuffType, string> = {
   curse: "👿",
   // デバフ - 状態異常
   slow: "🐌",
-  freeze: "❄️",
-  paralyze: "⚡",
   stun: "💫",
   weak: "💔",
   // デバフ - 能力減少
-  defDown: "🛡️↓",
   atkDown: "⚔️↓",
   healingDown: "💚↓",
+  defDown: "🛡️↓",
+  speedDown: "🐢",
   // バフ - 能力上昇
   atkUp: "⚔️↑",
-  defUp: "🛡️↑",
-  magicUp: "✨↑",
-  physicalUp: "💪↑",
   penetrationUp: "🎯↑",
   critical: "⭐",
+  defUp: "🛡️↑",
   // バフ - 回復・防御系
   regeneration: "💚",
   shieldRegen: "🛡️",
@@ -63,13 +64,13 @@ const BUFF_DEBUFF_ICONS: Record<BuffDebuffType, string> = {
   summonPower: "👻✨",
   sacrificeBonus: "💀",
   // バフ - 特殊効果系
-  barrier: "🛡️✨",
   damageReduction: "🛡️",
   focus: "🎯",
   momentum: "🔥↑",
   cleanse: "✨💧",
   tenacity: "💪",
   lastStand: "⚔️🔥",
+  speedUp: "🐇",
 };
 
 const StatusEffectDisplay = ({
@@ -90,7 +91,7 @@ const StatusEffectDisplay = ({
       }}
     >
       {Array.from(buffsDebuffs.entries()).map(([type, buff]) => {
-        const effectData = BuffDebuffEffects[type];
+        const effectData = BUFF_EFFECTS[type];
         const icon = BUFF_DEBUFF_ICONS[type];
 
         return (
@@ -207,12 +208,12 @@ const StatusEffectDisplay = ({
                     fontSize: "15px",
                   }}
                 >
-                  {effectData.nameJa}
+                  {effectData.name}
                   {buff.value > 0 && ` (${buff.value})`}
                   {buff.stacks > 1 && ` x${buff.stacks}`}
                 </div>
                 <div style={{ fontSize: "12px", color: "#ccc" }}>
-                  {effectData.description}
+                  {effectData.description()}
                 </div>
                 <div
                   style={{

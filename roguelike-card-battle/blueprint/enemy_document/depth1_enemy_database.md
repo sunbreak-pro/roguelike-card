@@ -1,4 +1,7 @@
-# 深度1（上層）敵データベース
+# 深度1（腐食 - Corruption）敵データベース (Ver 4.0)
+
+**更新日:** 2025-12-31
+**ステータス:** 設計完了
 
 ## 設計コンセプト
 
@@ -9,10 +12,46 @@
 - 7〜10回のバトルで装備耐久度が危険域に
 - フロアボスで初心者はギリギリ負ける難易度
 
-【世界観】
-- ダークファンタジー
-- 硬派な名称と見た目
-- シンプルで印象的なデザイン
+【世界観：腐食】
+「腐食を身に纏えば」
+肉体の崩壊が始まる階層
+ダークファンタジー、硬派な名称と見た目
+```
+
+---
+
+## Ver 4.0 敵データ仕様
+
+### 必須フィールド
+```typescript
+interface Enemy {
+  id: string;           // 敵ID
+  nameJa: string;       // 日本語名称
+  maxHp: number;        // 最大HP
+  maxAp: number;        // 最大AP（敵は通常0）
+  startingGuard: number; // 開始時Guard
+
+  // Ver 4.0 新規フィールド
+  baseEnemyEnergy: number;  // 行動回数（1ターン当たり）
+  speed: number;            // 行動速度（プレイヤー基本50）
+
+  aiPatterns: EnemyAIPattern[];  // 行動パターン
+}
+
+interface EnemyAction {
+  name: string;
+  type: "attack" | "buff" | "debuff" | "special";
+  baseDamage: number;
+
+  // Ver 4.0 新規フィールド
+  displayIcon: string;   // UI表示用アイコン
+  priority: number;      // 行動優先度（0-10）
+  energyCost: number;    // エナジーコスト（デフォルト1）
+
+  hitCount?: number;     // 連撃回数
+  guardGain?: number;    // Guard付与量
+  applyDebuffs?: BuffDebuff[];  // 付与するデバフ
+}
 ```
 
 ---
@@ -24,6 +63,7 @@
 HP: 80
 AP: 60〜80（コモン装備想定）
 Guard: 0（戦闘開始時）
+基本速度: 50
 初期デッキ: 物理攻撃・防御・回復の基本構成
 ```
 
@@ -46,25 +86,39 @@ APダメージ: 15〜25/ターン
 
 ## 通常敵（単体）
 
-### 1. 腐敗の野犬
+### 1. 腐敗の野犬 (CORRUPTED_HOUND)
 ```
 【基本情報】
+ID: depth1_hound
 HP: 28
-攻撃力: 7
-行動回数: 1回/ターン
-Guard: なし
+AP: 0
+Guard: 0
+baseEnemyEnergy: 1
+speed: 40
 
 【外見】
 腐肉が露出した痩せこけた黒い野犬。
 骨が透けて見え、緑色の瘴気を纏う。
 
 【行動パターン】
-ターン1: 噛みつき（物理7）
-ターン2: 腐肉の牙（物理7 + 毒付与2ターン）
-ターン3〜: ターン1,2をランダム
+ターン1: 噛みつき
+  - name: "噛みつき"
+  - type: "attack"
+  - baseDamage: 7
+  - displayIcon: "⚔️"
+  - priority: 0
+  - energyCost: 1
 
-【毒ダメージ】
-軽度毒: ターン開始時HP-3
+ターン2: 腐肉の牙
+  - name: "腐肉の牙"
+  - type: "attack"
+  - baseDamage: 7
+  - displayIcon: "🦷"
+  - priority: 1
+  - energyCost: 1
+  - applyDebuffs: [{ type: "poison", stacks: 1, duration: 2 }]
+
+ターン3〜: ターン1,2をランダム（各50%）
 
 【戦闘想定】
 3〜4ターンで撃破可能
@@ -77,33 +131,47 @@ Guard: なし
 カード獲得率: 40%
 ```
 
-### 2. 変異した腐食鴉
+### 2. 変異した腐食鴉 (MUTATED_CROW)
 ```
 【基本情報】
+ID: depth1_crow
 HP: 22
-攻撃力: 5
-行動回数: 2回/ターン（軽量敵）
-Guard: なし
+AP: 0
+Guard: 0
+baseEnemyEnergy: 2  ※2回行動
+speed: 55
 
 【外見】
 羽が抜け落ちた灰色の鴉。
 目は白濁し、嘴から酸性の唾液が滴る。
 
 【行動パターン】
-連続啄み: 物理5 × 2回
-20%確率: 酸の唾液（物理3 + 酸化付与）
+メイン行動: 連続啄み
+  - name: "連続啄み"
+  - type: "attack"
+  - baseDamage: 5
+  - hitCount: 1
+  - displayIcon: "🐦"
+  - priority: 0
+  - energyCost: 1
 
-【酸化効果】
-軽度酸化: Guard効果50%低下（3ターン）
+サブ行動（20%確率）: 弱体化の唾液
+  - name: "弱体化の唾液"
+  - type: "debuff"
+  - baseDamage: 3
+  - displayIcon: "💧"
+  - priority: 1
+  - energyCost: 1
+  - applyDebuffs: [{ type: "weak", stacks: 1, duration: 2 }]
 
 【戦闘想定】
 2〜3ターンで撃破
 合計被ダメージ: 15〜25
-酸化発動時: Guard無効化で危険
+弱体化発動時: 与ダメージ-30%
 
 【特徴】
 低HPだが2回行動で手数が多い
-酸化が発動するとGuard戦術が崩れる
+速度55でプレイヤーより先に行動しやすい
 
 【ドロップ】
 魔石（極小）: 100%
@@ -111,13 +179,15 @@ Guard: なし
 カード獲得率: 35%
 ```
 
-### 3. 骨の徘徊者
+### 3. 骨の徘徊者 (BONE_WANDERER)
 ```
 【基本情報】
+ID: depth1_skeleton
 HP: 32
-攻撃力: 6
-行動回数: 1回/ターン
-Guard: なし
+AP: 0
+Guard: 0
+baseEnemyEnergy: 1
+speed: 35
 特性: 出血無効
 
 【外見】
@@ -125,21 +195,33 @@ Guard: なし
 錆びた剣を引きずり、無言で歩む。
 
 【行動パターン】
-ターン1-2: 骨の剣（物理6）
-ターン3: 骨砕き（物理10 + よろめき付与）
-ターン4〜: ターン1-3をループ
+ターン1-2: 骨の剣
+  - name: "骨の剣"
+  - type: "attack"
+  - baseDamage: 6
+  - displayIcon: "⚔️"
+  - priority: 0
+  - energyCost: 1
 
-【よろめき効果】
-軽度よろめき: 次ターンエナジー-1
+ターン3: 骨砕き
+  - name: "骨砕き"
+  - type: "attack"
+  - baseDamage: 10
+  - displayIcon: "💀"
+  - priority: 2
+  - energyCost: 1
+  - applyDebuffs: [{ type: "slow", stacks: 1, duration: 1 }]
+
+ターン4〜: ターン1-3をループ
 
 【戦闘想定】
 4〜5ターンで撃破
 合計被ダメージ: 18〜30
-よろめき込み: エナジー管理が重要
+スロウ込み: エナジー-1で手札事故を誘発
 
 【特徴】
 骨砕きのタイミングが読みやすい
-エナジー減少で手札事故を誘発
+速度35で遅い（プレイヤー先攻取りやすい）
 
 【ドロップ】
 魔石（極小）: 100%
@@ -147,13 +229,15 @@ Guard: なし
 カード獲得率: 40%
 ```
 
-### 4. 影の這いずり
+### 4. 影の這いずり (SHADOW_CRAWLER)
 ```
 【基本情報】
+ID: depth1_shadow
 HP: 25
-攻撃力: 8
-行動回数: 1回/ターン
-Guard: なし
+AP: 0
+Guard: 0
+baseEnemyEnergy: 1
+speed: 50
 特性: 回避率15%
 
 【外見】
@@ -161,12 +245,24 @@ Guard: なし
 実体が曖昧で、地を這うように移動する。
 
 【行動パターン】
-ターン1: 影の触手（物理8）
-ターン2: 闇の侵食（物理6 + 脱力付与）
-ターン3〜: ターン1,2をランダム
+ターン1: 影の触手
+  - name: "影の触手"
+  - type: "attack"
+  - baseDamage: 8
+  - displayIcon: "👤"
+  - priority: 0
+  - energyCost: 1
 
-【脱力効果】
-軽度脱力: 与ダメージ×0.75（3ターン）
+ターン2: 闇の侵食
+  - name: "闇の侵食"
+  - type: "attack"
+  - baseDamage: 6
+  - displayIcon: "🌑"
+  - priority: 1
+  - energyCost: 1
+  - applyDebuffs: [{ type: "weak", stacks: 1, duration: 3 }]
+
+ターン3〜: ターン1,2をランダム
 
 【戦闘想定】
 3〜4ターンで撃破
@@ -174,7 +270,8 @@ Guard: なし
 回避運が悪いと長期化
 
 【特徴】
-脱力で火力が落ち、戦闘が長引く
+弱体化で火力が落ち、戦闘が長引く
+速度50でプレイヤーと同速（同速時プレイヤー先攻）
 回避率が地味に厄介
 
 【ドロップ】
@@ -187,21 +284,36 @@ Guard: なし
 
 ## 複数敵バトル
 
-### 5. 腐肉喰らい×3
+### 5. 腐肉喰らい×3 (FLESH_EATER)
 ```
 【基本情報（1体あたり）】
+ID: depth1_flesh_eater
 HP: 18
-攻撃力: 5
-行動回数: 1回/ターン
-Guard: なし
+AP: 0
+Guard: 0
+baseEnemyEnergy: 1
+speed: 45
 
 【外見】
 腐敗した肉塊から無数の触手が生えた小型の生物。
 群れで行動し、死肉を漁る。
 
 【行動パターン（各個体）】
-全個体: 触手攻撃（物理5）
-HP50%以下: 狂乱（物理7）
+通常: 触手攻撃
+  - name: "触手攻撃"
+  - type: "attack"
+  - baseDamage: 5
+  - displayIcon: "🦑"
+  - priority: 0
+  - energyCost: 1
+
+HP50%以下: 狂乱
+  - name: "狂乱"
+  - type: "attack"
+  - baseDamage: 7
+  - displayIcon: "💢"
+  - priority: 2
+  - energyCost: 1
 
 【戦闘想定】
 総HP: 54
@@ -219,21 +331,38 @@ HP50%以下で火力上昇に注意
 カード獲得率: 50%
 ```
 
-### 6. 錆びた剣士×2
+### 6. 錆びた剣士×2 (RUSTY_SWORDSMAN)
 ```
 【基本情報（1体あたり）】
+ID: depth1_rusty_knight
 HP: 30
-攻撃力: 8
-行動回数: 1回/ターン
-Guard: なし
+AP: 0
+Guard: 0
+baseEnemyEnergy: 1
+speed: 40
 
 【外見】
 錆びた鎧を纏った亡霊騎士。
 剣を構え、機械的に斬りかかってくる。
 
 【行動パターン（各個体）】
-ターン1-2: 斬撃（物理8）
-ターン3: 二段斬り（物理6 × 2回）
+ターン1-2: 斬撃
+  - name: "斬撃"
+  - type: "attack"
+  - baseDamage: 8
+  - displayIcon: "⚔️"
+  - priority: 0
+  - energyCost: 1
+
+ターン3: 二段斬り
+  - name: "二段斬り"
+  - type: "attack"
+  - baseDamage: 6
+  - hitCount: 2
+  - displayIcon: "⚔️⚔️"
+  - priority: 1
+  - energyCost: 1
+
 ターン4〜: ループ
 
 【連携行動】
@@ -255,28 +384,38 @@ Guard: なし
 カード獲得率: 55%
 ```
 
-### 7. 毒蜘蛛の群れ×4
+### 7. 毒蜘蛛の群れ×4 (POISON_SPIDER)
 ```
 【基本情報（1体あたり）】
+ID: depth1_spider
 HP: 12
-攻撃力: 4
-行動回数: 1回/ターン
-Guard: なし
+AP: 0
+Guard: 0
+baseEnemyEnergy: 1
+speed: 50
 
 【外見】
 人の頭ほどの大きさの紫色の蜘蛛。
 体液は毒々しく光り、糸を吐く。
 
 【行動パターン（各個体）】
-80%: 毒牙（物理4 + 毒付与1ターン）
-20%: 糸縛り（物理2 + 束縛付与）
+80%: 毒牙
+  - name: "毒牙"
+  - type: "attack"
+  - baseDamage: 4
+  - displayIcon: "🕷️"
+  - priority: 0
+  - energyCost: 1
+  - applyDebuffs: [{ type: "poison", stacks: 1, duration: 2 }]
 
-【毒効果】
-軽度毒: ターン開始時HP-3
-重複: 毒スタック数×3ダメージ
-
-【束縛効果】
-軽度束縛: 次ターン最初の攻撃カード無効化
+20%: 糸縛り
+  - name: "糸縛り"
+  - type: "debuff"
+  - baseDamage: 2
+  - displayIcon: "🕸️"
+  - priority: 1
+  - energyCost: 1
+  - applyDebuffs: [{ type: "slow", stacks: 1, duration: 1 }]
 
 【戦闘想定】
 総HP: 48
@@ -296,15 +435,17 @@ Guard: なし
 
 ---
 
-## フロアボス：堕ちた番人
+## フロアボス：堕ちた番人 (FALLEN_GUARDIAN)
 
 ### 基本情報
 ```
+ID: depth1_boss_guardian
 名称: 堕ちた番人
 HP: 120
-攻撃力: 12（基本値）
-行動回数: 1回/ターン（P1-2）→ 2回/ターン（P3）
+AP: 0
 Guard: 15（ターン開始時に自動付与）
+baseEnemyEnergy: 1 (P1-2) → 2 (P3)
+speed: 55
 
 【外見】
 かつて上層を守護していた重装の騎士。
@@ -315,9 +456,31 @@ Guard: 15（ターン開始時に自動付与）
 ### フェーズ1（HP100%〜66%）：試練の始まり
 ```
 【行動パターン】
-ターン1: 重斬撃（物理12）
-ターン2: 防御固め（Guard+20 / 自分）
-ターン3: 戦斧の一振り（物理15）
+ターン1: 重斬撃
+  - name: "重斬撃"
+  - type: "attack"
+  - baseDamage: 12
+  - displayIcon: "⚔️"
+  - priority: 0
+  - energyCost: 1
+
+ターン2: 防御固め
+  - name: "防御固め"
+  - type: "buff"
+  - baseDamage: 0
+  - guardGain: 20
+  - displayIcon: "🛡️"
+  - priority: 1
+  - energyCost: 1
+
+ターン3: 戦斧の一振り
+  - name: "戦斧の一振り"
+  - type: "attack"
+  - baseDamage: 15
+  - displayIcon: "🪓"
+  - priority: 2
+  - energyCost: 1
+
 ターン4〜: ループ
 
 【特徴】
@@ -329,54 +492,106 @@ Guard付与で耐久力が高い
 ### フェーズ2（HP65%〜34%）：腐敗の力
 ```
 【フェーズ移行時】
-咆哮: 全体ダメージ10 + 脱力付与（2ターン）
+咆哮: 全体ダメージ10 + 弱体化付与（2ターン）
 
 【行動パターン】
-ターン1: 腐敗の斬撃（物理12 + 出血付与2ターン）
-ターン2: 漆黒の波動（物理8 + 毒付与2ターン + 酸化付与2ターン）
-ターン3: 戦斧の連撃（物理10 × 2回）
+ターン1: 腐敗の斬撃
+  - name: "腐敗の斬撃"
+  - type: "attack"
+  - baseDamage: 12
+  - displayIcon: "⚔️"
+  - priority: 0
+  - energyCost: 1
+  - applyDebuffs: [{ type: "bleed", stacks: 1, duration: 2 }]
+
+ターン2: 漆黒の波動
+  - name: "漆黒の波動"
+  - type: "attack"
+  - baseDamage: 8
+  - displayIcon: "🌊"
+  - priority: 1
+  - energyCost: 1
+  - applyDebuffs: [
+      { type: "poison", stacks: 1, duration: 2 },
+      { type: "weak", stacks: 1, duration: 2 }
+    ]
+
+ターン3: 戦斧の連撃
+  - name: "戦斧の連撃"
+  - type: "attack"
+  - baseDamage: 10
+  - hitCount: 2
+  - displayIcon: "🪓🪓"
+  - priority: 2
+  - energyCost: 1
+
 ターン4〜: ループ
-
-【脱力効果】
-軽度脱力: 与ダメージ×0.75（2ターン）
-
-【出血効果】
-軽度出血: カード使用時HP-3（2ターン）
-
-【毒効果】
-軽度毒: ターン開始時HP-3（2ターン）
-
-【酸化効果】
-軽度酸化: Guard効果50%低下（2ターン）
 
 【特徴】
 デバフが重なると危険
 出血でカード使用がHP損失に
-酸化でGuard戦術が半減
+弱体化でGuard戦術が弱体化
 毒で持久戦が不利に
 ```
 
 ### フェーズ3（HP33%〜0%）：番人の最期
 ```
 【フェーズ移行時】
-絶望の咆哮: 全体ダメージ15 + よろめき付与（2ターン） + Guard-30
+絶望の咆哮: 全体ダメージ15 + スロウ付与（2ターン） + Guard-30
 
 【行動回数変更】
-2回/ターン（両方とも攻撃可能）
+baseEnemyEnergy: 2（2回行動）
 
 【行動パターン（1回目）】
-50%: 狂乱の斬撃（物理18）
-30%: 腐敗の波動（物理10 + 毒2ターン + 出血2ターン）
-20%: Guard回復（Guard+25）
+50%: 狂乱の斬撃
+  - name: "狂乱の斬撃"
+  - type: "attack"
+  - baseDamage: 18
+  - displayIcon: "⚔️"
+  - priority: 0
+  - energyCost: 1
+
+30%: 腐敗の波動
+  - name: "腐敗の波動"
+  - type: "attack"
+  - baseDamage: 10
+  - displayIcon: "🌊"
+  - priority: 1
+  - energyCost: 1
+  - applyDebuffs: [
+      { type: "poison", stacks: 1, duration: 2 },
+      { type: "bleed", stacks: 1, duration: 2 }
+    ]
+
+20%: Guard回復
+  - name: "Guard回復"
+  - type: "buff"
+  - baseDamage: 0
+  - guardGain: 25
+  - displayIcon: "🛡️"
+  - priority: 2
+  - energyCost: 1
 
 【行動パターン（2回目）】
-70%: 追撃（物理12）
-30%: 戦斧の回転斬り（物理8 + 全Guard-10）
+70%: 追撃
+  - name: "追撃"
+  - type: "attack"
+  - baseDamage: 12
+  - displayIcon: "⚔️"
+  - priority: 0
+  - energyCost: 1
+
+30%: 戦斧の回転斬り
+  - name: "戦斧の回転斬り"
+  - type: "attack"
+  - baseDamage: 8
+  - displayIcon: "🔄"
+  - priority: 1
+  - energyCost: 1
 
 【特徴】
 2回行動で圧倒的火力
-よろめきでエナジー管理が困難
-Guard削りで防御崩壊
+スロウでエナジー管理が困難
 最も危険なフェーズ
 ```
 
@@ -396,7 +611,7 @@ APが0になると貫通ダメージで急速にHPが減る
 
 【攻略のカギ】
 - フェーズ2で回復カードを温存
-- 酸化中はGuardより回復優先
+- 弱体化中は火力より回復優先
 - フェーズ3開始前にHP満タン推奨
 - デバフ解除カードがあると有利
 ```
@@ -515,11 +730,13 @@ APが0になると貫通ダメージで急速にHPが減る
 3回目: デバフ対策を学んでボス撃破
 ```
 
-### 次の設計ステップ
+---
+
+## 参照関係
+
 ```
-深度2の敵:
-- 基礎火力1.2倍
-- 重度状態異常の使用
-- より複雑な行動パターン
-- エリート敵の登場
+battle_logic.md (Ver 4.0) [マスター文書]
+├── buff_debuff_system.md (Ver 4.0) [バフ/デバフ定義]
+└── depth1_enemy_database.md (Ver 4.0) [本文書]
+    └── 実装: src/Character/data/EnemyData.ts
 ```

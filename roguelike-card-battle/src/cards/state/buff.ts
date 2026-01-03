@@ -1,6 +1,6 @@
-import { BuffDebuffEffects } from "../data/BuffData";
-import type { BuffDebuff, BuffDebuffMap } from "../type/baffType";
-import type { BuffDebuffType } from "../type/baffType";
+// import { BuffDebuffEffects } from "../data/BuffData";
+import type { BuffDebuffState, BuffDebuffMap } from "../type/baffType";
+import { type BuffDebuffType, BUFF_EFFECTS } from "../type/baffType";
 // バフ/デバフの種類
 
 // バフ/デバフの効果
@@ -10,19 +10,19 @@ import type { BuffDebuffType } from "../type/baffType";
  */
 export const addOrUpdateBuffDebuff = (
   map: BuffDebuffMap,
-  type: BuffDebuffType,
-  stacks: number,
-  duration: number,
-  value: number,
-  isPermanent: boolean = false,
-  source?: string
+  name: BuffDebuffState["name"],
+  duration: BuffDebuffState["duration"],
+  value: BuffDebuffState["value"],
+  stacks: BuffDebuffState["stacks"],
+  isPermanent: BuffDebuffState["isPermanent"] = false,
+  source?: BuffDebuffState["source"],
 ): BuffDebuffMap => {
   const newMap = new Map(map);
-  const existing = newMap.get(type);
+  const existing = newMap.get(name);
 
   if (existing) {
     // 既存のバフ/デバフがある場合、スタックを加算
-    newMap.set(type, {
+    newMap.set(name, {
       ...existing,
       stacks: existing.stacks + stacks,
       duration: Math.max(existing.duration, duration), // 長い方を採用
@@ -30,8 +30,8 @@ export const addOrUpdateBuffDebuff = (
     });
   } else {
     // 新規追加
-    newMap.set(type, {
-      type,
+    newMap.set(name, {
+      name,
       stacks,
       duration,
       value,
@@ -39,7 +39,6 @@ export const addOrUpdateBuffDebuff = (
       source,
     });
   }
-
   return newMap;
 };
 
@@ -59,9 +58,9 @@ export const removeBuffDebuff = (
  * 全てのデバフを削除
  */
 export const removeAllDebuffs = (map: BuffDebuffMap): BuffDebuffMap => {
-  const newMap = new Map<BuffDebuffType, BuffDebuff>();
+  const newMap = new Map<BuffDebuffState["name"], BuffDebuffState>();
   map.forEach((buff, type) => {
-    if (!BuffDebuffEffects[type].isDebuff) {
+    if (!BUFF_EFFECTS[type].isDebuff) {
       newMap.set(type, buff);
     }
   });
@@ -74,7 +73,7 @@ export const removeAllDebuffs = (map: BuffDebuffMap): BuffDebuffMap => {
 export const decreaseBuffDebuffDuration = (
   map: BuffDebuffMap
 ): BuffDebuffMap => {
-  const newMap = new Map<BuffDebuffType, BuffDebuff>();
+  const newMap = new Map<BuffDebuffType, BuffDebuffState>();
 
   map.forEach((buff, type) => {
     if (buff.isPermanent) {
@@ -89,7 +88,6 @@ export const decreaseBuffDebuffDuration = (
     }
     // duration === 1 の場合は削除（新Mapに追加しない）
   });
-
   return newMap;
 };
 
@@ -100,7 +98,7 @@ export const calculateEndTurnDamage = (map: BuffDebuffMap): number => {
   let totalDamage = 0;
 
   map.forEach((buff) => {
-    switch (buff.type) {
+    switch (buff.name) {
       case "burn":
         totalDamage += buff.stacks * 3;
         break;
@@ -129,7 +127,7 @@ export const calculateStartTurnHealing = (
   let shield = 0;
 
   map.forEach((buff) => {
-    switch (buff.type) {
+    switch (buff.name) {
       case "regeneration":
         hp += buff.value * buff.stacks;
         break;
@@ -160,48 +158,18 @@ export const calculateAttackMultiplier = (map: BuffDebuffMap): number => {
   let multiplier = 1.0;
 
   map.forEach((buff) => {
-    switch (buff.type) {
+    switch (buff.name) {
       case "atkUp":
-        multiplier *= 1 + buff.value / 100;
-        break;
-      case "physicalUp":
-        multiplier *= 1 + buff.value / 100;
-        break;
-      case "magicUp":
         multiplier *= 1 + buff.value / 100;
         break;
       case "atkDown":
         multiplier *= 1 - buff.value / 100;
-        break;
-      case "paralyze":
-        multiplier *= 0.5;
         break;
       case "weak":
         multiplier *= 0.7;
         break;
     }
   });
-
-  return multiplier;
-};
-
-/**
- * 防御力の倍率計算
- */
-export const calculateDefenseMultiplier = (map: BuffDebuffMap): number => {
-  let multiplier = 1.0;
-
-  map.forEach((buff) => {
-    switch (buff.type) {
-      case "defUp":
-        multiplier *= 1 + buff.value / 100;
-        break;
-      case "defDown":
-        multiplier *= 1 - buff.value / 100;
-        break;
-    }
-  });
-
   return multiplier;
 };
 
@@ -209,7 +177,7 @@ export const calculateDefenseMultiplier = (map: BuffDebuffMap): number => {
  * 行動可能かどうか判定
  */
 export const canAct = (map: BuffDebuffMap): boolean => {
-  return !map.has("freeze") && !map.has("stun");
+  return !map.has("stun");
 };
 
 /**
@@ -219,10 +187,10 @@ export const calculateEnergyModifier = (map: BuffDebuffMap): number => {
   let modifier = 0;
 
   map.forEach((buff) => {
-    if (buff.type === "slow") {
+    if (buff.name === "slow") {
       modifier -= 1;
     }
-    if (buff.type === "energyRegen") {
+    if (buff.name === "energyRegen") {
       modifier += buff.value * buff.stacks;
     }
   });
@@ -237,7 +205,7 @@ export const calculateDrawModifier = (map: BuffDebuffMap): number => {
   let modifier = 0;
 
   map.forEach((buff) => {
-    if (buff.type === "drawPower") {
+    if (buff.name === "drawPower") {
       modifier += buff.value * buff.stacks;
     }
   });
@@ -252,7 +220,7 @@ export const removeDebuffs = (map: BuffDebuffMap, count: number): BuffDebuffMap 
   const debuffs: BuffDebuffType[] = [];
 
   map.forEach((_, type) => {
-    if (BuffDebuffEffects[type].isDebuff) {
+    if (BUFF_EFFECTS[type].isDebuff) {
       debuffs.push(type);
     }
   });
@@ -273,7 +241,7 @@ export const removeDebuffs = (map: BuffDebuffMap, count: number): BuffDebuffMap 
 export const canApplyDebuff = (map: BuffDebuffMap, debuffType: BuffDebuffType): boolean => {
   // immunityバフがある場合、デバフ無効
   if (map.has("immunity")) {
-    return !BuffDebuffEffects[debuffType].isDebuff;
+    return !BUFF_EFFECTS[debuffType].isDebuff;
   }
   return true;
 };

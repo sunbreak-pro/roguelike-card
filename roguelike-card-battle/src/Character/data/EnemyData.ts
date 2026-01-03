@@ -1,4 +1,4 @@
-import type { BuffDebuff } from "../../cards/type/baffType";
+import type { BuffDebuffState } from "../../cards/type/baffType";
 
 export type EnemyActionType = "attack" | "buff" | "debuff" | "special";
 
@@ -6,12 +6,10 @@ export interface EnemyAction {
   name: string;
   type: EnemyActionType;
   baseDamage: number;
-  applyDebuffs?: BuffDebuff[];
-  applyBuffs?: BuffDebuff[];
+  applyDebuffs?: BuffDebuffState[];
+  applyBuffs?: BuffDebuffState[];
   guardGain?: number;
   hitCount?: number;
-
-  // Ver 4.0 新規追加
   displayIcon?: string; // UI表示用アイコン
   priority?: number; // 行動優先度（高いほど優先）デフォルト: 0
   energyCost?: number; // エナジーコスト（デフォルト: 1）
@@ -31,15 +29,13 @@ export interface Enemy {
   description: string;
   maxHp: number;
   maxAp: number;
+  speed: number; // 行動速度（0-100）
+  actEnergy: number; // 基本エナジー（1ターンの行動回数）
   startingGuard: number;
   evasionRate: number;
   immunities: string[];
   aiPatterns: EnemyAIPattern[];
   imagePath?: string;
-
-  // Ver 4.0 新規追加
-  baseEnemyEnergy: number; // 基本エナジー（1ターンの行動回数）
-  speed: number; // 行動速度（0-100）
 }
 
 export const CORRUPTED_HOUND: Enemy = {
@@ -52,13 +48,13 @@ export const CORRUPTED_HOUND: Enemy = {
   startingGuard: 0,
   evasionRate: 0,
   immunities: [],
-  baseEnemyEnergy: 1, // 1ターンに1回行動
-  speed: 40, // 比較的遅い
+  actEnergy: 1, // 1ターンに1回行動
+  speed: 40,
   aiPatterns: [
     { turnNumber: 1, action: { name: "噛みつき", type: "attack", baseDamage: 7, displayIcon: "⚔️", priority: 0, energyCost: 1 } },
-    { turnNumber: 2, action: { name: "腐肉の牙", type: "debuff", baseDamage: 7, applyDebuffs: [{ type: "poison", stacks: 1, duration: 2, value: 3, isPermanent: false }], displayIcon: "🦷", priority: 1, energyCost: 1 } },
+    { turnNumber: 2, action: { name: "腐肉の牙", type: "debuff", baseDamage: 7, applyDebuffs: [{ name: "poison", stacks: 1, duration: 2, value: 3, isPermanent: false }], displayIcon: "🦷", priority: 1, energyCost: 1 } },
     { turnNumber: 0, action: { name: "噛みつき", type: "attack", baseDamage: 7, displayIcon: "⚔️", priority: 0, energyCost: 1 }, probability: 0.5 },
-    { turnNumber: 0, action: { name: "腐肉の牙", type: "debuff", baseDamage: 7, applyDebuffs: [{ type: "poison", stacks: 1, duration: 2, value: 3, isPermanent: false }], displayIcon: "🦷", priority: 1, energyCost: 1 }, probability: 0.5 },
+    { turnNumber: 0, action: { name: "腐肉の牙", type: "debuff", baseDamage: 7, applyDebuffs: [{ name: "poison", stacks: 1, duration: 2, value: 3, isPermanent: false }], displayIcon: "🦷", priority: 1, energyCost: 1 }, probability: 0.5 },
   ],
 };
 
@@ -72,11 +68,11 @@ export const MUTATED_CROW: Enemy = {
   startingGuard: 0,
   evasionRate: 0,
   immunities: [],
-  baseEnemyEnergy: 1,
-  speed: 55, // 速い
+  actEnergy: 1,
+  speed: 55,
   aiPatterns: [
     { turnNumber: 0, action: { name: "連続啄み", type: "attack", baseDamage: 5, hitCount: 2, displayIcon: "🦅", priority: 0, energyCost: 1 }, probability: 0.8 },
-    { turnNumber: 0, action: { name: "酸の唾液", type: "debuff", baseDamage: 3, applyDebuffs: [{ type: "weak", stacks: 1, duration: 3, value: 30, isPermanent: false }], displayIcon: "💧", priority: 1, energyCost: 1 }, probability: 0.2 },
+    { turnNumber: 0, action: { name: "酸の唾液", type: "debuff", baseDamage: 3, applyDebuffs: [{ name: "weak", stacks: 1, duration: 3, value: 30, isPermanent: false }], displayIcon: "💧", priority: 1, energyCost: 1 }, probability: 0.2 },
   ],
 };
 
@@ -90,12 +86,12 @@ export const BONE_WANDERER: Enemy = {
   startingGuard: 0,
   evasionRate: 0,
   immunities: ["bleed"],
-  baseEnemyEnergy: 1,
-  speed: 35, // 遅い
+  actEnergy: 1,
+  speed: 35,
   aiPatterns: [
     { turnNumber: 1, action: { name: "骨の剣", type: "attack", baseDamage: 6, displayIcon: "🗡️", priority: 0, energyCost: 1 } },
     { turnNumber: 2, action: { name: "骨の剣", type: "attack", baseDamage: 6, displayIcon: "🗡️", priority: 0, energyCost: 1 } },
-    { turnNumber: 3, action: { name: "骨砕き", type: "debuff", baseDamage: 10, applyDebuffs: [{ type: "slow", stacks: 1, duration: 1, value: 10, isPermanent: false }], displayIcon: "💀", priority: 1, energyCost: 1 } },
+    { turnNumber: 3, action: { name: "骨砕き", type: "debuff", baseDamage: 10, applyDebuffs: [{ name: "slow", stacks: 1, duration: 1, value: 10, isPermanent: false }], displayIcon: "💀", priority: 1, energyCost: 1 } },
     { turnNumber: 0, action: { name: "骨の剣", type: "attack", baseDamage: 6, displayIcon: "🗡️", priority: 0, energyCost: 1 } },
   ],
 };
@@ -110,13 +106,13 @@ export const SHADOW_CRAWLER: Enemy = {
   startingGuard: 0,
   evasionRate: 0.15,
   immunities: [],
-  baseEnemyEnergy: 1,
+  actEnergy: 1,
   speed: 60, // かなり速い
   aiPatterns: [
     { turnNumber: 1, action: { name: "影の触手", type: "attack", baseDamage: 8, displayIcon: "🌑", priority: 0, energyCost: 1 } },
-    { turnNumber: 2, action: { name: "闇の侵食", type: "debuff", baseDamage: 6, applyDebuffs: [{ type: "atkDown", stacks: 1, duration: 3, value: 25, isPermanent: false }], displayIcon: "🌫️", priority: 1, energyCost: 1 } },
+    { turnNumber: 2, action: { name: "闇の侵食", type: "debuff", baseDamage: 6, applyDebuffs: [{ name: "atkDown", stacks: 1, duration: 3, value: 25, isPermanent: false }], displayIcon: "🌫️", priority: 1, energyCost: 1 } },
     { turnNumber: 0, action: { name: "影の触手", type: "attack", baseDamage: 8, displayIcon: "🌑", priority: 0, energyCost: 1 }, probability: 0.5 },
-    { turnNumber: 0, action: { name: "闇の侵食", type: "debuff", baseDamage: 6, applyDebuffs: [{ type: "atkDown", stacks: 1, duration: 3, value: 25, isPermanent: false }], displayIcon: "🌫️", priority: 1, energyCost: 1 }, probability: 0.5 },
+    { turnNumber: 0, action: { name: "闇の侵食", type: "debuff", baseDamage: 6, applyDebuffs: [{ name: "atkDown", stacks: 1, duration: 3, value: 25, isPermanent: false }], displayIcon: "🌫️", priority: 1, energyCost: 1 }, probability: 0.5 },
   ],
 };
 
@@ -130,7 +126,7 @@ export const FLESH_EATER: Enemy = {
   startingGuard: 0,
   evasionRate: 0,
   immunities: [],
-  baseEnemyEnergy: 1,
+  actEnergy: 1,
   speed: 45,
   aiPatterns: [
     { turnNumber: 0, condition: (hp, maxHp) => hp > maxHp * 0.5, action: { name: "触手攻撃", type: "attack", baseDamage: 5, displayIcon: "🦑", priority: 0, energyCost: 1 } },
@@ -148,7 +144,7 @@ export const RUSTY_SWORDSMAN: Enemy = {
   startingGuard: 0,
   evasionRate: 0,
   immunities: [],
-  baseEnemyEnergy: 1,
+  actEnergy: 1,
   speed: 50, // プレイヤーと同じ基準速度
   aiPatterns: [
     { turnNumber: 1, action: { name: "斬撃", type: "attack", baseDamage: 8, displayIcon: "⚔️", priority: 0, energyCost: 1 } },
@@ -168,11 +164,11 @@ export const POISON_SPIDER: Enemy = {
   startingGuard: 0,
   evasionRate: 0,
   immunities: [],
-  baseEnemyEnergy: 1,
+  actEnergy: 1,
   speed: 48,
   aiPatterns: [
-    { turnNumber: 0, action: { name: "毒牙", type: "debuff", baseDamage: 4, applyDebuffs: [{ type: "poison", stacks: 1, duration: 1, value: 3, isPermanent: false }], displayIcon: "🕷️", priority: 1, energyCost: 1 }, probability: 0.8 },
-    { turnNumber: 0, action: { name: "糸縛り", type: "debuff", baseDamage: 2, applyDebuffs: [{ type: "stun", stacks: 1, duration: 1, value: 0, isPermanent: false }], displayIcon: "🕸️", priority: 2, energyCost: 1 }, probability: 0.2 },
+    { turnNumber: 0, action: { name: "毒牙", type: "debuff", baseDamage: 4, applyDebuffs: [{ name: "poison", stacks: 1, duration: 1, value: 3, isPermanent: false }], displayIcon: "🕷️", priority: 1, energyCost: 1 }, probability: 0.8 },
+    { turnNumber: 0, action: { name: "糸縛り", type: "debuff", baseDamage: 2, applyDebuffs: [{ name: "stun", stacks: 1, duration: 1, value: 0, isPermanent: false }], displayIcon: "🕸️", priority: 2, energyCost: 1 }, probability: 0.2 },
   ],
 };
 
@@ -186,14 +182,14 @@ export const FALLEN_GUARDIAN: Enemy = {
   startingGuard: 15,
   evasionRate: 0,
   immunities: [],
-  baseEnemyEnergy: 1, // ボスだが初期は1エナジー
-  speed: 55, // やや速い
+  actEnergy: 1,
+  speed: 55,
   aiPatterns: [
     { turnNumber: 1, condition: (hp, maxHp) => hp > maxHp * 0.66, action: { name: "重斬撃", type: "attack", baseDamage: 12, displayIcon: "🔨", priority: 0, energyCost: 1 } },
     { turnNumber: 2, condition: (hp, maxHp) => hp > maxHp * 0.66, action: { name: "防御固め", type: "buff", baseDamage: 0, guardGain: 20, displayIcon: "🛡️", priority: 1, energyCost: 1 } },
     { turnNumber: 3, condition: (hp, maxHp) => hp > maxHp * 0.66, action: { name: "戦斧の一振り", type: "attack", baseDamage: 15, displayIcon: "🪓", priority: 2, energyCost: 1 } },
     { turnNumber: 0, condition: (hp, maxHp) => hp > maxHp * 0.66, action: { name: "重斬撃", type: "attack", baseDamage: 12, displayIcon: "🔨", priority: 0, energyCost: 1 } },
-    { turnNumber: 0, condition: (hp, maxHp) => hp > maxHp * 0.34 && hp <= maxHp * 0.65, action: { name: "腐敗の斬撃", type: "debuff", baseDamage: 12, applyDebuffs: [{ type: "bleed", stacks: 1, duration: 2, value: 5, isPermanent: false }], displayIcon: "⚔️", priority: 1, energyCost: 1 } },
+    { turnNumber: 0, condition: (hp, maxHp) => hp > maxHp * 0.34 && hp <= maxHp * 0.65, action: { name: "腐敗の斬撃", type: "debuff", baseDamage: 12, applyDebuffs: [{ name: "bleed", stacks: 1, duration: 2, value: 5, isPermanent: false }], displayIcon: "⚔️", priority: 1, energyCost: 1 } },
     { turnNumber: 0, condition: (hp, maxHp) => hp <= maxHp * 0.33, action: { name: "狂乱の斬撃", type: "attack", baseDamage: 18, displayIcon: "💥", priority: 2, energyCost: 1 }, probability: 0.5 },
   ],
 };

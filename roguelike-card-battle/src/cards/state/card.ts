@@ -66,25 +66,20 @@ export function canPlayCard(
 // ==========================================
 // カード効果計算
 // ==========================================
-import type { BuffDebuffType } from "../type/baffType";
-
-export interface BuffDebuffEffect {
-  type: BuffDebuffType;
-  stacks: number;
-  duration: number;
-  value: number;
-}
+import type { BuffDebuffState } from "../type/baffType";
+import { createBuffState } from "../type/baffType";
 
 export interface CardEffectResult {
   damageToEnemy?: number;
   shieldGain?: number;
   hpGain?: number;
-  enemyDebuffs?: BuffDebuffEffect[];
-  playerBuffs?: BuffDebuffEffect[];
+  enemyDebuffs?: BuffDebuffState[];
+  playerBuffs?: BuffDebuffState[];
 }
 
 /**
  * カードの効果を計算
+ * buff/debuffのvalueはBUFF_EFFECTSから自動取得
  */
 export function calculateCardEffect(
   card: Card,
@@ -93,11 +88,10 @@ export function calculateCardEffect(
   const result: CardEffectResult = {};
 
   switch (card.category) {
-    case "physical":
-    case "magic":
+    case "atk":
       result.damageToEnemy = effectivePower;
       break;
-    case "defense":
+    case "def":
       result.shieldGain = effectivePower;
       break;
     case "heal":
@@ -105,22 +99,17 @@ export function calculateCardEffect(
       break;
   }
 
+  // CardBuffSpec → BuffDebuffState に変換（valueはBUFF_EFFECTSから自動取得）
   if (card.applyEnemyDebuff && card.applyEnemyDebuff.length > 0) {
-    result.enemyDebuffs = card.applyEnemyDebuff.map((debuff) => ({
-      type: debuff.type as BuffDebuffType,
-      stacks: debuff.stacks,
-      duration: debuff.duration,
-      value: debuff.value,
-    }));
+    result.enemyDebuffs = card.applyEnemyDebuff.map((spec) =>
+      createBuffState(spec, card.id)
+    );
   }
 
   if (card.applyPlayerBuff && card.applyPlayerBuff.length > 0) {
-    result.playerBuffs = card.applyPlayerBuff.map((buff) => ({
-      type: buff.type as BuffDebuffType,
-      stacks: buff.stacks,
-      duration: buff.duration,
-      value: buff.value,
-    }));
+    result.playerBuffs = card.applyPlayerBuff.map((spec) =>
+      createBuffState(spec, card.id)
+    );
   }
 
   return result;
