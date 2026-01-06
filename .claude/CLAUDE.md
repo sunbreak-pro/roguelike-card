@@ -34,7 +34,7 @@ Package Manager: npm
 - ❌ jQuery (completely banned)
 - ❌ Global state libraries (Redux, MobX, Zustand) - use React hooks instead
 - ❌ Class components - use functional components only
-- ❌ Inline styles - use Tailwind CSS classes
+- ❌ Inline styles
 
 ---
 
@@ -44,10 +44,10 @@ Package Manager: npm
 
 ```
 src/
-├── domain/         # Game logic (cards, battles, equipment, enemies)
-├── ui/             # UI components (battle, dungeon, base, common)
+├── domain/         # Game logic (cards, battles, equipment, characters, camp, dungeon)
+├── ui/             # UI components (battleUI, dungeonUI, campUI, commonUI, enemyUI, css)
 ├── assets/         # Static files (images, sounds, JSON data)
-└── utils/          # Shared utilities
+└── utils/          # Shared utilities(User)
 ```
 
 **Detailed structure:** See `/docs/DIRECTORY_STRUCTURE.md`

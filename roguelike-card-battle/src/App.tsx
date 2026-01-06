@@ -1,56 +1,32 @@
 import { useState } from "react";
-import BattleScreen from "./battles/battleUI/BattleScreen";
-import BaseCamp from "./camps/campsUI/BaseCamp";
+import BattleScreen from "./ui/battleUI/BattleScreen.tsx";
+import BaseCamp from "./ui/campsUI/BaseCamp.tsx";
+import "./App.css";
 
 type GameScreen = "camp" | "battle";
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<GameScreen>("camp");
+  const [currentScreen, setCurrentScreen] = useState<GameScreen>("battle");
   const [depth, setDepth] = useState<1 | 2 | 3 | 4 | 5>(1);
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div className="app-container">
       {currentScreen === "camp" && <BaseCamp />}
       {currentScreen === "battle" && (
         <BattleScreen depth={depth} onDepthChange={setDepth} />
       )}
 
       {/* Debug: Screen switcher */}
-      <div
-        style={{
-          position: "fixed",
-          top: "10px",
-          right: "10px",
-          zIndex: 9999,
-          display: "flex",
-          gap: "10px",
-        }}
-      >
+      <div className="debug-screen-switcher">
         <button
           onClick={() => setCurrentScreen("camp")}
-          style={{
-            padding: "8px 16px",
-            background: currentScreen === "camp" ? "#8a629e" : "#333",
-            color: "#fff",
-            border: "2px solid #8a629e",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
+          className={`debug-screen-btn ${currentScreen === "camp" ? "debug-screen-btn--active" : ""}`}
         >
           Camp
         </button>
         <button
           onClick={() => setCurrentScreen("battle")}
-          style={{
-            padding: "8px 16px",
-            background: currentScreen === "battle" ? "#8a629e" : "#333",
-            color: "#fff",
-            border: "2px solid #8a629e",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
+          className={`debug-screen-btn ${currentScreen === "battle" ? "debug-screen-btn--active" : ""}`}
         >
           Battle
         </button>
