@@ -5,7 +5,7 @@
 **Genre:** Roguelike Deck-Building RPG  
 **Theme:** Dark Fantasy - "Those who don the corruption will dwell in madness, know chaos, be tormented by emptiness, and gaze into the abyss"  
 **Platform:** PC (Web Browser)  
-**Target:** Casual yet strategic players inspired by Slay the Spire
+**Target:** Casual yet strategic players inspired
 
 ---
 
@@ -44,7 +44,7 @@ Package Manager: npm
 
 ```
 src/
-├── domain/         # Game logic (cards, battles, equipment, characters, camp, dungeon)
+├── domain/         # Game logic (cards, battles, equipments, characters, camp, dungeon)
 ├── ui/             # UI components (battleUI, dungeonUI, campUI, commonUI, enemyUI, css)
 ├── assets/         # Static files (images, sounds, JSON data)
 └── utils/          # Shared utilities(User)
@@ -56,11 +56,12 @@ src/
 
 **CRITICAL RULES:**
 
-1. **Card logic** → `src/domain/cards/state/`
-2. **Battle UI** → `src/domain/battles/battleUI/`
-3. **Game data (JSON)** → `src/assets/data/` or `src/domain/*/data/`
-4. **Type definitions** → `src/domain/*/type/`
-5. **Shared utilities** → `src/utils/`
+1. **Card logic** -> `src/domain/cards/logic/`
+2. **Battle logic** ->`src/domain/battles/logic`
+3. **Battle UI** -> `src/ui/battleUI/`
+4. **Game Save data (JSON)** -> `src/assets/data/`
+5. **Type definitions** -> `src/domain/*/type/`
+6. **Shared utilities** -> `src/utils/`
 
 **WHY DDD-inspired?**
 
@@ -103,7 +104,7 @@ interface BattleProps {
 }
 
 export const Battle: React.FC<BattleProps> = ({ depth, playerDeck }) => {
-  const [hp, setHp] = useState(100);
+  const [hp, setHp] = useState(Swordsman_status.hp);
   // ... hooks, effects, handlers, return
 };
 ```

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import type {
   Enemy,
   EnemyAction,
@@ -6,6 +6,32 @@ import type {
 import type { BuffDebuffMap } from "../../domain/battles/type/baffType";
 import StatusEffectDisplay from "../commonUI/BuffEffect";
 import { determineEnemyAction } from "../../domain/characters/enemy/logic/enemyAI";
+
+// Action type determination for icon display
+type ActionType = "attack" | "guard" | "debuff" | "special";
+
+const getActionType = (action: EnemyAction): ActionType => {
+  if (action.baseDamage > 0) return "attack";
+  if (action.guardGain && action.guardGain > 0) return "guard";
+  if (action.applyDebuffs && action.applyDebuffs.length > 0) return "debuff";
+  return "special";
+};
+
+// Placeholder icons - replace with SVG imports when ready
+const ActionIcon: React.FC<{ type: ActionType }> = ({ type }) => {
+  const iconMap: Record<ActionType, string> = {
+    attack: "⚔",
+    guard: "🛡",
+    debuff: "💀",
+    special: "✨",
+  };
+  return (
+    <span className={`action-icon action-icon-${type}`}>
+      {/* TODO: Replace with <img src={actionIconSvg} /> */}
+      {iconMap[type]}
+    </span>
+  );
+};
 
 interface EnemyState {
   enemy: Enemy;
@@ -40,6 +66,19 @@ const EnemyCard: React.FC<{
   size?: "normal" | "small";
 }> = ({ state, enemyRef, theme, size = "normal" }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isConsuming, setIsConsuming] = useState(false);
+  const prevEnergyRef = useRef(state.actEnergy);
+
+  // Detect energy consumption and trigger animation
+  useEffect(() => {
+    if (state.actEnergy < prevEnergyRef.current) {
+      setIsConsuming(true);
+      const timer = setTimeout(() => setIsConsuming(false), 600);
+      prevEnergyRef.current = state.actEnergy;
+      return () => clearTimeout(timer);
+    }
+    prevEnergyRef.current = state.actEnergy;
+  }, [state.actEnergy]);
 
   // Preview next action (Ver 4.0)
   const nextAction: EnemyAction = determineEnemyAction(
@@ -52,13 +91,56 @@ const EnemyCard: React.FC<{
 
   const sizeClass = size === "small" ? "enemy-card-small" : "";
 
+  const actionType = getActionType(nextAction);
+
   return (
-    <div
-      className={`enemy-card ${sizeClass}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="enemy-name">{state.enemy.nameJa}</div>
+    <div className={`enemy-card ${sizeClass}`}>
+      {/* Enemy name with action icon */}
+      <div className="enemy-name-row">
+        <span className="enemy-name">{state.enemy.nameJa}</span>
+        <div
+          className="action-icon-wrapper"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <ActionIcon type={actionType} />
+          {/* Action tooltip on icon hover */}
+          {isHovered && (
+            <div className="next-action-tooltip">
+              <div className="tooltip-header">次の行動</div>
+              <div className="tooltip-action-name">{nextAction.name}</div>
+              <span className="tooltip-energy">{state.actEnergy}エナジー</span>
+              {nextAction.baseDamage > 0 && (
+                <div className="tooltip-damage">
+                  <span className="damage-icon">⚔️</span>
+                  <span className="damage-value">{nextAction.baseDamage}</span>
+                  {nextAction.hitCount && nextAction.hitCount > 1 && (
+                    <span className="hit-count">×{nextAction.hitCount}</span>
+                  )}
+                </div>
+              )}
+              {nextAction.guardGain && nextAction.guardGain > 0 && (
+                <div className="tooltip-guard">
+                  <span className="guard-icon">🛡️</span>
+                  <span className="guard-value">+{nextAction.guardGain}</span>
+                </div>
+              )}
+              {nextAction.applyDebuffs &&
+                nextAction.applyDebuffs.length > 0 && (
+                  <div className="tooltip-debuffs">
+                    {nextAction.applyDebuffs.map((d, i) => (
+                      <span key={i} className="debuff-tag">
+                        {d.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Enemy visual */}
       <div className="enemy-visual" ref={enemyRef}>
         {state.enemy.imagePath ? (
           <img
@@ -69,88 +151,62 @@ const EnemyCard: React.FC<{
         ) : (
           <div className="enemy-emoji">👹</div>
         )}
-
-        {/* next action tooltip */}
-        {isHovered && (
-          <div className="next-action-tooltip">
-            <div className="tooltip-header">次の行動</div>
-            <div className="tooltip-action-name">{nextAction.name}</div>
-            <span>{state.actEnergy}エナジー</span>
-            {nextAction.baseDamage > 0 && (
-              <div className="tooltip-damage">
-                <span className="damage-icon">⚔️</span>
-                <span className="damage-value">{nextAction.baseDamage}</span>
-                {nextAction.hitCount && nextAction.hitCount > 1 && (
-                  <span className="hit-count">×{nextAction.hitCount}</span>
-                )}
-              </div>
-            )}
-            {nextAction.guardGain && nextAction.guardGain > 0 && (
-              <div className="tooltip-guard">
-                <span className="guard-icon">🛡️</span>
-                <span className="guard-value">+{nextAction.guardGain}</span>
-              </div>
-            )}
-            {nextAction.applyDebuffs && nextAction.applyDebuffs.length > 0 && (
-              <div className="tooltip-debuffs">
-                {nextAction.applyDebuffs.map((d, i) => (
-                  <span key={i} className="debuff-tag">
-                    {d.name}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
-      <div className="enemy-status">
-        {/* Guard */}
+      <div className="status-container">
+        {/* HP/AP combined bar - AP overlays on HP */}
+        {/* Guard bar - value badge on left */}
         {state.guard > 0 && (
-          <div className="status-row">
-            <span className="status-label guard-num">Guard: {state.guard}</span>
-            <span className="bar-frame">
+          <div className="status-bar-row guard-row">
+            <div className="value-badge guard-badge">{state.guard}</div>
+            <div className="unified-bar-container guard-bar">
               <div
-                className="bar-gauge guard"
-                style={{ width: `${Math.min(100, (state.guard / 30) * 100)}%` }}
+                className="bar-fill guard-fill"
+                style={{
+                  width: `${Math.min(100, (state.guard / 30) * 100)}%`,
+                }}
               />
-            </span>
+            </div>
           </div>
         )}
-        {/* AP */}
-        {state.ap > 0 && (
-          <div className="status-row">
-            <span className="status-label ap-num">
-              AP: {state.ap}/{state.maxAp}
-            </span>
-            <span className="bar-frame">
+
+        <div className="status-bar-row hp-row">
+          <div className="value-badge ap-badge">
+            {state.ap}/{state.maxAp}
+          </div>
+          <div className="unified-bar-container hp-bar">
+            {/* AP overlay */}
+            {state.ap > 0 && (
               <div
-                className="bar-gauge ap"
+                className="bar-fill ap-overlay"
                 style={{ width: `${(state.ap / state.maxAp) * 100}%` }}
               />
-            </span>
-          </div>
-        )}
-        {/* HP */}
-        <div className="status-row">
-          <span className="status-label hp-num">
-            HP: {state.hp}/{state.maxHp}
-          </span>
-          <span className="bar-frame">
+            )}
+            {/* HP bar */}
             <div
-              className="bar-gauge hp"
+              className="bar-fill hp-fill"
               style={{ width: `${(state.hp / state.maxHp) * 100}%` }}
             />
-          </span>
+            <span className="hp-value">
+              {state.hp}/{state.maxHp}
+            </span>
+          </div>
         </div>
 
-        {/* Enemy Energy Orbs (Ver 4.0) */}
-        <div className="enemy-energy-orbs">
-          {Array.from({ length: state.enemy.actEnergy }).map((_, i) => (
-            <div key={i} className="energy-orb filled" />
-          ))}
+        {/* Energy bar - value badge on left */}
+        <div className="status-bar-row energy-row">
+          <div className="value-badge energy-badge">
+            {state.actEnergy}/{state.enemy.actEnergy}
+          </div>
+          <div className="unified-bar-container energy-bar">
+            <div
+              className="bar-fill energy-fill"
+              style={{
+                width: `${(state.actEnergy / state.enemy.actEnergy) * 100}%`,
+              }}
+            />
+          </div>
         </div>
-
         <StatusEffectDisplay buffsDebuffs={state.buffs} theme={theme} />
       </div>
     </div>

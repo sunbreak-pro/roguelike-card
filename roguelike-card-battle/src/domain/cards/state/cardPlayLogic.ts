@@ -1,4 +1,4 @@
-import type { Card } from "../../cards/type/cardType";
+import type { Card } from "../type/cardType";
 import type { SwordEnergyState } from "../../characters/player/logic/swordEnergySystem";
 import {
     consumeSwordEnergy,

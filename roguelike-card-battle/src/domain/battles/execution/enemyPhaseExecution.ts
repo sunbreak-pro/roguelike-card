@@ -11,12 +11,12 @@ import {
     calculateStartPhaseHealing,
     calculateEndPhaseDamage,
     canAct,
-} from "../caluculaters/buffCalculation";
+} from "../calculators/buffCalculation";
 import {
     decreaseBuffDebuffDuration,
     addOrUpdateBuffDebuff,
 } from "../logic/buffLogic";
-import { calculateDamage, applyDamageAllocation } from "../caluculaters/damageCalculation";
+import { calculateDamage, applyDamageAllocation } from "../calculators/damageCalculation";
 import { calculateBleedDamage } from "../logic/bleedDamage";
 import { enemyAction } from "../../characters/enemy/logic/enemyAI";
 

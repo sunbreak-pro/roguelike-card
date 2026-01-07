@@ -1,71 +1,71 @@
 /**
- * ターン順序インジケーター
- * Battle System Ver 4.0
+ * Turn Order Indicator
+ * Battle System Ver 5.0 - Horizontal Phase Display
  *
- * プレイヤーと敵の速度を表示し、ターン順序と速度ボーナスを可視化
+ * Shows 2-4 phases in horizontal layout with icons
  */
 
 import React from "react";
-import type { SpeedBonus } from "../../domain/battles/caluculaters/speedCalculation";
+import type { PhaseQueue, PhaseActor } from "../../domain/battles/type/phaseType";
 import "../css/TurnOrderIndicator.css";
 
 interface TurnOrderIndicatorProps {
-  playerSpeed: number;
-  enemySpeed: number;
-  turnOrder: "player" | "enemy";
-  playerBonus: SpeedBonus | null;
-  enemyBonus: SpeedBonus | null;
+  phaseQueue: PhaseQueue | null;
+  currentPhaseIndex: number;
 }
 
-export const TurnOrderIndicator: React.FC<TurnOrderIndicatorProps> = ({
-  playerSpeed,
-  enemySpeed,
-  turnOrder,
-  playerBonus,
-  enemyBonus,
-}) => {
-  return (
-    <div className="turn-order-indicator">
-      <div className="indicator-header">行動順序</div>
-      <div className="act">act!</div>
-      <div className="vector">⇦</div>
-      <div className="speed-comparison">
-        {/* プレイヤー側 */}
-        <div
-          className={`actor-info ${
-            turnOrder === "player" ? "first-actor" : "second-actor"
-          }`}
-        >
-          <div className="actor-name">Player</div>
-          <div className="speed-value">{playerSpeed}</div>
-          {playerBonus && (
-            <div className="speed-bonus player-bonus">
-              <span className="bonus-icon">⚡</span>
-              <span className="bonus-name">{playerBonus.name}</span>
-            </div>
-          )}
-          {turnOrder === "player" && (
-            <div className="first-indicator">先攻</div>
-          )}
-        </div>
+// Placeholder icons - replace with SVG imports when ready
+const PlayerIcon: React.FC<{ isActive: boolean }> = ({ isActive }) => (
+  <div className={`phase-icon player-icon ${isActive ? "active" : ""}`}>
+    {/* TODO: Replace with <img src={playerIconSvg} /> */}
+    <span className="icon-placeholder">P</span>
+  </div>
+);
 
-        {/* 敵側 */}
-        <div
-          className={`actor-info ${
-            turnOrder === "enemy" ? "first-actor" : "second-actor"
-          }`}
-        >
-          <div className="actor-name">Enemy</div>
-          <div className="speed-value">{enemySpeed}</div>
-          {enemyBonus && (
-            <div className="speed-bonus enemy-bonus">
-              <span className="bonus-icon">⚡</span>
-              <span className="bonus-name">{enemyBonus.name}</span>
-            </div>
+const EnemyIcon: React.FC<{ isActive: boolean }> = ({ isActive }) => (
+  <div className={`phase-icon enemy-icon ${isActive ? "active" : ""}`}>
+    {/* TODO: Replace with <img src={enemyIconSvg} /> */}
+    <span className="icon-placeholder">E</span>
+  </div>
+);
+
+export const TurnOrderIndicator: React.FC<TurnOrderIndicatorProps> = ({
+  phaseQueue,
+  currentPhaseIndex,
+}) => {
+  if (!phaseQueue || phaseQueue.phases.length === 0) {
+    return null;
+  }
+
+  // Display 2-4 phases from current position
+  const displayCount = Math.min(4, phaseQueue.phases.length);
+  const phasesToShow: { actor: PhaseActor; index: number }[] = [];
+
+  for (let i = 0; i < displayCount; i++) {
+    const phaseIndex = (currentPhaseIndex + i) % phaseQueue.phases.length;
+    phasesToShow.push({
+      actor: phaseQueue.phases[phaseIndex],
+      index: phaseIndex,
+    });
+  }
+
+  return (
+    <div className="turn-order-indicator-v2">
+      {phasesToShow.map((phase, displayIndex) => (
+        <React.Fragment key={`${phase.index}-${displayIndex}`}>
+          {phase.actor === "player" ? (
+            <PlayerIcon isActive={displayIndex === 0} />
+          ) : (
+            <EnemyIcon isActive={displayIndex === 0} />
           )}
-          {turnOrder === "enemy" && <div className="first-indicator">先攻</div>}
-        </div>
-      </div>
+          {displayIndex < phasesToShow.length - 1 && (
+            <span className="phase-arrow">→</span>
+          )}
+        </React.Fragment>
+      ))}
     </div>
   );
 };
+
+// Legacy export for backward compatibility
+export default TurnOrderIndicator;

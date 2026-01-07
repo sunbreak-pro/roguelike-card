@@ -13,7 +13,7 @@ import {
     applySpeedRandomness,
     generatePhaseQueue,
     createInitialSpeedRandomState,
-} from "../caluculaters/speedCalculation";
+} from "../calculators/speedCalculation";
 
 export interface PhaseState {
     phaseQueue: PhaseQueue | null;
@@ -42,6 +42,7 @@ export interface UseBattlePhaseReturn {
         enemyBuffs: BuffDebuffMap
     ) => PhaseQueue;
     advancePhaseIndex: () => void;
+    setPhaseIndex: (index: number) => void;
     setPlayerPhaseActive: () => void;
     setEnemyPhaseActive: () => void;
     clearActivePhase: () => void;
@@ -114,6 +115,13 @@ export function useBattlePhase(initialPlayerSpeed: number): UseBattlePhaseReturn
      */
     const advancePhaseIndex = useCallback(() => {
         setCurrentPhaseIndex(prev => prev + 1);
+    }, []);
+
+    /**
+     * Set phase index to specific value
+     */
+    const setPhaseIndex = useCallback((index: number) => {
+        setCurrentPhaseIndex(index);
     }, []);
 
     /**
@@ -191,6 +199,7 @@ export function useBattlePhase(initialPlayerSpeed: number): UseBattlePhaseReturn
         // Actions
         generatePhaseQueueFromSpeeds,
         advancePhaseIndex,
+        setPhaseIndex,
         setPlayerPhaseActive,
         setEnemyPhaseActive,
         clearActivePhase,

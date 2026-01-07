@@ -42,7 +42,6 @@ const BattleScreen = ({
     swordEnergy,
     enemyEnergy: _enemyEnergy,
     phaseCount,
-    isPlayerPhase: _isPlayerPhase,
     turnMessage,
     showTurnMessage,
     hand,
@@ -53,16 +52,14 @@ const BattleScreen = ({
     handleCardPlay,
     handleEndPhase,
     resetForNextEnemy,
-    startBattleRound: _startBattleRound,
     openedPileType,
     openDrawPile,
     openDiscardPile,
     closePileModal,
     battleResult,
     battleStats,
-    playerNowSpeed,
-    enemyNowSpeed,
     phaseQueue,
+    currentPhaseIndex,
   } = useBattle(depth);
 
   const handleContinueToNextBattle = () => {
@@ -143,13 +140,10 @@ const BattleScreen = ({
           ))}
         </div>
       </div>
-      {/* Phase system - TurnOrderIndicator temporarily simplified */}
+      {/* Phase system - TurnOrderIndicator v5.0 horizontal */}
       <TurnOrderIndicator
-        playerSpeed={playerNowSpeed}
-        enemySpeed={enemyNowSpeed}
-        turnOrder={phaseQueue?.phases[0] ?? "player"}
-        playerBonus={null}
-        enemyBonus={null}
+        phaseQueue={phaseQueue}
+        currentPhaseIndex={currentPhaseIndex}
       />
       <div className="battle-field">
         <EnemyDisplay
@@ -176,59 +170,62 @@ const BattleScreen = ({
               ⚔️
             </div>
             <div className="status-container">
+              {/* HP/AP combined bar - AP overlays on HP */}
+              {/* Guard bar - value badge on left */}
               {playerGuard > 0 && (
-                <div className="status-row">
-                  <span className="status-label guard-num">
-                    Guard: {playerGuard}
-                  </span>
-                  <span className="bar-frame">
+                <div className="status-bar-row guard-row">
+                  <div className="value-badge guard-badge">{playerGuard}</div>
+                  <div className="unified-bar-container guard-bar">
                     <div
-                      className="bar-gauge guard"
+                      className="bar-fill guard-fill"
                       style={{
                         width: `${Math.min(100, (playerGuard / 30) * 100)}%`,
                       }}
                     />
-                  </span>
+                  </div>
                 </div>
               )}
-              {/* APの行 */}
-              <div className="status-row">
-                <span className="status-label ap-num">
-                  AP: {playerAp}/{playerMaxAp}
-                </span>
-                <span className="bar-frame">
+
+              <div className="status-bar-row hp-row">
+                <div className="value-badge ap-badge">
+                  {playerAp}/{playerMaxAp}
+                </div>
+
+                <div className="unified-bar-container hp-bar">
+                  {/* AP overlay */}
+                  {playerAp > 0 && (
+                    <div
+                      className="bar-fill ap-overlay"
+                      style={{ width: `${(playerAp / playerMaxAp) * 100}%` }}
+                    />
+                  )}
+                  {/* HP bar */}
                   <div
-                    className="bar-gauge ap"
-                    style={{ width: `${(playerAp / playerMaxAp) * 100}%` }}
-                  />
-                </span>
-              </div>
-              <div className="status-row">
-                <span className="status-label hp-num">
-                  HP: {playerHp}/{playerMaxHp}
-                </span>
-                <span className="bar-frame">
-                  <div
-                    className="bar-gauge hp"
+                    className="bar-fill hp-fill"
                     style={{ width: `${(playerHp / playerMaxHp) * 100}%` }}
                   />
-                </span>
+                  <span className="hp-value">
+                    {playerHp}/{playerMaxHp}
+                  </span>
+                </div>
+              </div>
+
+              {/* Energy bar - value badge on left */}
+              <div className="status-bar-row energy-row">
+                <div className="value-badge energy-badge">
+                  {cardEnergy}/{maxEnergy}
+                </div>
+                <div className="unified-bar-container energy-bar">
+                  <div
+                    className="bar-fill energy-fill"
+                    style={{ width: `${(cardEnergy / maxEnergy) * 100}%` }}
+                  />
+                </div>
               </div>
               <StatusEffectDisplay buffsDebuffs={playerBuffs} theme={theme} />
             </div>
           </div>
           <div className="energy-and-ability">
-            <div className="energy-display">
-              <div>ENERGY</div>
-              <div className="energy-orbs">
-                {Array.from({ length: maxEnergy }).map((_, i) => (
-                  <div
-                    key={i}
-                    className={`orb ${i < cardEnergy ? "filled" : ""}`}
-                  />
-                ))}
-              </div>
-            </div>
             <div className="sword-energy-display">
               <div className="sword-energy-label">剣気:</div>
 

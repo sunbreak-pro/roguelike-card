@@ -2,7 +2,7 @@ import type { BuffDebuffMap, BuffDebuffState } from "../type/baffType";
 import type { Enemy, EnemyAction } from "../../characters/type/enemyType";
 import type { Player } from "../../characters/type/playerTypes";
 import type { Card } from "../../cards/type/cardType";
-import { calculateDamage, applyDamageAllocation } from "../caluculaters/damageCalculation";
+import { calculateDamage, applyDamageAllocation } from "../calculators/damageCalculation";
 import { addOrUpdateBuffDebuff } from "../logic/buffLogic";
 import { calculateBleedDamage } from "../logic/bleedDamage";
 import { enemyAction } from "../../characters/enemy/logic/enemyAI";

@@ -169,55 +169,317 @@ align-items: center;
 .player-image{
   filter: drop-shadow(0 0 1vh rgb(48, 115, 191));
 }
-/* ステータスバー類 */
+/* ============================================
+   Unified Status Bar System
+   ============================================ */
 .status-container {
   position: relative;
   left: -4%;
   width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vh;
 }
 
-.status-row {
+/* Common row structure */
+.status-bar-row {
   display: flex;
-  justify-content: space-between;
-  font-size: 1.78vh;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0.5vh;
+  align-items: center;
+  width: 100%;
+  height: 2.2vh;
 }
-.status-label{
-  text-align: center;
-  min-width: 9.2vh;
+
+.hp-value {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  font-size: 1.4vh;
+  font-weight: bold;
+  color: #000000;
+  text-shadow: 0 0 0.5vh rgba(255, 100, 100, 0.8);
+  margin-bottom: 0.2vh;
 }
-.guard-num{
-  color: #88ccff;
-  text-shadow: #66aaff 0 0 0.5vh;
+
+/* Value badge (left side) for AP/Guard/Energy */
+.value-badge {
+  min-width: 4vh;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1vh;
+  font-weight: bold;
+  border-radius: 0.4vh;
+  color: #fff;
+  text-shadow: 0 0 0.3vh #000;
+  white-space: nowrap;
+  margin-right: 0.5vh;
+  transition: all 0.3s ease;
 }
-.ap-num{
-  color: #ffaa44;
-  text-shadow: #ff9922 0 0 0.5vh;
+
+.value-badge.ap-badge {
+  background: linear-gradient(135deg, #808080 0%, #606060 100%);
+  border: 0.1vh solid #999;
 }
-.hp-num{
-  color: #d94a4a;
-  text-shadow: rgb(226, 71, 71) 0 0 0.5vh;
+
+.value-badge.guard-badge {
+  background: linear-gradient(135deg, #4488cc 0%, #3366aa 100%);
+  border: 0.1vh solid #66aaff;
 }
-.bar-frame {
-  flex: 1;;
-  margin-block:0.4vh;
-  height: 1.75vh;
-  margin-left: 1vh;
+
+.value-badge.energy-badge {
+  background: linear-gradient(135deg, #2b9f0e 0%, #1d7a09 100%);
+  border: 0.1vh solid #3cb82a;
+}
+
+/* Unified bar container - same width for all */
+.unified-bar-container {
+  flex: 1;
+  position: relative;
+  height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  border: 0.1vh solid rgba(255, 255, 255, 0.2);
+  border: 0.15vh solid rgba(255, 255, 255, 0.2);
   border-radius: 0.5vh;
   overflow: hidden;
 }
 
-.bar-gauge {
-  width: 70%;
+/* Bar fill - common styles */
+.bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
   height: 100%;
   transition: width 0.3s ease;
 }
-.bar-gauge.guard { background: linear-gradient(90deg, #4488cc 0%, #6699ff 100%); }
-.bar-gauge.ap { background: linear-gradient(90deg, #cc8844 0%, #ffaa44 100%); }
-.bar-gauge.hp { background: linear-gradient(90deg, #d94a4a 0%, #ff6b6b 100%); }
+
+
+.bar-fill.hp-fill {
+  background: linear-gradient(90deg, #d94a4a 0%, #ff6b6b 100%);
+  box-shadow: inset 0 0 0.5vh rgba(255, 255, 255, 0.2);
+}
+
+.bar-fill.ap-overlay {
+  z-index: 2;
+  opacity: 0.75;
+  height: 100%;
+  background: linear-gradient(90deg, #808080 0%, #a0a0a0 100%);
+}
+
+.bar-fill.guard-fill {
+  background: linear-gradient(90deg, #4488cc 0%, #6699ff 100%);
+}
+
+.bar-fill.energy-fill {
+  background: linear-gradient(90deg, var(--theme-secondary) 0%, var(--theme-accent) 100%);
+  box-shadow: 0 0 0.5vh var(--theme-glow);
+}
+
+/* Enemy energy - orange color */
+.enemy-energy .bar-fill.energy-fill {
+  background: linear-gradient(90deg, #cc8800 0%, #ffaa00 100%);
+  box-shadow: 0 0 0.5vh rgba(255, 170, 0, 0.5);
+}
+
+.enemy-energy .value-badge.energy-badge {
+  background: linear-gradient(135deg, #cc8800 0%, #aa6600 100%);
+  border: 0.1vh solid #ffaa00;
+}
+
+/* Energy consumption animation */
+@keyframes energyConsume {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 170, 0, 0.8);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 1vh 0.5vh rgba(255, 170, 0, 0.5);
+    transform: scale(1.1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 170, 0, 0);
+    transform: scale(1);
+  }
+}
+
+.value-badge.consuming {
+  animation: energyConsume 0.6s ease-out;
+}
+
+/* Enemy status specific */
+.enemy-status {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3vh;
+}
+
+.enemy-status .status-bar-row {
+  height: 1.8vh;
+}
+
+.enemy-status .bar-value-top {
+  font-size: 1.2vh;
+}
+
+.enemy-status .value-badge {
+  min-width: 3.5vh;
+  font-size: 0.9vh;
+}
+
+.enemy-card-small .enemy-status .status-bar-row {
+  height: 1.5vh;
+}
+
+.enemy-card-small .enemy-status .bar-value-top {
+  font-size: 1vh;
+}
+
+.enemy-card-small .enemy-status .value-badge {
+  min-width: 3vh;
+  font-size: 0.8vh;
+}
+
+/* Legacy styles preserved for compatibility */
+.energy-bar-container {
+  flex: 1;
+  position: relative;
+  height: 80%;
+  display: flex;
+  align-items: center;
+  border: 0.2vh solid rgba(255, 255, 255, 0.2);
+  border-radius: .8vh;
+  overflow: hidden;
+}
+
+.energy-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--theme-secondary) 0%, var(--theme-accent) 100%);
+  box-shadow: 0 0 0.5vh var(--theme-glow);
+  transition: width 0.3s ease;
+}
+
+.energy-value {
+  flex: 0.15;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1vh;
+  font-weight: bold;
+  border-radius: 20%;
+  background-color: #2b9f0e;
+  color: #fff;
+  text-shadow: 0 0 0.3vh #000;
+  white-space: nowrap;
+  height: 100%;
+  margin-right: 0.6vh;
+  transition: background-color 0.3s ease;
+}
+
+/* Enemy Energy Bar - orange/gold color */
+.enemy-energy .energy-bar-fill {
+  background: linear-gradient(90deg, #cc8800 0%, #ffaa00 100%);
+  box-shadow: 0 0 0.5vh rgba(255, 170, 0, 0.5);
+}
+
+.enemy-energy .energy-label {
+  color: #ffaa00;
+  text-shadow: 0 0 0.5vh rgba(255, 170, 0, 0.5);
+}
+
+/* Enemy Energy Consumption Animation */
+.enemy-energy .energy-bar-fill {
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.enemy-energy .energy-value {
+  transition: all 0.3s ease;
+}
+
+/* Flash effect when energy is consumed */
+@keyframes energyConsume {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 170, 0, 0.8);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 1vh 0.5vh rgba(255, 170, 0, 0.5);
+    transform: scale(1.05);
+    background-color: #ffaa00;
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 170, 0, 0);
+    transform: scale(1);
+    background-color: #808080;
+  }
+}
+
+.enemy-energy .energy-value.consuming {
+  animation: energyConsume 0.6s ease-out;
+}
+
+/* ============================================
+   Enemy Action Icon (Phase 4 UI Redesign)
+   ============================================ */
+.enemy-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8vh;
+  margin-bottom: 0.5vh;
+}
+
+.action-icon-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3vh;
+  height: 3vh;
+  font-size: 2vh;
+  border-radius: 0.4vh;
+  background: rgba(0, 0, 0, 0.5);
+  border: 0.15vh solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.action-icon:hover {
+  transform: scale(1.1);
+}
+
+.action-icon-attack {
+  border-color: #e24051;
+  background: rgba(255, 0, 25, 0.3);
+}
+
+.action-icon-guard {
+  border-color: #6599ce;
+  background: rgba(68, 136, 204, 0.3);
+}
+
+.action-icon-debuff {
+  border-color: #a457cb;
+  background: rgba(168, 82, 211, 0.3);
+}
+
+.action-icon-special {
+  border-color: #ffaa00;
+  background: rgba(255, 170, 0, 0.3);
+}
+
+.tooltip-energy {
+  font-size: 1.2vh;
+  color: #aaa;
+}
 
 .next-action { margin-top: 1vh; text-align: center; }
 .action-value { font-size: 2.5vh; color: #d94a4a; font-weight: bold; }
@@ -235,7 +497,7 @@ align-items: center;
   align-items: flex-end;
   /* 重なりを作るためのマイナスマージンはCard側で制御、あるいはjustify-contentで詰める */
   width: 65%;
-  height: 40%; /* 手札エリアの高さ */
+  height: 30%; /* 手札エリアの高さ */
   z-index: 100;
   /* エリア確認用の背景（不要なら透明度下げるか削除） */
   /* background: rgba(0, 0, 0, 0.2); 
@@ -427,7 +689,6 @@ align-items: center;
 }
 /* エナジー & ターン終了 */
 .energy-display {
-  gap: 0.8vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -440,19 +701,6 @@ align-items: center;
   z-index: 50;
 }
 .energy-label { font-size: 1.5vh; margin-bottom: 0.5vh; }
-.energy-orbs { display: flex; gap: 0.8vh; }
-.orb {
-  width: 3.5vh;
-  height: 3.5vh;
-  border-radius: 50%;
-  border: 0.3vh solid #555;
-  background: #222;
-}
-.orb.filled {
-  background: radial-gradient(circle, var(--theme-accent), var(--theme-secondary));
-  border-color: var(--theme-accent);
-  box-shadow: 0 0 1.5vh var(--theme-glow);
-}
 
 .end-turn-btn {
   position: absolute;
@@ -821,8 +1069,6 @@ align-items: center;
 }
 
 .enemy-visual {
-  width: 18vh;
-  height: 18vh;
   border-radius: 1.5vh;
   position: relative;
   display: flex;
@@ -851,40 +1097,10 @@ align-items: center;
 
 .enemy-status {
   width: 100%;
-  min-width: 16vh;
 }
 
 .enemy-card-small .enemy-status {
   min-width: 12vh;
-}
-
-/* 敵エナジーオーブ (Ver 4.0) */
-.enemy-energy-orbs {
-  display: flex;
-  justify-content: center;
-  gap: 0.5vh;
-  margin-top: 0.8vh;
-  padding: 0.4vh 0;
-}
-
-.enemy-energy-orbs .energy-orb {
-  width: 1.4vh;
-  height: 1.4vh;
-  border-radius: 50%;
-  border: 0.15vh solid #666;
-  background: #333;
-  transition: all 0.3s ease;
-}
-
-.enemy-energy-orbs .energy-orb.filled {
-  background: radial-gradient(circle at 30% 30%, #ffcc00, #ff8800);
-  border-color: #ffa500;
-  box-shadow: 0 0 0.5vh rgba(255, 165, 0, 0.5);
-}
-
-.enemy-card-small .enemy-energy-orbs .energy-orb {
-  width: 1.1vh;
-  height: 1.1vh;
 }
 
 /* 次の行動ツールチップ */

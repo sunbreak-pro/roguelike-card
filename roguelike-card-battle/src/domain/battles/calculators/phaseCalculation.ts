@@ -73,14 +73,44 @@ export function calculateConsecutivePhases(speedDiff: number): number {
   );
 }
 
+// Minimum phases to generate for UI prediction display
+const MIN_PHASES_FOR_PREDICTION = 8;
+
 /**
- * Generate the phase queue for a battle round
+ * Generate a single round pattern based on speed difference
+ */
+function generateRoundPattern(
+  fasterActor: PhaseActor,
+  slowerActor: PhaseActor,
+  consecutivePhases: number,
+  speedDiff: number
+): PhaseActor[] {
+  const pattern: PhaseActor[] = [];
+
+  if (speedDiff < CONSECUTIVE_PHASE_THRESHOLD) {
+    // Alternating phases: faster first, then slower
+    pattern.push(fasterActor, slowerActor);
+  } else {
+    // Faster gets consecutive phases, then slower gets 1
+    for (let i = 0; i < consecutivePhases; i++) {
+      pattern.push(fasterActor);
+    }
+    pattern.push(slowerActor);
+  }
+
+  return pattern;
+}
+
+/**
+ * Generate the phase queue for battle with prediction
+ *
+ * Generates at least MIN_PHASES_FOR_PREDICTION phases by repeating the round pattern.
+ * This allows UI to show 4+ phases ahead for turn order prediction.
  *
  * Examples:
- * - Player:50, Enemy:50 (diff=0) → [P, E]
- * - Player:65, Enemy:50 (diff=15) → [P, P, E]
- * - Player:75, Enemy:50 (diff=25) → [P, P, P, E]
- * - Player:30, Enemy:60 (diff=30) → [E, E, E, P]
+ * - Player:50, Enemy:50 (diff=0) → [P, E, P, E, P, E, P, E]
+ * - Player:65, Enemy:50 (diff=15) → [P, P, E, P, P, E, P, P, E]
+ * - Player:30, Enemy:60 (diff=30) → [E, E, E, P, E, E, E, P]
  */
 export function generatePhaseQueue(
   playerSpeed: number,
@@ -92,17 +122,19 @@ export function generatePhaseQueue(
   const slowerActor: PhaseActor = fasterActor === "player" ? "enemy" : "player";
 
   const consecutivePhases = calculateConsecutivePhases(speedDiff);
-  const phases: PhaseActor[] = [];
 
-  if (speedDiff < CONSECUTIVE_PHASE_THRESHOLD) {
-    // Alternating phases: faster first, then slower
-    phases.push(fasterActor, slowerActor);
-  } else {
-    // Faster gets consecutive phases, then slower gets 1
-    for (let i = 0; i < consecutivePhases; i++) {
-      phases.push(fasterActor);
-    }
-    phases.push(slowerActor);
+  // Generate single round pattern
+  const roundPattern = generateRoundPattern(
+    fasterActor,
+    slowerActor,
+    consecutivePhases,
+    speedDiff
+  );
+
+  // Repeat pattern to reach minimum phases for prediction
+  const phases: PhaseActor[] = [];
+  while (phases.length < MIN_PHASES_FOR_PREDICTION) {
+    phases.push(...roundPattern);
   }
 
   return {

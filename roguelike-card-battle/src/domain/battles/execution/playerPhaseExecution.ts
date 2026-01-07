@@ -10,7 +10,7 @@ import {
     calculateStartPhaseHealing,
     calculateEndPhaseDamage,
     calculateDrawModifier,
-} from "../caluculaters/buffCalculation";
+} from "../calculators/buffCalculation";
 import {
     decreaseBuffDebuffDuration,
     removeAllDebuffs,

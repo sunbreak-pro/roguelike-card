@@ -28,7 +28,7 @@ import { addOrUpdateBuffDebuff } from "../logic/buffLogic";
 import { applyHeal } from "../logic/battleLogic";
 
 // Damage calculation
-import { calculateDamage, applyDamageAllocation } from "../caluculaters/damageCalculation";
+import { calculateDamage, applyDamageAllocation } from "../calculators/damageCalculation";
 
 // Enemy AI
 import { selectRandomEnemy } from "../../characters/enemy/logic/enemyAI";
@@ -514,6 +514,9 @@ export const useBattle = (depth: Depth, initialEnemies?: Enemy[]) => {
             return;
         }
 
+        // Update current phase index for UI display
+        phaseState.setPhaseIndex(index);
+
         const currentActor = queue.phases[index];
 
         if (currentActor === "player") {
@@ -578,13 +581,13 @@ export const useBattle = (depth: Depth, initialEnemies?: Enemy[]) => {
 
         // Discard hand and advance to next phase
         const cardsToDiscard = [...deckState.hand];
+        const nextPhaseIndex = phaseState.currentPhaseIndex + 1;
         discardCardsWithAnimation(cardsToDiscard, 250, () => {
             dispatch({ type: "END_TURN", cardsToDiscard });
 
             // Advance to next phase in queue
             if (phaseState.phaseQueue) {
-                phaseState.advancePhaseIndex();
-                executeNextPhase(phaseState.phaseQueue, phaseState.currentPhaseIndex + 1);
+                executeNextPhase(phaseState.phaseQueue, nextPhaseIndex);
             }
         });
     }, [phaseState, playerBuffs, showDamageEffect, deckState.hand, discardCardsWithAnimation, executeNextPhase]);
@@ -728,6 +731,7 @@ export const useBattle = (depth: Depth, initialEnemies?: Enemy[]) => {
         playerNowSpeed: phaseState.playerSpeed,
         enemyNowSpeed: phaseState.enemySpeed,
         phaseQueue: phaseState.phaseQueue,
+        currentPhaseIndex: phaseState.currentPhaseIndex,
         enemyEnergy,
         nextEnemyActions,
 

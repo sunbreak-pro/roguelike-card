@@ -5,7 +5,7 @@ import {
     calculateEndPhaseDamage,
     canAct,
     calculateDrawModifier,
-} from "../caluculaters/buffCalculation";
+} from "../calculators/buffCalculation";
 import {
     decreaseBuffDebuffDuration,
     removeAllDebuffs,
