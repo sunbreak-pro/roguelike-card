@@ -34,7 +34,7 @@ Package Manager: npm
 - ❌ jQuery (completely banned)
 - ❌ Global state libraries (Redux, MobX, Zustand) - use React hooks instead
 - ❌ Class components - use functional components only
-- ❌ Inline styles - use Tailwind CSS classes
+- ❌ Inline styles
 
 ---
 
@@ -44,10 +44,10 @@ Package Manager: npm
 
 ```
 src/
-├── domain/         # Game logic (cards, battles, equipment, enemies)
-├── ui/             # UI components (battle, dungeon, base, common)
+├── domain/         # Game logic (cards, battles, equipment, characters, camp, dungeon)
+├── ui/             # UI components (battleUI, dungeonUI, campUI, commonUI, enemyUI, css)
 ├── assets/         # Static files (images, sounds, JSON data)
-└── utils/          # Shared utilities
+└── utils/          # Shared utilities(User)
 ```
 
 **Detailed structure:** See `/docs/DIRECTORY_STRUCTURE.md`
@@ -204,11 +204,12 @@ Use: `npm run lint --fix`
 
 ### Output Format Rules
 
-**Emoji Usage (STRICTLY LIMITED):**
+**1. Commentout is simple in English**
+
+**2. Emoji Usage (STRICTLY LIMITED):**
 
 - ✅ Allowed ONLY in: Code examples (✅ GOOD / ❌ BAD), critical warnings (🔒)
 - ❌ Forbidden in: Prose, explanations, casual responses, headings
-- Reason: Claude tends to overuse emojis. Maintain professional clarity.
 
 **Example:**
 
@@ -286,7 +287,3 @@ const handlePlay = useCallback((card) => {...}, []);
 4. **Game feel** over technical purity
 
 **This is a game first, code second. Maintainable code enables long-term fun.**
-
----
-
-**Version:** 2.0 | **Updated:** 2024-12-07 | **Maintainer:** こうだい

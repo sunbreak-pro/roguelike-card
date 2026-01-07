@@ -1,23 +1,481 @@
-# BATTLE SYSTEM LOGIC SPECIFICATION (Ver 3.0)
+# BATTLE SYSTEM LOGIC SPECIFICATION (Ver 4.0)
 
 ## 1. 概要
 
 本ドキュメントは「ローグライトカード RPG」のコアバトルシステムの論理仕様である。
 以下の主要システムを定義する：
 
-1. **防御システム**: AP（装備耐久）と Guard（一時防御）の分離
-2. **バフ/デバフシステム**: 44 種類のバフ/デバフとその効果
-3. **ダメージ計算**: バフ/デバフを含む包括的なダメージ計算
-4. **状態異常管理**: 持続時間、スタック、効果値の管理
-5. **深度スケーリング**: ダンジョン深度による難易度変化
+1. **非対称バトルフロー**: プレイヤーと敵で異なるエナジーシステム
+2. **行動速度システム**: ターン順序決定と先攻ボーナス
+3. **敵の複数行動システム**: エナジーによる行動回数制御
+4. **防御システム**: AP（装備耐久）と Guard（一時防御）の分離
+5. **バフ/デバフシステム**: 簡素化されたバフ/デバフとその効果
+6. **ダメージ計算**: バフ/デバフを含む包括的なダメージ計算
+7. **状態異常管理**: 持続時間、スタック、効果値の管理
+8. **深度システム**: 深度による敵種類の変化
 
 ---
 
-## 2. 防御システム (Hybrid Defense System)
+## 2. バトルフローシステム (Ver 4.0 新規)
+
+### 2.1 非対称エナジーシステム
+
+プレイヤーと敵で異なるエナジーの概念を採用する。
+
+#### プレイヤー側
+
+```
+Energy = カードコスト支払い用リソース（従来通り）
+- 基本エナジー: 3
+- 1ターンに手札から好きなだけカードをプレイ可能
+- エナジーが続く限り行動可能
+- カードコストシステムはそのまま維持
+```
+
+#### 敵側
+
+```
+Enemy Energy = 行動回数
+- 1エナジー = 1回の行動（攻撃、バフ、防御など）
+- 深度・敵の種類によってエナジーが変化
+```
+
+### 2.2 敵エナジーの計算
+
+```typescript
+/**
+ * 敵のエナジー計算（行動回数）
+ */
+function calculateEnemyEnergy(enemy: Enemy, addEnergy: number): number {
+  const baseEnergy = enemy.actEnergy;
+  // energyAddActionは敵のスキルや行動によって変動
+  return Math.floor(baseEnergy * addEnergy);
+}
+```
+
+### 2.3 敵の行動定義
+
+```typescript
+export interface EnemyAction {
+  name: string; // 行動名
+  type: EnemyActionType; // 行動タイプ
+  baseDamage: number; // 基本ダメージ
+  applyDebuffs?: BuffDebuff[]; // 付与するデバフ
+  applyBuffs?: BuffDebuff[]; // 付与するバフ
+  guardGain?: number; // Guard獲得量
+  hitCount?: number; // 攻撃回数
+
+  // Ver 4.0 新規追加
+  displayIcon?: string; // UI表示用アイコン
+  priority: number; // 行動優先度（高いほど優先）
+  energyCost: number; // エナジーコスト（デフォルト1）
+}
+
+export interface Enemy {
+  id: string;
+  name: string;
+  nameJa: string;
+  description: string;
+
+  // 基礎ステータス
+  maxHp: number;
+  maxAp: number;
+  startingGuard: number;
+  evasionRate: number;
+  immunities: string[];
+
+  // Ver 4.0 新規追加
+  baseEnemyEnergy: number; // 基本エナジー（行動回数）
+  speed: number; // 行動速度（0-100）
+
+  // AI パターン
+  aiPatterns: EnemyAIPattern[]; //AIパターンは複雑化しやすいため初期テスト時には固定の動きのみ
+  imagePath?: string;
+}
+```
+
+---
+
+## 3. 行動速度システム (Ver 4.0 新規)
+
+### 3.1 速度パラメータ
+
+プレイヤーと敵の両方が「速度」パラメータを持つ。
+
+```typescript
+interface SpeedStats {
+  baseSpeed: number; // 基本速度（プレイヤー: 50、敵: 固有値）
+  currentSpeed: number; // バフ/デバフ適用後の速度
+}
+```
+
+### 3.2 速度計算
+
+```typescript
+/**
+ * プレイヤーの速度計算
+ */
+function calculatePlayerSpeed(buffs: BuffDebuffMap): number {
+  let speed = player.speed; // 基本速度
+
+  // 速度上昇バフ
+  if (buffs.has("speedUp")) {
+    const speedBuff = buffs.get("speedUp")!;
+    speed += speedBuff.value * speedBuff.stacks;
+  }
+
+  // スロウデバフ
+  if (buffs.has("slow")) {
+    const slowDebuff = buffs.get("slow")!;
+    speed -= slowDebuff.value * 10; // -10/スタック
+  }
+
+  // 速度低下デバフ
+  if (buffs.has("speedDown")) {
+    const speedDown = buffs.get("speedDown")!;
+    speed -= speedDown.value;
+  }
+
+  return Math.max(0, speed);
+}
+
+/**
+ * 敵の速度計算
+ */
+function calculateEnemySpeed(enemy: Enemy, buffs: BuffDebuffMap): number {
+  let speed = enemy.speed; // 敵固有の速度
+
+  // バフ/デバフ適用（プレイヤーと同じロジック）
+  if (buffs.has("speedUp")) {
+    const speedBuff = buffs.get("speedUp")!;
+    speed += speedBuff.value * speedBuff.stacks;
+  }
+
+  if (buffs.has("slow")) {
+    const slowDebuff = buffs.get("slow")!;
+    speed -= slowDebuff.value * 10;
+  }
+
+  return Math.max(0, speed);
+}
+```
+
+### 3.3 ターン順序決定
+
+```typescript
+/**
+ * ターン順序を決定
+ */
+function determineTurnOrder(
+  playerSpeed: number,
+  enemySpeed: number
+): "player" | "enemy" {
+  if (playerSpeed >= enemySpeed) {
+    return "player";
+  } else if (enemySpeed > playerSpeed) {
+    return "enemy";
+  }
+}
+```
+
+### 3.4 速度差によるボーナス
+
+```typescript
+/**
+ * 速度差ボーナスの計算
+ */
+function calculateSpeedBonus(
+  actorSpeed: number,
+  targetSpeed: number
+): SpeedBonus {
+  const speedDiff = actorSpeed - targetSpeed;
+
+  if (speedDiff >= 50) {
+    return {
+      name: "電光石火",
+      attackBonus: 0.15, // 攻撃力+15%
+      criticalBonus: 0.2, // クリティカル率+20%
+    };
+  } else if (speedDiff >= 30) {
+    return {
+      name: "先制",
+      attackBonus: 0.15, // 攻撃力+15%
+      criticalBonus: 0,
+    };
+  }
+
+  return null; // ボーナスなし
+}
+```
+
+---
+
+## 4. ターンフロー (Ver 4.0 更新)
+
+### 4.1 ターン全体の流れ
+
+```typescript
+function executeCompleteTurn() {
+  // 1. ターン開始処理
+  incrementTurnCounter();
+
+  // 2. 速度計算
+  const playerSpeed = calculatePlayerSpeed(playerBuffs);
+  const enemySpeed = calculateEnemySpeed(currentEnemy, enemyBuffs);
+
+  // 3. ターン順序決定
+  const firstActor = determineTurnOrder(playerSpeed, enemySpeed);
+
+  // 4. 先攻側のフェーズ実行
+  if (firstActor === "player") {
+    await executePlayerPhase(playerSpeed, enemySpeed);
+    if (isBattleEnd()) return;
+    await executeEnemyPhase(enemySpeed, playerSpeed);
+  } else {
+    await executeEnemyPhase(enemySpeed, playerSpeed);
+    if (isBattleEnd()) return;
+    await executePlayerPhase(playerSpeed, enemySpeed);
+  }
+
+  // 5. ターン終了処理
+  onTurnEnd();
+}
+```
+
+### 4.2 プレイヤーフェーズ
+
+```typescript
+async function executePlayerPhase(
+  playerSpeed: number,
+  enemySpeed: number
+): Promise<void> {
+  // 1. フェーズ開始処理
+  onPlayerTurnStart();
+
+  // 2. 速度ボーナス適用
+  const speedBonus = calculateSpeedBonus(playerSpeed, enemySpeed);
+  if (speedBonus) {
+    applyTemporaryBuff("speedBonus", speedBonus);
+  }
+
+  // 3. プレイヤーの行動待機
+  // ユーザーがカードをプレイし、End Turnボタンを押すまで待機
+  await waitForPlayerAction();
+
+  // 4. フェーズ終了処理
+  onPlayerTurnEnd();
+
+  // 5. 速度ボーナス削除
+  if (speedBonus) {
+    removeTemporaryBuff("speedBonus");
+  }
+}
+
+function onPlayerTurnStart(): void {
+  // 1. Guardの消滅
+  setPlayerGuard(0);
+
+  // 2. バフ/デバフの持続時間減少
+  decreaseBuffDebuffDuration(playerBuffs);
+  decreaseBuffDebuffDuration(enemyBuffs);
+
+  // 3. 再生・シールド再生処理
+  const healing = calculateStartTurnHealing(playerBuffs);
+  applyHealing(healing.hp);
+  applyShield(healing.shield);
+
+  // 4. エナジー回復
+  const energyGain = calculateEnergyGain(playerBuffs);
+  setEnergy(energyGain);
+
+  // 5. カードドロー
+  const drawCount = calculateDrawCount(playerBuffs);
+  drawCards(drawCount);
+
+  // 6. 自動浄化
+  if (playerBuffs.has("cleanse")) {
+    const cleanse = playerBuffs.get("cleanse")!;
+    removeDebuffs(playerBuffs, cleanse.value * cleanse.stacks);
+  }
+
+  // 7. 行動不可チェック
+  if (!canAct(playerBuffs)) {
+    autoEndTurn();
+  }
+}
+
+function onPlayerTurnEnd(): void {
+  // 1. 持続ダメージ処理
+  const dotDamage = calculateEndTurnDamage(playerBuffs);
+  applyDamageToPlayer(dotDamage);
+
+  // 2. Momentum（勢い）のスタック増加
+  if (playerBuffs.has("momentum")) {
+    const momentum = playerBuffs.get("momentum")!;
+    momentum.stacks += 1;
+  }
+}
+```
+
+### 4.3 敵フェーズ (Ver 4.0 新規)
+
+```typescript
+async function executeEnemyPhase(
+  enemySpeed: number,
+  playerSpeed: number
+): Promise<void> {
+  // 1. フェーズ開始処理
+  onEnemyTurnStart();
+
+  // 2. 速度ボーナス適用
+  const speedBonus = calculateSpeedBonus(enemySpeed, playerSpeed);
+  if (speedBonus) {
+    applyTemporaryBuff("enemySpeedBonus", speedBonus);
+  }
+
+  // 3. 敵のエナジー計算
+  const baseEnergy = currentEnemy.baseEnemyEnergy;
+  const finalEnergy = applyEnemyEnergyModifiers(baseEnergy, enemyBuffs);
+
+  // 4. 行動実行
+  await executeEnemyActions(finalEnergy);
+
+  // 5. フェーズ終了処理
+  onEnemyTurnEnd();
+
+  // 6. 速度ボーナス削除
+  if (speedBonus) {
+    removeTemporaryBuff("enemySpeedBonus");
+  }
+}
+
+function onEnemyTurnStart(): void {
+  // 1. Guardの消滅
+  setEnemyGuard(0);
+
+  // 2. 再生・シールド再生処理
+  const healing = calculateStartTurnHealing(enemyBuffs);
+  enemyHp = Math.min(enemyMaxHp, enemyHp + healing.hp);
+  enemyGuard += healing.shield;
+
+  // 3. 行動不可チェック
+  if (!canAct(enemyBuffs)) {
+    skipEnemyTurn();
+  }
+}
+
+function onEnemyTurnEnd(): void {
+  // 1. 持続ダメージ処理
+  const dotDamage = calculateEndTurnDamage(enemyBuffs);
+  enemyHp -= dotDamage;
+}
+```
+
+### 4.4 敵の行動実行ロジック (Ver 4.0 新規)
+
+```typescript
+/**
+ * 敵のエナジー分の行動を実行
+ */
+async function executeEnemyActions(enemyEnergy: number): Promise<void> {
+  let remainingEnergy = enemyEnergy;
+  const actionsToExecute: EnemyAction[] = [];
+
+  // エナジーが尽きるまで行動を選択
+  while (remainingEnergy > 0) {
+    const action = determineEnemyAction(
+      currentEnemy,
+      enemyHp,
+      enemyMaxHp,
+      turn,
+      remainingEnergy
+    );
+
+    const actionCost = action.energyCost ?? 1;
+
+    if (actionCost > remainingEnergy) {
+      // エナジー不足なら低コスト行動を選択
+      const fallbackAction = getFallbackAction(remainingEnergy);
+      actionsToExecute.push(fallbackAction);
+      break;
+    }
+
+    actionsToExecute.push(action);
+    remainingEnergy -= actionCost;
+  }
+
+  // 行動を順次実行（アニメーション付き）
+  for (let i = 0; i < actionsToExecute.length; i++) {
+    showMessage(
+      `${currentEnemy.nameJa}の行動 ${i + 1}/${actionsToExecute.length}`
+    );
+
+    await executeEnemyAction(actionsToExecute[i]);
+
+    // 行動間のディレイ
+    await delay(800);
+
+    // 戦闘終了チェック
+    if (isBattleEnd()) {
+      break;
+    }
+  }
+}
+
+/**
+ * 単一の敵行動を実行
+ */
+async function executeEnemyAction(action: EnemyAction): Promise<void> {
+  showActionPreview(action);
+
+  switch (action.type) {
+    case "attack":
+      await executeEnemyAttack(action);
+      break;
+    case "buff":
+      await executeEnemyBuff(action);
+      break;
+    case "debuff":
+      await executeEnemyDebuff(action);
+      break;
+    case "special":
+      await executeEnemySpecial(action);
+      break;
+  }
+}
+
+/**
+ * エナジー不足時のフォールバック行動
+ */
+function getFallbackAction(remainingEnergy: number): EnemyAction {
+  if (remainingEnergy >= 1) {
+    return {
+      name: "基本攻撃",
+      type: "attack",
+      baseDamage: 5,
+      displayIcon: "⚔️",
+      energyCost: 1,
+    };
+  }
+
+  // エナジー0の場合はスキップ
+  return {
+    name: "待機",
+    type: "special",
+    baseDamage: 0,
+    displayIcon: "💤",
+    energyCost: 0,
+  };
+}
+```
+
+---
+
+## 5. 防御システム (Hybrid Defense System)
 
 防御機構を「持ち越し可能な装備耐久」と「ターンごとの防御行動」に分離する。
 
-### 2.1 定義
+### 5.1 定義
 
 - **HP (Health Points):** キャラクターの生命力。0 になると死亡。
 - **AP (Armor Points):** 装備の耐久値。
@@ -25,10 +483,10 @@
   - 最大値は装備アイテムの性能に依存。
   - 原則として戦闘中に自動回復しない（修理カード/アイテムが必要）。
 - **GP (Guard Points):** カード効果による一時的な防御壁。
-  - **プレイヤーターンの開始時に残っていれば消滅する**（0 になる）。
+  - **各キャラクターのターン開始時に消滅する**（0 になる）。
   - AP を守るための手段や、AP が亡くなった時の HP ダメージの緩和として機能する。
 
-### 2.2 ダメージ受容優先度
+### 5.2 ダメージ受容優先度
 
 基本原則として、以下の順序でダメージを減算する。
 
@@ -36,19 +494,19 @@
 2. **AP**（鎧で受ける）
 3. **HP**（肉体で受ける）
 
-### 2.3 アーマーブレイク (Armor Break)
+### 5.3 アーマーブレイク (Armor Break)
 
 - **条件:** `AP` が `0` になった状態。
 - **効果 (貫通ペナルティ):**
-  - AP が 0 の状態では、**敵攻撃ダメージの 50%が Guard を無視して直接 HP にヒットする**。
+  - AP が 0 の状態では、**攻撃ダメージの 50%が Guard を無視して直接 HP にヒットする**。
   - 残りの 50%は通常通り Guard で受ける。
   - _意図:_ 鎧が壊れた生身の状態では、盾の上から衝撃が通るリアリティの表現。
 
 ---
 
-## 3. バフ/デバフシステム
+## 6. バフ/デバフシステム
 
-### 3.1 バフ/デバフの基本構造
+### 6.1 バフ/デバフの基本構造
 
 ```typescript
 interface BuffDebuff {
@@ -59,107 +517,13 @@ interface BuffDebuff {
   isPermanent: boolean; // 永続フラグ
   source?: string; // 発生源（カードID、装備IDなど）
 }
-
 type BuffDebuffMap = Map<BuffDebuffType, BuffDebuff>;
 ```
 
-### 3.2 バフ/デバフのカテゴリ
+バフデバフの種類などは
+**roguelike-card-battle/blueprint/battle_document/buff_debuff_system.md** を確認
 
-#### A. デバフ - 持続ダメージ系
-
-```
-burn（火傷）:        毎ターン終了時、スタック×3ダメージ（シールド無視）
-bleed（出血）:       毎ターン終了時、スタック×2ダメージ
-poison（毒）:        毎ターン終了時、スタック×2ダメージ（防御無視）
-curse（呪い）:       回復効果-50%、毎ターン終了時スタック×2ダメージ
-```
-
-#### B. デバフ - 状態異常系
-
-```
-slow（スロウ）:      エナジー-1
-freeze（凍結）:      行動不可
-paralyze（麻痺）:    攻撃力-50%
-stun（気絶）:        行動不可
-weak（弱体化）:      攻撃力-30%
-```
-
-#### C. デバフ - 能力減少系
-
-```
-defDown（防御力低下）:     防御力がvalue%低下
-atkDown（攻撃力低下）:     攻撃力がvalue%低下
-healingDown（回復効果減少）: 回復効果がvalue%減少
-```
-
-#### D. バフ - 能力上昇系
-
-```
-atkUp（攻撃力上昇）:        攻撃力がvalue%上昇
-defUp（防御力上昇）:        防御力がvalue%上昇
-magicUp（魔力上昇）:        魔力がvalue%上昇
-physicalUp（物理攻撃力上昇）: 物理攻撃力がvalue%上昇
-penetrationUp（貫通力上昇）:  貫通力がvalue%上昇
-critical（クリティカル率上昇）: クリティカル率+value%
-```
-
-#### E. バフ - 回復・防御系
-
-```
-regeneration（再生）:       毎ターン開始時、value HP回復
-shieldRegen（シールド再生）: 毎ターン開始時、valueシールド付与
-reflect（反撃）:            被ダメージのvalue%を反撃
-evasion（回避率上昇）:      回避率+value%
-immunity（デバフ無効）:     デバフを無効化
-```
-
-#### F. バフ - リソース管理系
-
-```
-energyRegen（エナジー再生）:   毎ターン開始時、valueエナジー回復
-drawPower（ドロー強化）:       毎ターン開始時、value枚追加ドロー
-costReduction（コスト軽減）:   カードコスト-value
-```
-
-#### G. バフ - 戦闘スタイル変化系
-
-```
-thorns（棘の鎧）:           物理攻撃を受けた時、攻撃者にvalueダメージ
-lifesteal（吸血）:          与ダメージのvalue%をHP回復
-doubleStrike（連撃）:       攻撃カードが2回発動（威力value%）
-splash（範囲拡大）:         単体攻撃が隣接敵にもvalue%ダメージ
-```
-
-#### H. バフ - キャラクター固有系
-
-```
-【剣士用】
-swordEnergyGain（剣気増幅）:      攻撃時の剣気獲得量+value
-swordEnergyEfficiency（剣気効率）: 剣気ダメージ+value%
-
-【魔術士用】
-resonanceExtension（共鳴延長）:   属性共鳴の持続+valueターン
-elementalMastery（属性熟練）:     共鳴ボーナス+value%
-
-【召喚士用】
-summonDuration（召喚延長）:       召喚獣の持続+valueターン
-summonPower（召喚強化）:          召喚獣の能力+value%
-sacrificeBonus（犠牲強化）:       犠牲効果+value%
-```
-
-#### I. バフ - 特殊効果系
-
-```
-barrier（バリア）:              valueダメージまで無効化する障壁
-damageReduction（ダメージ軽減）: 全ダメージ-value%
-focus（集中）:                  次のカードの効果+value%
-momentum（勢い）:               カード使用ごとに攻撃力+value%（累積）
-cleanse（自動浄化）:            毎ターン開始時、デバフをvalue個解除
-tenacity（不屈）:               デバフの効果-value%
-lastStand（背水の陣）:          HP30%以下で全能力+value%
-```
-
-### 3.3 スタックシステム
+### 6.2 スタックシステム
 
 ```typescript
 /**
@@ -168,7 +532,7 @@ lastStand（背水の陣）:          HP30%以下で全能力+value%
 function addOrUpdateBuffDebuff(
   map: BuffDebuffMap,
   type: BuffDebuffType,
-  stacks: number,
+  stacks?: number,
   duration: number,
   value: number,
   isPermanent: boolean = false,
@@ -201,7 +565,7 @@ function addOrUpdateBuffDebuff(
 }
 ```
 
-### 3.4 持続時間管理
+### 6.4 持続時間管理
 
 ```typescript
 /**
@@ -230,9 +594,9 @@ function decreaseBuffDebuffDuration(map: BuffDebuffMap): BuffDebuffMap {
 
 ---
 
-## 4. ダメージ計算ロジック (Damage Formula)
+## 7. ダメージ計算ロジック (Damage Formula)
 
-### 4.1 計算フロー
+### 7.1 計算フロー
 
 攻撃発生時、以下のアルゴリズムで最終ダメージを決定する。
 
@@ -247,7 +611,7 @@ interface Character {
 
 interface Card {
   power: number;
-  category: "physical" | "magic" | "defense" | "heal";
+  category: "atk" | "def" | "buff" | "debuff" | "defense" | "heal";
   // その他のカード情報
 }
 
@@ -265,12 +629,10 @@ interface DamageResult {
 function calculateDamage(
   attacker: Character,
   defender: Character,
-  card: Card,
-  currentDepth: number
+  card: Card
 ): DamageResult {
   // --- Phase 1: 基本攻撃力計算 ---
   const baseDmg = card.power;
-  const depthMod = getDepthModifier(currentDepth);
 
   // --- Phase 2: バフ/デバフによる攻撃力補正 ---
   let atkMultiplier = 1.0;
@@ -280,12 +642,7 @@ function calculateDamage(
 
   // 攻撃力低下デバフ
   if (attacker.buffDebuffs.has("weak")) {
-    const weak = attacker.buffDebuffs.get("weak")!;
-    atkMultiplier *= 1 - weak.value / 100;
-  }
-
-  if (attacker.buffDebuffs.has("paralyze")) {
-    atkMultiplier *= 0.5;
+    atkMultiplier *= 0.7; // -30%
   }
 
   if (attacker.buffDebuffs.has("atkDown")) {
@@ -315,35 +672,12 @@ function calculateDamage(
   // 召喚士: 召喚強化
   // （これらは別途処理）
 
-  const finalAtk = Math.floor(baseDmg * depthMod * atkMultiplier * critMod);
+  const finalAtk = Math.floor(baseDmg * atkMultiplier * critMod);
 
-  // --- Phase 5: 防御側のバフ/デバフ補正 ---
-  let vulnMod = 1.0;
-
-  // 防御力低下デバフ
-  if (defender.buffDebuffs.has("defDown")) {
-    const defDown = defender.buffDebuffs.get("defDown")!;
-    vulnMod *= 1 + defDown.value / 100;
-  }
-
-  // ダメージ軽減バフ
-  let damageReductionMod = 1.0;
-  if (defender.buffDebuffs.has("damageReduction")) {
-    const reduction = defender.buffDebuffs.get("damageReduction")!;
-    damageReductionMod *= 1 - reduction.value / 100;
-  }
-
-  if (defender.buffDebuffs.has("defUp")) {
-    const defUp = defender.buffDebuffs.get("defUp")!;
-    damageReductionMod *= 1 - defUp.value / 100;
-  }
-
-  // 装備DEF軽減
+  // --- Phase 5: 装備DEF軽減 ---
   const defMitigation = defender.equipment_def_percent;
 
-  const incomingDmg = Math.floor(
-    finalAtk * vulnMod * damageReductionMod * (1.0 - defMitigation)
-  );
+  const incomingDmg = Math.floor(finalAtk * (1.0 - defMitigation));
 
   // --- Phase 6: ダメージ配分 ---
   const { penetrationDamage, actualDamage } = applyDamageAllocation(
@@ -381,7 +715,7 @@ function calculateDamage(
 }
 ```
 
-### 4.2 バフ/デバフ計算関数
+### 7.2 バフ/デバフ計算関数
 
 ```typescript
 /**
@@ -393,22 +727,6 @@ function calculateAttackMultiplier(buffDebuffs: BuffDebuffMap): number {
   if (buffDebuffs.has("atkUp")) {
     const buff = buffDebuffs.get("atkUp")!;
     multiplier += buff.value / 100;
-  }
-
-  if (buffDebuffs.has("physicalUp")) {
-    const buff = buffDebuffs.get("physicalUp")!;
-    multiplier += buff.value / 100;
-  }
-
-  if (buffDebuffs.has("magicUp")) {
-    const buff = buffDebuffs.get("magicUp")!;
-    multiplier += buff.value / 100;
-  }
-
-  // Momentum（勢い）バフ
-  if (buffDebuffs.has("momentum")) {
-    const momentum = buffDebuffs.get("momentum")!;
-    multiplier += (momentum.value / 100) * momentum.stacks;
   }
 
   return multiplier;
@@ -463,185 +781,16 @@ function calculateLifesteal(
 }
 ```
 
-### 4.3 ダメージ配分ロジック
+### 7.3 ダメージ配分ロジック
 
-```typescript
-/**
- * ダメージを Guard → AP → HP の順に配分
- */
-function applyDamageAllocation(
-  defender: Character,
-  damage: number
-): { penetrationDamage: number; actualDamage: number } {
-  let remainingDmg = damage;
-  let penetrationDmg = 0;
-
-  // Step 1: バリア処理
-  if (defender.buffDebuffs.has("barrier")) {
-    const barrier = defender.buffDebuffs.get("barrier")!;
-    const barrierAmount = barrier.value * barrier.stacks;
-
-    if (barrierAmount >= remainingDmg) {
-      // バリアで全吸収
-      barrier.value -= remainingDmg;
-      return { penetrationDamage: 0, actualDamage: 0 };
-    } else {
-      // バリア破壊
-      remainingDmg -= barrierAmount;
-      defender.buffDebuffs.delete("barrier");
-    }
-  }
-
-  // Step 2: アーマーブレイク時の貫通処理
-  if (defender.ap <= 0) {
-    penetrationDmg = Math.floor(remainingDmg * 0.5);
-    defender.hp -= penetrationDmg;
-    remainingDmg -= penetrationDmg;
-  }
-
-  // Step 3: Guardでの受け
-  if (defender.guard > 0) {
-    if (defender.guard >= remainingDmg) {
-      defender.guard -= remainingDmg;
-      return { penetrationDamage: penetrationDmg, actualDamage: damage };
-    } else {
-      remainingDmg -= defender.guard;
-      defender.guard = 0;
-    }
-  }
-
-  // Step 4: APでの受け
-  if (defender.ap > 0) {
-    if (defender.ap >= remainingDmg) {
-      defender.ap -= remainingDmg;
-      return { penetrationDamage: penetrationDmg, actualDamage: damage };
-    } else {
-      remainingDmg -= defender.ap;
-      defender.ap = 0;
-      // アーマーブレイク発生
-    }
-  }
-
-  // Step 5: HPでの受け
-  if (remainingDmg > 0) {
-    defender.hp -= remainingDmg;
-  }
-
-  return { penetrationDamage: penetrationDmg, actualDamage: damage };
-}
-```
+- ダメージを Guard → AP → HP の順に配分
+- AP === 0 (アーマーブレイク)の時、Guard > 0 でもダメージは HP に 50%貫通する
 
 ---
 
-## 5. ターンフェーズ定義
+## 8. バフ/デバフ計算関数
 
-### 5.1 プレイヤーターン開始時
-
-```typescript
-function onPlayerTurnStart(player: Character, enemy: Character): void {
-  // 1. Guardの消滅
-  player.guard = 0;
-
-  // 2. バフ/デバフの持続時間減少
-  player.buffDebuffs = decreaseBuffDebuffDuration(player.buffDebuffs);
-  enemy.buffDebuffs = decreaseBuffDebuffDuration(enemy.buffDebuffs);
-
-  // 3. 再生・シールド再生処理
-  const healing = calculateStartTurnHealing(player.buffDebuffs);
-  player.hp = Math.min(player.maxHp, player.hp + healing.hp);
-  player.guard += healing.shield;
-
-  // 4. エナジー再生処理
-  let energyGain = BASE_ENERGY_PER_TURN;
-  if (player.buffDebuffs.has("energyRegen")) {
-    const energyRegen = player.buffDebuffs.get("energyRegen")!;
-    energyGain += energyRegen.value * energyRegen.stacks;
-  }
-
-  // スロウデバフの影響
-  if (player.buffDebuffs.has("slow")) {
-    energyGain -= 1;
-  }
-
-  player.energy = Math.max(0, energyGain);
-
-  // 5. ドロー処理
-  let drawCount = BASE_DRAW_COUNT;
-  if (player.buffDebuffs.has("drawPower")) {
-    const drawPower = player.buffDebuffs.get("drawPower")!;
-    drawCount += drawPower.value * drawPower.stacks;
-  }
-
-  // カードをdrawCount枚ドロー
-
-  // 6. 自動浄化処理
-  if (player.buffDebuffs.has("cleanse")) {
-    const cleanse = player.buffDebuffs.get("cleanse")!;
-    const cleansCount = cleanse.value * cleanse.stacks;
-    removeDebuffs(player.buffDebuffs, cleansCount);
-  }
-
-  // 7. 行動不可チェック
-  if (player.buffDebuffs.has("freeze") || player.buffDebuffs.has("stun")) {
-    // このターンは行動不可
-    // ターンをスキップ
-  }
-}
-```
-
-### 5.2 プレイヤーターン終了時
-
-```typescript
-function onPlayerTurnEnd(player: Character, enemy: Character): void {
-  // 1. 持続ダメージ処理（火傷、出血、毒、呪い）
-  const dotDamage = calculateEndTurnDamage(player.buffDebuffs);
-
-  // 持続ダメージは防御を無視
-  player.hp -= dotDamage;
-
-  // 2. Momentum（勢い）のスタック増加
-  if (player.buffDebuffs.has("momentum")) {
-    const momentum = player.buffDebuffs.get("momentum")!;
-    momentum.stacks += 1;
-  }
-}
-```
-
-### 5.3 敵ターン開始時
-
-```typescript
-function onEnemyTurnStart(player: Character, enemy: Character): void {
-  // 1. Guardの消滅
-  enemy.guard = 0;
-
-  // 2. 再生・シールド再生処理
-  const healing = calculateStartTurnHealing(enemy.buffDebuffs);
-  enemy.hp = Math.min(enemy.maxHp, enemy.hp + healing.hp);
-  enemy.guard += healing.shield;
-
-  // 3. 行動不可チェック
-  if (enemy.buffDebuffs.has("freeze") || enemy.buffDebuffs.has("stun")) {
-    // このターンは行動不可
-    // ターンをスキップ
-  }
-}
-```
-
-### 5.4 敵ターン終了時
-
-```typescript
-function onEnemyTurnEnd(player: Character, enemy: Character): void {
-  // 1. 持続ダメージ処理
-  const dotDamage = calculateEndTurnDamage(enemy.buffDebuffs);
-  enemy.hp -= dotDamage;
-}
-```
-
----
-
-## 6. バフ/デバフ計算関数
-
-### 6.1 ターン終了時の持続ダメージ
+### 8.1 ターン終了時の持続ダメージ
 
 ```typescript
 /**
@@ -649,16 +798,6 @@ function onEnemyTurnEnd(player: Character, enemy: Character): void {
  */
 function calculateEndTurnDamage(buffDebuffs: BuffDebuffMap): number {
   let totalDamage = 0;
-
-  if (buffDebuffs.has("burn")) {
-    const burn = buffDebuffs.get("burn")!;
-    totalDamage += burn.stacks * 3;
-  }
-
-  if (buffDebuffs.has("bleed")) {
-    const bleed = buffDebuffs.get("bleed")!;
-    totalDamage += bleed.stacks * 2;
-  }
 
   if (buffDebuffs.has("poison")) {
     const poison = buffDebuffs.get("poison")!;
@@ -669,12 +808,27 @@ function calculateEndTurnDamage(buffDebuffs: BuffDebuffMap): number {
     const curse = buffDebuffs.get("curse")!;
     totalDamage += curse.stacks * 2;
   }
-
   return totalDamage;
+}
+
+/**
+ * 出血ダメージ計算（特殊実装）
+ * プレイヤー: カード使用毎、敵: 1行動毎に呼び出される
+ */
+function calculateBleedDamage(
+  maxHp: number,
+  buffDebuffs: BuffDebuffMap
+): number {
+  if (!buffDebuffs.has("bleed")) {
+    return 0;
+  }
+
+  // 最大HPの5%
+  return Math.floor(maxHp * 0.05);
 }
 ```
 
-### 6.2 ターン開始時の回復・再生
+### 8.2 ターン開始時の回復・再生
 
 ```typescript
 /**
@@ -711,7 +865,7 @@ function calculateStartTurnHealing(buffDebuffs: BuffDebuffMap): {
 }
 ```
 
-### 6.3 デバフ解除
+### 8.3 デバフ解除
 
 ```typescript
 /**
@@ -736,144 +890,107 @@ function removeDebuffs(buffDebuffs: BuffDebuffMap, count: number): void {
 
 ---
 
-## 7. ダンジョン深度スケーリング (Depth Scaling)
+## 9. ダンジョン深度システム (Depth System)
 
-### 7.1 深度情報
+### 9.1 深度の概念
 
-| 深度 | 名称 | 魔力倍率 | 物理/HP 倍率 | 敵 AI・環境特性              |
-| ---- | ---- | -------- | ------------ | ---------------------------- |
-| 1    | 腐食 | x1.0     | x1.0         | 基本行動のみ                 |
-| 2    | 狂乱 | x2.0     | x1.2         | 重度状態異常の使用開始       |
-| 3    | 混沌 | x4.0     | x1.5         | 連携行動、自己バフ使用       |
-| 4    | 虚無 | x8.0     | x2.0         | アーマー貫通攻撃、高火力魔法 |
-| 5    | 深淵 | x16.0    | x3.0         | 学習 AI、多回行動            |
+深度は**敵の種類（強さ）のみ**を決定する。
 
-### 7.2 深度スケーリング実装
+各深度には固有の敵プールが存在し、深度が上がるほど強力な敵が出現する。
+敵のステータス（HP、エナジー、速度など）は敵個体データで直接定義される。
+
+| 深度 | 名称 | 出現する敵の特徴                 |
+| ---- | ---- | -------------------------------- |
+| 1    | 腐食 | 基本的な敵、単純な行動パターン   |
+| 2    | 狂乱 | デバフを使用する敵が増加         |
+| 3    | 混沌 | 2 エナジー敵、複雑な行動パターン |
+| 4    | 虚無 | 高 HP・高エナジー敵、強力な攻撃  |
+| 5    | 深淵 | 最強の敵、ボス級の能力           |
+
+### 9.2 深度と敵の関係
 
 ```typescript
 interface DepthInfo {
   depth: number;
   name: string;
-  magicMultiplier: number;
-  physicalMultiplier: number;
-  hpMultiplier: number;
-  aiLevel: string;
+  description: string;
 }
 
-class DepthScaling {
-  private static readonly DEPTH_TABLE: Map<number, DepthInfo> = new Map([
-    [
-      1,
-      {
-        depth: 1,
-        name: "腐食",
-        magicMultiplier: 1.0,
-        physicalMultiplier: 1.0,
-        hpMultiplier: 1.0,
-        aiLevel: "basic",
-      },
-    ],
-    [
-      2,
-      {
-        depth: 2,
-        name: "狂乱",
-        magicMultiplier: 2.0,
-        physicalMultiplier: 1.2,
-        hpMultiplier: 1.2,
-        aiLevel: "heavy_status",
-      },
-    ],
-    [
-      3,
-      {
-        depth: 3,
-        name: "混沌",
-        magicMultiplier: 4.0,
-        physicalMultiplier: 1.5,
-        hpMultiplier: 1.5,
-        aiLevel: "cooperative",
-      },
-    ],
-    [
-      4,
-      {
-        depth: 4,
-        name: "虚無",
-        magicMultiplier: 8.0,
-        physicalMultiplier: 2.0,
-        hpMultiplier: 2.0,
-        aiLevel: "penetration",
-      },
-    ],
-    [
-      5,
-      {
-        depth: 5,
-        name: "深淵",
-        magicMultiplier: 16.0,
-        physicalMultiplier: 3.0,
-        hpMultiplier: 3.0,
-        aiLevel: "learning",
-      },
-    ],
-  ]);
+const DEPTH_INFO: Record<number, DepthInfo> = {
+  1: { depth: 1, name: "腐食", description: "汚染の始まり" },
+  2: { depth: 2, name: "狂乱", description: "理性の喪失" },
+  3: { depth: 3, name: "混沌", description: "秩序の崩壊" },
+  4: { depth: 4, name: "虚無", description: "存在の消失" },
+  5: { depth: 5, name: "深淵", description: "終焉の深淵" },
+};
 
-  static getDepthInfo(depth: number): DepthInfo {
-    const info = this.DEPTH_TABLE.get(depth);
-    if (!info) {
-      throw new Error(`Invalid depth: ${depth}`);
-    }
-    return info;
+/**
+ * 深度情報を取得
+ */
+function getDepthInfo(depth: number): DepthInfo {
+  const info = DEPTH_INFO[depth];
+  if (!info) {
+    throw new Error(`Invalid depth: ${depth}`);
   }
+  return info;
+}
 
-  static scaleEnemyStats(baseEnemy: Character, depth: number): Character {
-    const info = this.getDepthInfo(depth);
-
-    return {
-      ...baseEnemy,
-      hp: Math.floor(baseEnemy.hp * info.hpMultiplier),
-      maxHp: Math.floor(baseEnemy.hp * info.hpMultiplier),
-      attack: Math.floor(baseEnemy.attack * info.physicalMultiplier),
-      magicPower: Math.floor(baseEnemy.magicPower * info.magicMultiplier),
-    };
-  }
+/**
+ * 深度に応じた敵プールから敵を選択
+ * 敵のステータスは敵データで直接定義される（倍率計算なし）
+ */
+function selectEnemyForDepth(
+  depth: number,
+  encounterType: "normal" | "elite" | "boss"
+): Enemy {
+  const enemyPool = getEnemyPoolForDepth(depth, encounterType);
+  return enemyPool[Math.floor(Math.random() * enemyPool.length)];
 }
 ```
 
+### 9.3 ダメージ計算への深度の影響（廃止）
+
+**Ver 4.0 で変更:** 深度による自動的なダメージ倍率は廃止。
+
+- 深度 1 の敵: HP 40, baseDamage 7
+- 深度 3 の敵: HP 100, baseDamage 18
+- 深度 5 の敵: HP 250, baseDamage 40
+
+このように、敵データで直接強さを定義する。
+
 ---
 
-## 8. 実装上の注意点
+## 10. 実装上の注意点
 
-### 8.1 用語の区別
+### 10.1 用語の区別
 
 - **Depth (深度)**: ダンジョンの階層（敵の強さ）
 - **Duration (持続時間)**: バフ/デバフの残りターン数
 - **Stacks (スタック)**: バフ/デバフの重ね掛け数
+- **cardEnergy (プレイヤー)**: カードコスト支払い用リソース
+- **actEnergy (敵)**: 行動回数を表すリソース
+- **Speed (速度)**: 行動順序を決定するパラメータ
 
-### 8.2 バフ/デバフの優先度
+### 10.2 バフ/デバフの優先度
 
 ```
 【ダメージ計算時の適用順序】
 1. 基本攻撃力
-2. 深度補正
-3. 攻撃力上昇バフ (atkUp, physicalUp, magicUp)
-4. 攻撃力低下デバフ (weak, paralyze, atkDown)
-5. クリティカル判定
-6. 防御力低下デバフ (defDown)
-7. ダメージ軽減バフ (damageReduction, defUp)
-8. 装備DEF軽減
-9. バリア・反撃・吸血処理
+2. 攻撃力上昇バフ (atkUp)
+3. 攻撃力低下デバフ (weak, atkDown)
+4. クリティカル判定
+5. 装備DEF軽減
+6. 反撃・吸血処理
 ```
 
-### 8.3 Guard の特殊処理
+### 10.3 Guard の特殊処理
 
 - プレイヤーターン開始時に必ず 0 になる
 - 敵ターン開始時にも 0 になる
 - 戦闘終了後は引き継がれない
 - アーマーブレイク時は 50%貫通される
 
-### 8.4 持続ダメージの処理
+### 10.4 持続ダメージの処理
 
 ```typescript
 /**
@@ -887,7 +1004,7 @@ function applyDoTDamage(character: Character): void {
 }
 ```
 
-### 8.5 戦闘終了時の状態保存
+### 10.5 戦闘終了時の状態保存
 
 ```typescript
 interface BattleEndState {
@@ -916,9 +1033,9 @@ function loadBattleState(player: Character, savedState: BattleEndState): void {
 
 ---
 
-## 9. UI 表示のための予測計算
+## 11. UI 表示のための予測計算
 
-### 9.1 ダメージ予測
+### 11.1 ダメージ予測
 
 ```typescript
 interface DamagePreview {
@@ -984,3 +1101,143 @@ function calculateDamagePreview(
   };
 }
 ```
+
+### 11.2 ターン順序予測表示 (Ver 4.0 新規)
+
+```typescript
+interface TurnOrderPreview {
+  playerSpeed: number;
+  enemySpeed: number;
+  firstActor: "player" | "enemy";
+  speedDifference: number;
+  playerBonus: SpeedBonus | null;
+  enemyBonus: SpeedBonus | null;
+}
+
+function calculateTurnOrderPreview(
+  playerBuffs: BuffDebuffMap,
+  enemyBuffs: BuffDebuffMap,
+  currentEnemy: Enemy
+): TurnOrderPreview {
+  const playerSpeed = calculatePlayerSpeed(playerBuffs);
+  const enemySpeed = calculateEnemySpeed(currentEnemy, enemyBuffs);
+
+  const firstActor = determineTurnOrder(playerSpeed, enemySpeed);
+  const speedDifference = Math.abs(playerSpeed - enemySpeed);
+
+  let playerBonus = null;
+  let enemyBonus = null;
+
+  if (firstActor === "player") {
+    playerBonus = calculateSpeedBonus(playerSpeed, enemySpeed);
+  } else {
+    enemyBonus = calculateSpeedBonus(enemySpeed, playerSpeed);
+  }
+
+  return {
+    playerSpeed,
+    enemySpeed,
+    firstActor,
+    speedDifference,
+    playerBonus,
+    enemyBonus,
+  };
+}
+```
+
+### 11.3 敵の次の行動予告 (Ver 4.0 新規)
+
+```typescript
+interface EnemyActionPreview {
+  actions: EnemyAction[];
+  totalEnergy: number;
+  displayLevel: "full" | "partial" | "minimal";
+}
+
+/**
+ * 敵の次のターンの行動を予告
+ */
+function previewEnemyActions(
+  enemy: Enemy,
+  currentHp: number,
+  nextTurn: number
+): EnemyActionPreview {
+  // エナジー計算
+  const totalEnergy = enemy.baseEnemyEnergy;
+
+  // 行動決定（予告用）
+  const actions: EnemyAction[] = [];
+  let remainingEnergy = totalEnergy;
+
+  while (remainingEnergy > 0) {
+    const action = determineEnemyAction(
+      enemy,
+      currentHp,
+      enemy.maxHp,
+      nextTurn,
+      remainingEnergy
+    );
+
+    const actionCost = action.energyCost ?? 1;
+
+    if (actionCost > remainingEnergy) {
+      break;
+    }
+
+    actions.push(action);
+    remainingEnergy -= actionCost;
+  }
+
+  return {
+    actions,
+    totalEnergy,
+    displayLevel: "full",
+  };
+}
+```
+
+---
+
+## 12. Ver 4.0 変更履歴
+
+### 新機能追加
+
+- **非対称エナジーシステム**: プレイヤー（カードコスト用）と敵（行動回数）で異なるエナジー概念を導入
+- **行動速度システム**: 速度パラメータによるターン順序決定
+- **速度差ボーナス**: 速度差 30 以上で「先制」、50 以上で「電光石火」ボーナス
+- **敵の複数行動システム**: 敵エナジーによる 1 ターン内の複数回行動
+- **ターン順序 UI**: 次のターンの行動順を可視化
+- **敵の行動予告**: 敵の次の行動を事前表示
+
+**追加されたバフ/デバフ:**
+
+- `speedUp`: 速度+value
+- `speedDown`: 速度-value
+- `haste`: 速度+30（先制確定級）
+
+**特殊実装に変更:**
+
+- `bleed（出血）`: プレイヤーはカード使用毎に最大 HP の 5%、敵は 1 行動毎に最大 HP の 5%ダメージ
+
+### 敵データ構造拡張
+
+- `baseEnemyEnergy`: 敵の基本エナジー（行動回数）
+- `speed`: 行動速度値（0-100）
+- `energyCost`: 各行動のエナジーコスト
+- `displayIcon`: UI 表示用アイコン
+- `priority`: 行動優先度
+
+### システム仕様変更
+
+- **深度スケーリング廃止**: 深度による魔力倍率、物理倍率、HP 倍率、エナジー倍率を全て削除
+- **深度の役割変更**: 深度は敵の種類（どの敵プールから選択するか）のみを決定
+- **敵ステータスの直接定義**: 各敵の HP、ダメージ、エナジーは敵データで直接設定
+- **Guard 消滅タイミング**: 各キャラクターのターン開始時に 0 に
+- **slow デバフ変更**: エナジー-1 → 速度-10/スタック
+- **ダメージ計算簡素化**: 深度補正を削除、防御関連バフの統合
+
+---
+
+**Version:** 4.0
+**Updated:** 2025-12-31
+**Status:** 設計完了、実装待ち
