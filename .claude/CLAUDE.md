@@ -2,7 +2,7 @@
 
 ## Project Identity
 
-**Genre:** Take-out Dunjeon Type Deck-Building RPG  
+**Genre:** Deck-Building RPG  
 **Theme:** Dark Fantasy - "Those who don the corruption will dwell in madness, know chaos, be tormented by emptiness, and gaze into the abyss"  
 **Platform:** PC (Web Browser)  
 **Target:** Casual yet strategic players inspired
@@ -168,7 +168,7 @@ const cards: Card[] = CARDS_DATA.map((data) => parseCard(data));
 
 ### Process
 
-1. Read `/blueprint/` docs → 2. Define types → 3. Implement logic → 4. Connect UI
+1. Read docs → 1. Define types → 2. Implement logic → 3. Connect UI
 
 ### Testing
 
@@ -205,7 +205,7 @@ Use: `npm run lint --fix`
 
 ### Output Format Rules
 
-**1. Commentout is simple in English**
+**1. Please write comments in plain English**
 
 **2. Emoji Usage (STRICTLY LIMITED):**
 
@@ -257,26 +257,31 @@ const handlePlay = useCallback((card) => {...}, []);
 
 ---
 
-## Project Status Reference
+## Memory Management (Active)
 
-**Current progress:** See `/docs/PROJECT_STATUS.md` for:
+**Location:** `.claude/MEMORY.md`
 
-- Completed systems
-- In-progress features
-- Pending tasks
-- Implementation priorities
+**Core Principle:** This file is the "Project Diary" and single source of truth for current status.
 
-**Why separate?** This document changes frequently. Keeping it in CLAUDE.md would require constant updates and increase token usage.
+**Workflow Rules (STRICT):**
 
----
+1.  **Session Start:** ALWAYS read `.claude/MEMORY.md` first to load context.
+2.  **Session End:** ALWAYS update `.claude/MEMORY.md` with:
+    - Current progress status
+    - Next immediate actions (specific tasks)
+    - Unresolved blockers or bugs
+3.  **Maintenance:**
+    - Keep concise (bullet points)
+    - Auto-archive completed tasks (remove to save tokens)
+    - Record specific technical pitfalls/lessons (e.g., "v5.0 causes bug X")
 
 ## Quick Reference
 
-**Blocked?** Check blueprints → Search existing code → Ask with rationale
+**Blocked?** Check docs → Search existing code → Ask with rationale
 
-**Game design:** `/blueprint/INTEGRATED_GAME_SYSTEM_DESIGN.md`  
-**Battle logic:** `/blueprint/battle/battle_logic.md`  
-**Card mechanics:** `/blueprint/card/NEW_CHARACTER_SYSTEM_DESIGN.md`
+**Game design:** `.claude/docs/`  
+**Battle logic:** `.claude/docs/battle_document/battle_logic.md`  
+**Card mechanics:** `.claude/docs/card_document/NEW_CHARACTER_SYSTEM_DESIGN.md`
 
 ---
 
