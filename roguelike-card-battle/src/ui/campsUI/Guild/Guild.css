@@ -1,0 +1,427 @@
+/* Guild Tavern Styles - Dark Fantasy Theme */
+
+.guild-screen {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1410 0%, #2d1f1a 100%);
+  color: #e8d5b7;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Header */
+.guild-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid rgba(232, 213, 183, 0.2);
+}
+
+.guild-title {
+  font-size: 2.5rem;
+  margin: 0 0 0.5rem 0;
+  color: #f4e4c1;
+  text-shadow: 0 0 10px rgba(244, 228, 193, 0.5);
+}
+
+.guild-subtitle {
+  font-size: 1rem;
+  color: #b89968;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Tab Navigation */
+.guild-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.guild-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: rgba(45, 31, 26, 0.6);
+  border: 2px solid rgba(232, 213, 183, 0.3);
+  border-radius: 8px;
+  color: #b89968;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.guild-tab:hover {
+  background: rgba(45, 31, 26, 0.8);
+  border-color: rgba(232, 213, 183, 0.5);
+  transform: translateY(-2px);
+}
+
+.guild-tab.active {
+  background: rgba(232, 213, 183, 0.15);
+  border-color: #f4e4c1;
+  color: #f4e4c1;
+}
+
+.tab-icon {
+  font-size: 1.5rem;
+}
+
+.tab-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Tab Content */
+.guild-content {
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+  background: rgba(26, 20, 16, 0.6);
+  border: 2px solid rgba(232, 213, 183, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  min-height: 400px;
+}
+
+/* Back Button */
+.guild-back-button {
+  display: block;
+  margin: 2rem auto 0 auto;
+  padding: 0.75rem 2rem;
+  background: rgba(45, 31, 26, 0.8);
+  border: 2px solid rgba(232, 213, 183, 0.3);
+  border-radius: 8px;
+  color: #e8d5b7;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.guild-back-button:hover {
+  background: rgba(45, 31, 26, 1);
+  border-color: #f4e4c1;
+  transform: scale(1.05);
+}
+
+/* ========== Promotion Tab Styles ========== */
+
+.promotion-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Grade Progression */
+.grade-progression {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.5rem;
+  background: rgba(232, 213, 183, 0.05);
+  border-radius: 8px;
+}
+
+.grade-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: rgba(45, 31, 26, 0.6);
+  border-radius: 8px;
+  border: 2px solid rgba(232, 213, 183, 0.2);
+}
+
+.grade-box.current {
+  border-color: #b89968;
+}
+
+.grade-box.next {
+  border-color: #f4e4c1;
+  background: rgba(244, 228, 193, 0.1);
+}
+
+.grade-label {
+  font-size: 0.8rem;
+  color: #b89968;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.grade-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #f4e4c1;
+}
+
+.arrow {
+  font-size: 2rem;
+  color: #b89968;
+}
+
+/* Exam Sections */
+.exam-section {
+  padding: 1rem;
+  background: rgba(232, 213, 183, 0.03);
+  border-radius: 8px;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  color: #f4e4c1;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(232, 213, 183, 0.2);
+}
+
+/* Requirements */
+.requirements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(45, 31, 26, 0.4);
+  border-radius: 6px;
+  border: 2px solid transparent;
+}
+
+.requirement.met {
+  border-color: rgba(76, 175, 80, 0.5);
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.requirement.unmet {
+  border-color: rgba(244, 67, 54, 0.5);
+  background: rgba(244, 67, 54, 0.1);
+}
+
+.requirement-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.requirement.met .requirement-icon {
+  color: #4caf50;
+}
+
+.requirement.unmet .requirement-icon {
+  color: #f44336;
+}
+
+.requirement-text {
+  color: #e8d5b7;
+}
+
+/* Description */
+.exam-description {
+  color: #c9b69a;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Recommendations */
+.recommendations {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.recommendation-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.stat-label {
+  color: #b89968;
+  font-weight: 600;
+}
+
+.stat-value {
+  color: #f4e4c1;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.recommendation-note {
+  color: #9d8766;
+  font-size: 0.85rem;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Rewards */
+.rewards-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rewards-list li {
+  padding: 0.5rem 1rem;
+  background: rgba(244, 228, 193, 0.05);
+  border-left: 3px solid #f4e4c1;
+  border-radius: 4px;
+  color: #e8d5b7;
+}
+
+/* Warnings */
+.exam-warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 193, 7, 0.05);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+}
+
+.warning-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.warning-icon {
+  font-size: 1.2rem;
+}
+
+.warning-text {
+  color: #c9b69a;
+  font-size: 0.9rem;
+}
+
+/* Start Button */
+.start-exam-button {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, #8b6914 0%, #d4af37 100%);
+  border: 2px solid #f4e4c1;
+  border-radius: 8px;
+  color: #1a1410;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.start-exam-button.enabled:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+.start-exam-button.disabled {
+  background: rgba(45, 31, 26, 0.6);
+  border-color: rgba(232, 213, 183, 0.3);
+  color: #6d5d4b;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Promotion Unavailable */
+.promotion-unavailable {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.promotion-unavailable h2 {
+  font-size: 2rem;
+  color: #f4e4c1;
+  margin-bottom: 1rem;
+}
+
+.current-grade-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(244, 228, 193, 0.1);
+  border: 2px solid #f4e4c1;
+  border-radius: 8px;
+}
+
+.grade-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #d4af37;
+}
+
+.flavor-text {
+  color: #b89968;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* ========== Placeholder Tab Styles ========== */
+
+.placeholder-tab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.placeholder-content {
+  text-align: center;
+  max-width: 500px;
+}
+
+.placeholder-title {
+  font-size: 2rem;
+  color: #f4e4c1;
+  margin-bottom: 1rem;
+}
+
+.placeholder-description {
+  color: #c9b69a;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.coming-soon-badge {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background: rgba(255, 193, 7, 0.2);
+  border: 2px solid rgba(255, 193, 7, 0.5);
+  border-radius: 20px;
+  color: #ffc107;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.feature-preview {
+  text-align: left;
+  background: rgba(232, 213, 183, 0.05);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(232, 213, 183, 0.2);
+}
+
+.feature-preview h3 {
+  color: #f4e4c1;
+  margin-top: 0;
+}
+
+.feature-preview ul {
+  color: #b89968;
+  line-height: 1.8;
+}
+
+.feature-preview li {
+  margin-bottom: 0.5rem;
+}

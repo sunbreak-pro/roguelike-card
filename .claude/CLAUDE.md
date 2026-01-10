@@ -1,10 +1,40 @@
 # Roguelike Card Battle Game - Development Constitution
 
+## CRITICAL: Working Directory
+
+**Current Working Directory:**
+```
+/Users/newlife/Downloads/Desktop/roguelike-card/
+```
+
+**Project structure:**
+```
+roguelike-card/                    # Git root & Workspace root (CURRENT DIRECTORY)
+├── package.json                   # Workspace package.json (npm commands work here!)
+├── .claude/
+└── roguelike-card-battle/         # Actual project root
+    ├── package.json
+    ├── src/
+    ├── public/
+    └── ...
+```
+
+**NPM Commands:**
+You can now run npm commands from EITHER directory:
+- ✅ `npm run dev` (from roguelike-card/) - runs workspace script
+- ✅ `cd roguelike-card-battle && npm run dev` - runs directly
+
+**When referencing file paths:**
+- ✅ CORRECT: `roguelike-card-battle/src/domain/camps/types/ItemTypes.ts`
+- ❌ WRONG: `src/domain/camps/types/ItemTypes.ts` (this would be git root)
+
+---
+
 ## Project Identity
 
-**Genre:** Deck-Building RPG  
-**Theme:** Dark Fantasy - "Those who don the corruption will dwell in madness, know chaos, be tormented by emptiness, and gaze into the abyss"  
-**Platform:** PC (Web Browser)  
+**Genre:** Deck-Building RPG
+**Theme:** Dark Fantasy - "Those who don the corruption will dwell in madness, know chaos, be tormented by emptiness, and gaze into the abyss"
+**Platform:** PC (Web Browser)
 **Target:** Casual yet strategic players inspired
 
 ---

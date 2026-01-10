@@ -1,13 +1,10 @@
 import { useState } from "react";
+import { useGameState } from "../../domain/camps/contexts/GameStateContext";
+import type {
+  FacilityType,
+  GameScreen,
+} from "../../domain/camps/types/CampTypes";
 import "./BaseCamp.css";
-
-type FacilityType =
-  | "shop"
-  | "blacksmith"
-  | "dungeon"
-  | "church"
-  | "training"
-  | "tavern";
 
 interface FacilityCardProps {
   type: FacilityType;
@@ -15,7 +12,7 @@ interface FacilityCardProps {
   description: string;
   icon: string;
   isUnlocked: boolean;
-  onEnter: () => void;
+  onEnter: () => GameScreen | void;
 }
 
 const FacilityCard = ({
@@ -74,18 +71,16 @@ const FacilityCard = ({
 };
 
 const BaseCamp = () => {
-  const [selectedFacility, setSelectedFacility] = useState<FacilityType | null>(
-    null
-  );
+  const { navigateTo } = useGameState();
 
   const facilities: FacilityCardProps[] = [
     {
       type: "dungeon",
-      name: "深淵の入り口",
+      name: "ダンジョンゲート",
       description: "Descend into the depths and face your destiny",
       icon: "🌀",
       isUnlocked: true,
-      onEnter: () => setSelectedFacility("dungeon"),
+      onEnter: () => navigateTo("dungeon"),
     },
     {
       type: "shop",
@@ -93,7 +88,7 @@ const BaseCamp = () => {
       description: "Buy and sell cards, items, and relics",
       icon: "🏪",
       isUnlocked: true,
-      onEnter: () => setSelectedFacility("shop"),
+      onEnter: () => navigateTo("shop"),
     },
     {
       type: "blacksmith",
@@ -101,51 +96,41 @@ const BaseCamp = () => {
       description: "Forge and upgrade your equipment",
       icon: "⚒️",
       isUnlocked: true,
-      onEnter: () => setSelectedFacility("blacksmith"),
+      onEnter: () => navigateTo("blacksmith"),
     },
     {
-      type: "church",
-      name: "古代の時計台",
-      description: "Remove curses and purify your deck",
+      type: "sanctuary",
+      name: "聖域",
+      description: "Strengthen your soul with permanent upgrades",
       icon: "⛪",
-      isUnlocked: false,
-      onEnter: () => setSelectedFacility("church"),
+      isUnlocked: true,
+      onEnter: () => navigateTo("sanctuary"),
     },
     {
-      type: "training",
-      name: "啓示の間",
-      description: "Practice and master your cards",
-      icon: "🎯",
-      isUnlocked: false,
-      onEnter: () => setSelectedFacility("training"),
+      type: "library",
+      name: "図書館",
+      description: "Build your deck and browse the encyclopedia",
+      icon: "📚",
+      isUnlocked: true,
+      onEnter: () => navigateTo("library"),
     },
     {
-      type: "tavern",
+      type: "guild",
       name: "酒場",
       description: "Rest, recruit companions, and hear rumors",
       icon: "🍺",
+      isUnlocked: true,
+      onEnter: () => navigateTo("guild"),
+    },
+    {
+      type: "storage",
+      name: "倉庫",
+      description: "Store and manage your items safely",
+      icon: "📦",
       isUnlocked: false,
-      onEnter: () => setSelectedFacility("tavern"),
+      onEnter: () => navigateTo("storage"),
     },
   ];
-
-  // 施設が選択された場合、その施設の詳細画面を表示（今は簡易実装）
-  if (selectedFacility) {
-    return (
-      <div className="facility-detail">
-        <button
-          className="back-button"
-          onClick={() => setSelectedFacility(null)}
-        >
-          ← Back to Camp
-        </button>
-        <div className="facility-content">
-          <h2>{facilities.find((f) => f.type === selectedFacility)?.name}</h2>
-          <p className="coming-soon">Coming Soon...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="base-camp">

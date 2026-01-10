@@ -492,8 +492,8 @@
 }
 
 .back-button:hover {
-  background: rgba(138, 98, 158, 0.5);
-  border-color: rgba(138, 98, 158, 1);
+  background: rgba(249, 164, 128, 0.5);
+  border-color: rgba(40, 23, 43, 0.017);
   transform: translateX(-4px);
 }
 
