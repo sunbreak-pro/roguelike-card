@@ -2,6 +2,21 @@
 
 > セッション単位の変更履歴（降順）。各エントリは「概要」+「変更点」。要約は `README.md` の Development History、進行状況は `MEMORY.md`。古いエントリは肥大化したら `HISTORY-archive.md` へ退避。
 
+### 2026-07-02 - 戦闘エンジン Bake-off 実装 + Unity 移行方針転換・計画策定
+
+#### 概要
+
+検証済み「間合い×スタミナ」戦闘コアを共有 `core/` として本番品質へ昇格し、@pixi/react 版と Phaser 4 版の2アダプタに同一コアを載せて肌感比較する bake-off を実装。実機プレイの結果、Phaser は好印象だが低解像度・ボタン重なり・全体的なリアル感不足が判明し、ユーザー方針として「ゲーム本体ごと Unity へ移行（アニメ・2.5D 絵柄、個人開発・低コスト先行）」へ転換。エンジン選定は Unity 移行で moot 化。Unity 移行の全体戦略と first step 実装計画（環境セットアップ含む）を策定し、bake-off 実装 + 計画書を PR #16 で main マージ。feat ブランチはローカル・リモート削除。
+
+#### 変更点
+
+- **共有コア昇格**: `src/ui/prototype/engine/` を `src/ui/battle-lab/core/`（types/constants/combat/cards/enemy/battleReducer）へ非コメント差分0で昇格（公平性担保）+ 表示導出を `viewModel.ts` に抽出。core 単体テスト 47件（combat/battleReducer/viewModel）
+- **2アダプタ**: `adapters/pixi/`（@pixi/react、既存 `@/ui/pixi` の PixiStage 再利用、StrictMode #602 ガード）+ `adapters/phaser/`（Phaser 4 Scene、薄いストア→reducer→再描画）。vite `rollupOptions.input` に pixi/phaser 2エントリ + ルート HTML 追加
+- **検証**: tsc / test203件 / build 4エントリ green、session-verifier PASS、独立 role-qa PASS-with-fixes（Blocker0・公平性 core 同一 Yes・viewModel 検証台一致 Yes）
+- **方針転換（Unity 移行）**: 実機評価で Phaser 低解像度（Scale.FIT 引き伸ばし + hi-DPI 無）・ボタン/カード重なり・リアル感不足 → キャラ絵本格化のため Unity フル移行を決定。Pixi/Phaser アダプタは使い捨て、`battle-lab/core/` は C# 移植元・パリティ基準として保全
+- **Unity 計画策定**: `2026-06-28-unity-migration-character-art.md`（全体戦略・費用/Live2D 等 2.5D/アニメ AI art + 商用注意/Web→C# 移植、web-researcher 4体で裏取り・出典付き）+ `2026-06-28-unity-first-step-core-port.md`（View/Logic/Data 3層・MonoBehaviour 薄く・IRng 注入で言語間決定的パリティ・Unity→Claude Code→MCP 環境セットアップ4段階・Windows 11 デスクトップ想定）
+- **Git**: PR #16 を origin/main へマージ（merge `853226a`）。feat `feat/battle-engine-bakeoff` をローカル（`git branch -d`）・リモート（`git push origin --delete`）削除。worktree `../battle-bakeoff` は detached HEAD で保持（不要時に `git worktree remove`）
+
 ### 2026-06-28 - 要件正本の一本化確定 + 戦闘エンジン Bake-off 計画策定
 
 #### 概要
@@ -68,23 +83,3 @@ README と脆弱性ガイドの不整合（V-EXEC/V-PHASE 系の完了表記）�
 #### 次
 
 known-issue 001（resonance debuff 1-card-lag）の修正は別タスク。本変更は未コミット（main ブランチ + .claude リファクタ塊と分離コミット必要、ユーザー承認待ち）。
-
-### 2026-05-17 - .claude ハーネス構造を life-editor 準拠へリファクタ（Phase A-E 完了）
-
-#### 概要
-
-グローバル CLAUDE.md 標準構造との乖離を解消するため、`.claude/` を life-editor 運用に合わせて全面再編。ユーザー確認で「フル移行（git mv 標準化）」「MEMORY/HISTORY へ移行」「プロジェクト固有エージェント作成」の 3 方針を決定。Phase A（ディレクトリ移行）〜 Phase E（課題整理）を 1 セッションで完遂。
-
-#### 変更点
-
-- **Phase A — ディレクトリ移行**: `git mv` で `.claude/code_overview/` → `.claude/docs/code-explanation/`（15 ファイル + サブディレクトリ）、`feature_plans/` の tracked 4 ファイル → `docs/vision/plans/`、untracked PixiJS 4 ファイルは `mv`、`memories/LESSONS_LEARNED.md` → `docs/known-issues/`、`memories/basecamp_consolidation_completed.md` → `archive/`。空ディレクトリ削除
-- **クロスリンク一括更新**: 非 worktree の .md 11 ファイルで `.claude/code_overview/`→`.claude/docs/code-explanation/` 等を sed 置換。残存ゼロ確認。`worktrees/` 配下は別 git worktree のため非対象
-- **Phase B — 標準インフラ新設**: `docs/vision/core.md`（Vision・設計原則）、`docs/known-issues/INDEX.md`（8 知見カタログ + 脆弱性ガイドへのポインタ）、`MEMORY.md`（進行中/直近完了/予定、旧 TODO バックログを移管）、`HISTORY.md`（本ファイル）を作成。`docs/requirements/` ディレクトリも用意。`docs/INDEX.md` を標準構造 + ゲーム設計書の二層構成に書き換え
-- **Phase C — CLAUDE.md 再構成**: §0 Meta（役割/更新規則/タスク運用/関連ドキュメント表）追加、Task Completion Rule を TODO/README → MEMORY/HISTORY モデルへ書き換え、Document System 節新設、References 表を更新。223 行（400 行以下目標を維持）。`TODO.md` を MEMORY.md への薄いポインタへ縮小
-- **Phase D — プロジェクト固有エージェント**: `agents-lib/projects/original-card-battle/` に分析特化 3 体作成（`card-battle-balance-auditor` = データ vs 設計書整合 / `card-battle-state-invariant-checker` = Context・React19・不可侵コード・セーブ網羅 / `card-battle-battle-logic-validator` = バトルフェーズ・ダメージ・バフ整合）。`.claude/agents/` にシンボリックリンク、`AGENT_INDEX.md` に節 + 最終更新追記
-- **Phase E — 課題整理**: 脆弱性ガイドを精読し MEMORY.md「予定」を優先度付きで具体化。**ドキュメント不整合を発見**: README は V-EXEC/V-PHASE 系を「2026-02-05 完了」と記載するが、vulnerability-remediation-guide.md の Phase 5 では未修正扱い。最優先で実コード確認・寄せ先決定が必要（MEMORY.md 課題 #1）
-- **方針**: タスク管理は TODO.md/README 履歴 → MEMORY.md/HISTORY.md へ移行（task-tracker 経由運用）。README の Development History は完了履歴の要約として継続
-
-#### 次
-
-MEMORY.md 課題 #1（README vs 脆弱性ガイドの V-EXEC/V-PHASE 不整合）を `card-battle-battle-logic-validator` で検証し寄せ先決定。未コミット（ユーザー確認後に commit 予定）。

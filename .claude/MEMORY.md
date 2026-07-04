@@ -4,40 +4,21 @@
 
 ## 進行中
 
-### 🔧 Unity 移行 + 2.5D アニメキャラ art — 調査・計画書（着手日: 2026-06-28）
-
-**対象**: `.claude/docs/vision/plans/`（新規計画書）。**実装は別セッション**
-**前提（ユーザー方針確定 2026-06-28）**: ゲーム本体ごと Unity 移行 / 絵柄はアニメ・2.5D / 個人開発・まず低コスト中心
-
-- 前回: bake-off Phase 4 実機評価で「Phaser は好印象だが低解像度・ボタン重なり、全体にリアル感不足」。キャラ画像を本格化したい意向 → 方針スコープ確定
-- 前回: web-researcher 3体並列で Unity 費用/2.5D 表現・アニメ AI art/商用注意・Web→C# 移植を裏取り
-- 現在: **計画書2本完成** — ①全体戦略 `2026-06-28-unity-migration-character-art.md`（出典付き）②first step 実装計画 `2026-06-28-unity-first-step-core-port.md`（戦闘コア C# 移植 + 最小1戦・Web パリティ。Unity×Claude 開発しやすさ調査も反映＝ロジック先行/MonoBehaviour 薄く/IRng 注入でパリティ証明）。**bake-off の Pixi/Phaser 選定は Unity フル移行で実質 moot 化**
-- 次: 別セッションで first step 実装（Unity プロジェクト作成 → コア移植 → EditMode/headless テスト → 最小 UGUI 戦闘）。**未コミット変更（bake-off 実装一式 + 計画書3本 + トラッカー）のコミット方針は要ユーザー確認**
-
-### 🔧 戦闘エンジン Bake-off — Phase 1-3 実装（着手日: 2026-06-28）
-
-**対象**: `src/ui/battle-lab/`（新規 — core/ + adapters/pixi/ + adapters/phaser/）/ `pixi-bakeoff.html` / `phaser-bakeoff.html` / `vite.config.ts`
-**計画書**: `.claude/docs/vision/plans/2026-06-28-battle-engine-bakeoff.md`（実装契約）
-**ブランチ**: `feat/battle-engine-bakeoff`（worktree `battle-bakeoff`、origin push 済）
-
-- 前回: Phase 1（`battle-lab/core/` へ engine 6+テスト2 昇格・非コメント差分0で公平性担保 + `viewModel.ts` 抽出 + viewModel テスト14件）完了
-- 現在: **Phase 2/3 完了・検証通過** — Pixi/Phaser アダプタを role-engineer 2体並列実装、vite `rollupOptions.input` に4エントリ追加。Phaser は v4.2（計画 Phaser 3 表記是正）。tsc / test203件 / build 4エントリ green、session-verifier PASS + 独立 QA PASS-with-fixes（Blocker 0・公平性 Yes・viewModel 検証台一致 Yes）
-- 次: **Phase 4** — ユーザー実機プレイで肌感比較（pixi/phaser-bakeoff.html）→ エンジン選定 → 計画書 決定記録 追記 → task-tracker END（コミット・PR）
-
 ### 🔧 リアル性コンセプト v2 — 戦闘システム上流確定 + プロトタイプ計画（着手日: 2026-06-11）
 
 **対象**: `.claude/docs/requirements/`（Tier1/2/3 正本確定）/ `.claude/docs/vision/concept-v2.md`（RE-APPROVED 2026-06-27）/ `src/ui/prototype/`（実装済・main マージ）
 **計画書**: `.claude/docs/vision/plans/2026-06-28-battle-engine-bakeoff.md`（次ステップ・PLANNED・別セッション実装）/ `2026-06-27-battle-prototype-range-stamina.md`（プロト — 実装・マージ済 PR #14）
 
 - 前回: 戦闘プロト（間合い×スタミナ検証台）を `src/ui/prototype/` に隔離実装→実機プレイで「ゲーム性はかなり面白い」と評価→PR #14 を origin/main へマージ（merge `9b88536`）。詳細は HISTORY 2026-06-27
-- 現在: **要件正本化＋Bake-off Phase 0 prep を完了**。origin/main（`d4a57fd`）に Tier1/2/3 正本化・umbrella削除・bake-off計画書を反映。専用 worktree `../battle-bakeoff`（`feat/battle-engine-bakeoff`、origin push 済）を作成し rollup時限爆弾除去(#5)＋phaser導入(v4.2)を独立コミット（`117e8b1`/`fd29c11`、build・test156件green・脆弱性0）。**rollup除去は feat（`117e8b1`）＋main（cherry-pick `d709c8a`）両方完了**。**phaser は v4.2 据え置き**（ユーザー確認済・v4 API 前提で実装。v4 起因の不具合時のみ v3 へ差し替え）
-- 次: **別セッションが feat worktree で Bake-off を Phase 1（共有コア昇格）から実装**（Phase 0 は済）→ 両エンジン触り比べ→選定 → 剣気・崩し設計 → R1-2 新戦闘コア設計書 → Tier1 本実装
+- 前回: 要件正本化 + Bake-off Phase 0 prep 完了（Tier1/2/3 正本化・umbrella削除・rollup除去・phaser v4 導入）
+- 現在: **Bake-off 実装・実機評価まで完了 → Unity フル移行へ方針転換**。共有コア + Pixi/Phaser 2アダプタを PR #16 で main マージ（merge `853226a`）。実機プレイで Phaser は好印象だが低解像度・ボタン重なり・全体にリアル感不足 → エンジン選定は Unity 移行で moot 化。検証済み戦闘コア（`src/ui/battle-lab/core/`）は C# 移植元・パリティ基準として main に保全
+- 次: **Unity 移行 First Step（別セッション）** — 計画書 `2026-06-28-unity-first-step-core-port.md`（環境セットアップ4段階 + コア C# 移植 + EditMode/headless パリティ + 最小 UGUI 戦闘）。以降 Tier1 本実装を Unity 上で。剣気・崩し設計は移植後
 
 ## 直近の完了
 
-- PixiJS Phase 1 基盤実装 ✅（2026-05-23）— pixi.js@8.18.1 + @pixi/react@8.0.5 導入、`src/ui/pixi/` 配下に PixiStage/BattleCanvas/3レイヤー/EffectBridge/型 を新設、BattleScreen + GuildBattleScreen に `<BattleCanvas>` 挿入。Step0=A 案（React.lazy + mountedRef ガード）で StrictMode #602 構造的回避。particle-emitter 未導入・vite.config 無変更・受け入れ基準 9/9 構造充足。QA PASS-with-fixes（Blocker0 / 実害ある Major0）。実機検証 OK。計画書: `archive/2026-05-17-pixijs-phase1-code-level.md`
-- バトルロジック脆弱性修正（V-CHAIN-01 / V-ENM-02 + 回帰テスト + ガイド正本化）✅（2026-05-17）— 調査で README が正・ガイド陳腐化を確定。実装が必要だったのは2件のみ。QA PASS-with-fixes（Blocker0）。**コミット済**（commit 60cc0f3, push 済）
-- .claude ハーネス構造の life-editor 準拠リファクタ（Phase A-E）✅（2026-05-17）— git mv 標準化、MEMORY/HISTORY 新設、CLAUDE.md 再構成、固有エージェント3体作成。**コミット済**（commit 960aeea, push 済）
+- 戦闘エンジン Bake-off（Phase 1-3）✅（2026-07-02）— 検証済み「間合い×スタミナ」コアを `src/ui/battle-lab/core/` へ本番品質昇格（非コメント差分0で公平性担保）+ `viewModel` 抽出、Pixi/Phaser 2アダプタで同一コアを描画比較。tsc/test203/build 4エントリ green、独立QA Blocker0。実機評価で **Unity フル移行へ方針転換**（Phaser 低解像度・ボタン重なり・リアル感不足）→ エンジン選定 moot。PR #16 を main マージ（`853226a`）、feat ブランチ削除
+- Unity 移行 + 2.5D アニメキャラ art 調査・計画書 ✅（2026-07-02）— 全体戦略 `2026-06-28-unity-migration-character-art.md`（費用/2.5D/AI art 商用注意/Web→C# 移植、出典付き）+ first step 実装計画 `2026-06-28-unity-first-step-core-port.md`（Unity→Claude→MCP 環境セットアップ4段階含む）。PR #16 で main マージ
+- PixiJS Phase 1 基盤実装 ✅（2026-05-23）— pixi.js@8.18.1 + @pixi/react@8.0.5 導入、`src/ui/pixi/` 配下に PixiStage/BattleCanvas/3レイヤー、Step0=A 案（React.lazy + mountedRef）で StrictMode #602 構造回避。QA PASS-with-fixes（Blocker0）。計画書: `archive/2026-05-17-pixijs-phase1-code-level.md`
 
 > 完了履歴の全量は `README.md` の Development History を参照。
 
@@ -45,7 +26,7 @@
 
 ### 次のアクティブタスク（別セッションで実装）
 
-- 🔜 **戦闘コア — ゲームエンジン Bake-off（PixiJS版 × Phaser版）** — 計画書 `.claude/docs/vision/plans/2026-06-28-battle-engine-bakeoff.md`（PLANNED）。検証済みコアを両エンジンに載せ肌感で触り比べ→1エンジン選定（Tier 1 本実装の描画基盤へ昇格）。**Phase 0 prep 完了**（docs→main 反映・umbrella削除・rollup除去・phaser v4 導入、worktree `../battle-bakeoff` 作成・push 済）→ 実装は別セッションが feat worktree で **Phase 1 から**開始
+- 🔜 **Unity 移行 First Step — 戦闘コア C# 移植 + 最小プレイアブル** — 計画書 `.claude/docs/vision/plans/2026-06-28-unity-first-step-core-port.md`（PLANNED・別セッション）。親戦略 `2026-06-28-unity-migration-character-art.md`。新規 Unity プロジェクトで環境セットアップ（Unity→Claude Code→MCP 4段階、Windows 11 デスクトップ想定）→ コア C# 移植 → EditMode/headless パリティ（IRng 注入で言語間決定的）→ 最小 UGUI 戦闘。現 Web リポは照合用に並走保全
 
 ### バックログ機能（旧 TODO.md より移管）
 
