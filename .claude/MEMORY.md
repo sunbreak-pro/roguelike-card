@@ -16,17 +16,17 @@
 
 ## 直近の完了
 
+- Unity 移行 First Step — 戦闘コア C# 移植 + パリティ証明 ✅（2026-07-05）— 計画書のPhase0（0a AI art生成/Live2D・0b Unity Editorスパイク）は画像生成・Live2D・Unity Editor操作の手段を持たないため自動実行不可と判断、ユーザー確認の上コア移植（子プランP0-P2相当）へ直行。`unity-port/`（netstandard2.1 単体ライブラリ）に `src/ui/battle-lab/core/` を無改変移植元として C# 移植（Types/Constants/Combat/Cards/Enemy/BattleReducer/ViewModel + IRng注入）。TS実装を固定RNGで実走させたゴールドデータでパリティテスト作成。dotnet test 50/50 green、role-qa 独立監査 PASS（Blocker0・数値/ログ文言完全一致確認済み）。**残課題**: Phase3（実際のUnityプロジェクト作成 + UGUI最小戦闘画面）はUnity Editor操作が必須のため別途人間作業が必要（予定へ記載）
 - 戦闘エンジン Bake-off（Phase 1-3）✅（2026-07-02）— 検証済み「間合い×スタミナ」コアを `src/ui/battle-lab/core/` へ本番品質昇格（非コメント差分0で公平性担保）+ `viewModel` 抽出、Pixi/Phaser 2アダプタで同一コアを描画比較。tsc/test203/build 4エントリ green、独立QA Blocker0。実機評価で **Unity フル移行へ方針転換**（Phaser 低解像度・ボタン重なり・リアル感不足）→ エンジン選定 moot。PR #16 を main マージ（`853226a`）、feat ブランチ削除
 - Unity 移行 + 2.5D アニメキャラ art 調査・計画書 ✅（2026-07-02）— 全体戦略 `2026-06-28-unity-migration-character-art.md`（費用/2.5D/AI art 商用注意/Web→C# 移植、出典付き）+ first step 実装計画 `2026-06-28-unity-first-step-core-port.md`（Unity→Claude→MCP 環境セットアップ4段階含む）。PR #16 で main マージ
-- PixiJS Phase 1 基盤実装 ✅（2026-05-23）— pixi.js@8.18.1 + @pixi/react@8.0.5 導入、`src/ui/pixi/` 配下に PixiStage/BattleCanvas/3レイヤー、Step0=A 案（React.lazy + mountedRef）で StrictMode #602 構造回避。QA PASS-with-fixes（Blocker0）。計画書: `archive/2026-05-17-pixijs-phase1-code-level.md`
 
 > 完了履歴の全量は `README.md` の Development History を参照。
 
 ## 予定
 
-### 次のアクティブタスク（別セッションで実装）
+### 次のアクティブタスク
 
-- 🔜 **Unity 移行 First Step — 戦闘コア C# 移植 + 最小プレイアブル** — 計画書 `.claude/docs/vision/plans/2026-06-28-unity-first-step-core-port.md`（PLANNED・別セッション）。親戦略 `2026-06-28-unity-migration-character-art.md`。新規 Unity プロジェクトで環境セットアップ（Unity→Claude Code→MCP 4段階、Windows 11 デスクトップ想定）→ コア C# 移植 → EditMode/headless パリティ（IRng 注入で言語間決定的）→ 最小 UGUI 戦闘。現 Web リポは照合用に並走保全
+- 🔜 **Unity 移行 First Step — 残課題（Phase3: 実UnityプロジェクトのUGUI最小戦闘画面）** — `unity-port/BattleCore` のコア移植・パリティ証明は完了済み（PR待ち）。残りはUnity Editorでの実プロジェクト作成・`BattleStore`駆動・UGUI戦闘画面（間合いは実距離・体勢表現）で、Unity Editor操作が必須のため人間主体の作業（環境セットアップは `.claude/docs/vision/plans/2026-06-28-unity-first-step-core-port.md` の4段階参照）
 
 ### バックログ機能（旧 TODO.md より移管）
 
