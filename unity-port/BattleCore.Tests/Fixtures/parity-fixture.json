@@ -1,0 +1,5248 @@
+[
+  {
+    "action": {
+      "type": "INIT"
+    },
+    "state": {
+      "turn": 1,
+      "distanceIndex": 1,
+      "playerHp": 30,
+      "playerStamina": 20,
+      "playerGuard": 0,
+      "enemyHp": 38,
+      "enemyStamina": 20,
+      "hand": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "discardPile": [],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        }
+      ],
+      "logSeq": 1,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "PLAY_CARD",
+      "instanceId": "thrust-1"
+    },
+    "state": {
+      "turn": 1,
+      "distanceIndex": 1,
+      "playerHp": 30,
+      "playerStamina": 16,
+      "playerGuard": 0,
+      "enemyHp": 33,
+      "enemyStamina": 20,
+      "hand": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "discardPile": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        }
+      ],
+      "logSeq": 2,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 2,
+      "distanceIndex": 1,
+      "playerHp": 22,
+      "playerStamina": 18,
+      "playerGuard": 0,
+      "enemyHp": 33,
+      "enemyStamina": 15,
+      "hand": [
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "discardPile": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        }
+      ],
+      "logSeq": 5,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "PLAY_CARD",
+      "instanceId": "step_in-0"
+    },
+    "state": {
+      "turn": 2,
+      "distanceIndex": 0,
+      "playerHp": 22,
+      "playerStamina": 16,
+      "playerGuard": 0,
+      "enemyHp": 33,
+      "enemyStamina": 15,
+      "hand": [
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "discardPile": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        }
+      ],
+      "logSeq": 7,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 3,
+      "distanceIndex": 1,
+      "playerHp": 20,
+      "playerStamina": 18,
+      "playerGuard": 0,
+      "enemyHp": 33,
+      "enemyStamina": 13,
+      "hand": [
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "discardPile": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        }
+      ],
+      "logSeq": 10,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "PLAY_CARD",
+      "instanceId": "step_in-1"
+    },
+    "state": {
+      "turn": 3,
+      "distanceIndex": 0,
+      "playerHp": 20,
+      "playerStamina": 16,
+      "playerGuard": 0,
+      "enemyHp": 33,
+      "enemyStamina": 13,
+      "hand": [
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "discardPile": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        }
+      ],
+      "logSeq": 12,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 4,
+      "distanceIndex": 1,
+      "playerHp": 18,
+      "playerStamina": 18,
+      "playerGuard": 0,
+      "enemyHp": 33,
+      "enemyStamina": 11,
+      "hand": [
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "drawPile": [],
+      "discardPile": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        }
+      ],
+      "logSeq": 15,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "PLAY_CARD",
+      "instanceId": "thrust-0"
+    },
+    "state": {
+      "turn": 4,
+      "distanceIndex": 1,
+      "playerHp": 18,
+      "playerStamina": 14,
+      "playerGuard": 0,
+      "enemyHp": 28,
+      "enemyStamina": 11,
+      "hand": [
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        }
+      ],
+      "drawPile": [],
+      "discardPile": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        }
+      ],
+      "logSeq": 16,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "PLAY_CARD",
+      "instanceId": "brace-0"
+    },
+    "state": {
+      "turn": 4,
+      "distanceIndex": 1,
+      "playerHp": 18,
+      "playerStamina": 12,
+      "playerGuard": 6,
+      "enemyHp": 28,
+      "enemyStamina": 11,
+      "hand": [
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        }
+      ],
+      "drawPile": [],
+      "discardPile": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        }
+      ],
+      "logSeq": 17,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 5,
+      "distanceIndex": 1,
+      "playerHp": 16,
+      "playerStamina": 14,
+      "playerGuard": 0,
+      "enemyHp": 28,
+      "enemyStamina": 8,
+      "hand": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "discardPile": [],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        },
+        {
+          "id": 17,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 13）。"
+        },
+        {
+          "id": 18,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 2 ダメージ（ガードで 6 軽減）。"
+        },
+        {
+          "id": 19,
+          "text": "ターン5開始。間合い「中」でスタミナ回復（+2 → 14）。"
+        }
+      ],
+      "logSeq": 20,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 6,
+      "distanceIndex": 1,
+      "playerHp": 8,
+      "playerStamina": 16,
+      "playerGuard": 0,
+      "enemyHp": 28,
+      "enemyStamina": 5,
+      "hand": [
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "discardPile": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        },
+        {
+          "id": 17,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 13）。"
+        },
+        {
+          "id": 18,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 2 ダメージ（ガードで 6 軽減）。"
+        },
+        {
+          "id": 19,
+          "text": "ターン5開始。間合い「中」でスタミナ回復（+2 → 14）。"
+        },
+        {
+          "id": 20,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 10）。"
+        },
+        {
+          "id": 21,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 22,
+          "text": "ターン6開始。間合い「中」でスタミナ回復（+2 → 16）。"
+        }
+      ],
+      "logSeq": 23,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "PLAY_CARD",
+      "instanceId": "feint-0"
+    },
+    "state": {
+      "turn": 6,
+      "distanceIndex": 2,
+      "playerHp": 8,
+      "playerStamina": 13,
+      "playerGuard": 0,
+      "enemyHp": 24,
+      "enemyStamina": 5,
+      "hand": [
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "discardPile": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        },
+        {
+          "id": 17,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 13）。"
+        },
+        {
+          "id": 18,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 2 ダメージ（ガードで 6 軽減）。"
+        },
+        {
+          "id": 19,
+          "text": "ターン5開始。間合い「中」でスタミナ回復（+2 → 14）。"
+        },
+        {
+          "id": 20,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 10）。"
+        },
+        {
+          "id": 21,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 22,
+          "text": "ターン6開始。間合い「中」でスタミナ回復（+2 → 16）。"
+        },
+        {
+          "id": 23,
+          "text": "「牽制」で 4 ダメージ。"
+        },
+        {
+          "id": 24,
+          "text": "間合いが「遠」に。"
+        }
+      ],
+      "logSeq": 25,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 7,
+      "distanceIndex": 2,
+      "playerHp": 5,
+      "playerStamina": 16,
+      "playerGuard": 0,
+      "enemyHp": 24,
+      "enemyStamina": 4,
+      "hand": [
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "discardPile": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        },
+        {
+          "id": 17,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 13）。"
+        },
+        {
+          "id": 18,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 2 ダメージ（ガードで 6 軽減）。"
+        },
+        {
+          "id": 19,
+          "text": "ターン5開始。間合い「中」でスタミナ回復（+2 → 14）。"
+        },
+        {
+          "id": 20,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 10）。"
+        },
+        {
+          "id": 21,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 22,
+          "text": "ターン6開始。間合い「中」でスタミナ回復（+2 → 16）。"
+        },
+        {
+          "id": 23,
+          "text": "「牽制」で 4 ダメージ。"
+        },
+        {
+          "id": 24,
+          "text": "間合いが「遠」に。"
+        },
+        {
+          "id": 25,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 8）。"
+        },
+        {
+          "id": 26,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 27,
+          "text": "ターン7開始。間合い「遠」でスタミナ回復（+3 → 16）。"
+        }
+      ],
+      "logSeq": 28,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 8,
+      "distanceIndex": 2,
+      "playerHp": 2,
+      "playerStamina": 19,
+      "playerGuard": 0,
+      "enemyHp": 24,
+      "enemyStamina": 3,
+      "hand": [
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "drawPile": [],
+      "discardPile": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        },
+        {
+          "id": 17,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 13）。"
+        },
+        {
+          "id": 18,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 2 ダメージ（ガードで 6 軽減）。"
+        },
+        {
+          "id": 19,
+          "text": "ターン5開始。間合い「中」でスタミナ回復（+2 → 14）。"
+        },
+        {
+          "id": 20,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 10）。"
+        },
+        {
+          "id": 21,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 22,
+          "text": "ターン6開始。間合い「中」でスタミナ回復（+2 → 16）。"
+        },
+        {
+          "id": 23,
+          "text": "「牽制」で 4 ダメージ。"
+        },
+        {
+          "id": 24,
+          "text": "間合いが「遠」に。"
+        },
+        {
+          "id": 25,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 8）。"
+        },
+        {
+          "id": 26,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 27,
+          "text": "ターン7開始。間合い「遠」でスタミナ回復（+3 → 16）。"
+        },
+        {
+          "id": 28,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 7）。"
+        },
+        {
+          "id": 29,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 30,
+          "text": "ターン8開始。間合い「遠」でスタミナ回復（+3 → 19）。"
+        }
+      ],
+      "logSeq": 31,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 8,
+      "distanceIndex": 2,
+      "playerHp": 0,
+      "playerStamina": 19,
+      "playerGuard": 0,
+      "enemyHp": 24,
+      "enemyStamina": 2,
+      "hand": [],
+      "drawPile": [],
+      "discardPile": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        },
+        {
+          "id": 17,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 13）。"
+        },
+        {
+          "id": 18,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 2 ダメージ（ガードで 6 軽減）。"
+        },
+        {
+          "id": 19,
+          "text": "ターン5開始。間合い「中」でスタミナ回復（+2 → 14）。"
+        },
+        {
+          "id": 20,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 10）。"
+        },
+        {
+          "id": 21,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 22,
+          "text": "ターン6開始。間合い「中」でスタミナ回復（+2 → 16）。"
+        },
+        {
+          "id": 23,
+          "text": "「牽制」で 4 ダメージ。"
+        },
+        {
+          "id": 24,
+          "text": "間合いが「遠」に。"
+        },
+        {
+          "id": 25,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 8）。"
+        },
+        {
+          "id": 26,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 27,
+          "text": "ターン7開始。間合い「遠」でスタミナ回復（+3 → 16）。"
+        },
+        {
+          "id": 28,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 7）。"
+        },
+        {
+          "id": 29,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 30,
+          "text": "ターン8開始。間合い「遠」でスタミナ回復（+3 → 19）。"
+        },
+        {
+          "id": 31,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 6）。"
+        },
+        {
+          "id": 32,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 2 ダメージ。"
+        },
+        {
+          "id": 33,
+          "text": "力尽きた。敗北。"
+        }
+      ],
+      "logSeq": 34,
+      "result": "lost"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 8,
+      "distanceIndex": 2,
+      "playerHp": 0,
+      "playerStamina": 19,
+      "playerGuard": 0,
+      "enemyHp": 24,
+      "enemyStamina": 2,
+      "hand": [],
+      "drawPile": [],
+      "discardPile": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        },
+        {
+          "id": 17,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 13）。"
+        },
+        {
+          "id": 18,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 2 ダメージ（ガードで 6 軽減）。"
+        },
+        {
+          "id": 19,
+          "text": "ターン5開始。間合い「中」でスタミナ回復（+2 → 14）。"
+        },
+        {
+          "id": 20,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 10）。"
+        },
+        {
+          "id": 21,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 22,
+          "text": "ターン6開始。間合い「中」でスタミナ回復（+2 → 16）。"
+        },
+        {
+          "id": 23,
+          "text": "「牽制」で 4 ダメージ。"
+        },
+        {
+          "id": 24,
+          "text": "間合いが「遠」に。"
+        },
+        {
+          "id": 25,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 8）。"
+        },
+        {
+          "id": 26,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 27,
+          "text": "ターン7開始。間合い「遠」でスタミナ回復（+3 → 16）。"
+        },
+        {
+          "id": 28,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 7）。"
+        },
+        {
+          "id": 29,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 30,
+          "text": "ターン8開始。間合い「遠」でスタミナ回復（+3 → 19）。"
+        },
+        {
+          "id": 31,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 6）。"
+        },
+        {
+          "id": 32,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 2 ダメージ。"
+        },
+        {
+          "id": 33,
+          "text": "力尽きた。敗北。"
+        }
+      ],
+      "logSeq": 34,
+      "result": "lost"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 8,
+      "distanceIndex": 2,
+      "playerHp": 0,
+      "playerStamina": 19,
+      "playerGuard": 0,
+      "enemyHp": 24,
+      "enemyStamina": 2,
+      "hand": [],
+      "drawPile": [],
+      "discardPile": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        },
+        {
+          "id": 17,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 13）。"
+        },
+        {
+          "id": 18,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 2 ダメージ（ガードで 6 軽減）。"
+        },
+        {
+          "id": 19,
+          "text": "ターン5開始。間合い「中」でスタミナ回復（+2 → 14）。"
+        },
+        {
+          "id": 20,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 10）。"
+        },
+        {
+          "id": 21,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 22,
+          "text": "ターン6開始。間合い「中」でスタミナ回復（+2 → 16）。"
+        },
+        {
+          "id": 23,
+          "text": "「牽制」で 4 ダメージ。"
+        },
+        {
+          "id": 24,
+          "text": "間合いが「遠」に。"
+        },
+        {
+          "id": 25,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 8）。"
+        },
+        {
+          "id": 26,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 27,
+          "text": "ターン7開始。間合い「遠」でスタミナ回復（+3 → 16）。"
+        },
+        {
+          "id": 28,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 7）。"
+        },
+        {
+          "id": 29,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 30,
+          "text": "ターン8開始。間合い「遠」でスタミナ回復（+3 → 19）。"
+        },
+        {
+          "id": 31,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 6）。"
+        },
+        {
+          "id": 32,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 2 ダメージ。"
+        },
+        {
+          "id": 33,
+          "text": "力尽きた。敗北。"
+        }
+      ],
+      "logSeq": 34,
+      "result": "lost"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 8,
+      "distanceIndex": 2,
+      "playerHp": 0,
+      "playerStamina": 19,
+      "playerGuard": 0,
+      "enemyHp": 24,
+      "enemyStamina": 2,
+      "hand": [],
+      "drawPile": [],
+      "discardPile": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        },
+        {
+          "id": 17,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 13）。"
+        },
+        {
+          "id": 18,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 2 ダメージ（ガードで 6 軽減）。"
+        },
+        {
+          "id": 19,
+          "text": "ターン5開始。間合い「中」でスタミナ回復（+2 → 14）。"
+        },
+        {
+          "id": 20,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 10）。"
+        },
+        {
+          "id": 21,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 22,
+          "text": "ターン6開始。間合い「中」でスタミナ回復（+2 → 16）。"
+        },
+        {
+          "id": 23,
+          "text": "「牽制」で 4 ダメージ。"
+        },
+        {
+          "id": 24,
+          "text": "間合いが「遠」に。"
+        },
+        {
+          "id": 25,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 8）。"
+        },
+        {
+          "id": 26,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 27,
+          "text": "ターン7開始。間合い「遠」でスタミナ回復（+3 → 16）。"
+        },
+        {
+          "id": 28,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 7）。"
+        },
+        {
+          "id": 29,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 30,
+          "text": "ターン8開始。間合い「遠」でスタミナ回復（+3 → 19）。"
+        },
+        {
+          "id": 31,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 6）。"
+        },
+        {
+          "id": 32,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 2 ダメージ。"
+        },
+        {
+          "id": 33,
+          "text": "力尽きた。敗北。"
+        }
+      ],
+      "logSeq": 34,
+      "result": "lost"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 8,
+      "distanceIndex": 2,
+      "playerHp": 0,
+      "playerStamina": 19,
+      "playerGuard": 0,
+      "enemyHp": 24,
+      "enemyStamina": 2,
+      "hand": [],
+      "drawPile": [],
+      "discardPile": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 5,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 6,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 7,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 16）。"
+        },
+        {
+          "id": 8,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 9,
+          "text": "ターン3開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 10,
+          "text": "「足捌き・前」を使った。"
+        },
+        {
+          "id": 11,
+          "text": "間合いが「近」に。"
+        },
+        {
+          "id": 12,
+          "text": "敵が間合い「近」でスタミナ回復（+1 → 14）。"
+        },
+        {
+          "id": 13,
+          "text": "敵「長柄の歪み兵」の石突きの押し込み。 2 ダメージ。 間合いが「中」に。"
+        },
+        {
+          "id": 14,
+          "text": "ターン4開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        },
+        {
+          "id": 15,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 16,
+          "text": "「呼吸を整える」で受けを固めた（ガード +6）。"
+        },
+        {
+          "id": 17,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 13）。"
+        },
+        {
+          "id": 18,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 2 ダメージ（ガードで 6 軽減）。"
+        },
+        {
+          "id": 19,
+          "text": "ターン5開始。間合い「中」でスタミナ回復（+2 → 14）。"
+        },
+        {
+          "id": 20,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 10）。"
+        },
+        {
+          "id": 21,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 22,
+          "text": "ターン6開始。間合い「中」でスタミナ回復（+2 → 16）。"
+        },
+        {
+          "id": 23,
+          "text": "「牽制」で 4 ダメージ。"
+        },
+        {
+          "id": 24,
+          "text": "間合いが「遠」に。"
+        },
+        {
+          "id": 25,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 8）。"
+        },
+        {
+          "id": 26,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 27,
+          "text": "ターン7開始。間合い「遠」でスタミナ回復（+3 → 16）。"
+        },
+        {
+          "id": 28,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 7）。"
+        },
+        {
+          "id": 29,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 3 ダメージ。"
+        },
+        {
+          "id": 30,
+          "text": "ターン8開始。間合い「遠」でスタミナ回復（+3 → 19）。"
+        },
+        {
+          "id": 31,
+          "text": "敵が間合い「遠」でスタミナ回復（+3 → 6）。"
+        },
+        {
+          "id": 32,
+          "text": "敵「長柄の歪み兵」の穂先の突き。 2 ダメージ。"
+        },
+        {
+          "id": 33,
+          "text": "力尽きた。敗北。"
+        }
+      ],
+      "logSeq": 34,
+      "result": "lost"
+    }
+  },
+  {
+    "action": {
+      "type": "RESTART"
+    },
+    "state": {
+      "turn": 1,
+      "distanceIndex": 1,
+      "playerHp": 30,
+      "playerStamina": 20,
+      "playerGuard": 0,
+      "enemyHp": 38,
+      "enemyStamina": 20,
+      "hand": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "discardPile": [],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        }
+      ],
+      "logSeq": 1,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "PLAY_CARD",
+      "instanceId": "thrust-1"
+    },
+    "state": {
+      "turn": 1,
+      "distanceIndex": 1,
+      "playerHp": 30,
+      "playerStamina": 16,
+      "playerGuard": 0,
+      "enemyHp": 33,
+      "enemyStamina": 20,
+      "hand": [
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "discardPile": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        }
+      ],
+      "logSeq": 2,
+      "result": "ongoing"
+    }
+  },
+  {
+    "action": {
+      "type": "END_TURN"
+    },
+    "state": {
+      "turn": 2,
+      "distanceIndex": 1,
+      "playerHp": 22,
+      "playerStamina": 18,
+      "playerGuard": 0,
+      "enemyHp": 33,
+      "enemyStamina": 15,
+      "hand": [
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-0"
+        },
+        {
+          "defId": "feint",
+          "name": "牽制",
+          "type": "attack",
+          "cost": 3,
+          "effectiveRange": "mid",
+          "basePower": 4,
+          "shift": 1,
+          "guard": 0,
+          "description": "削りつつ後退する。",
+          "instanceId": "feint-1"
+        },
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-0"
+        }
+      ],
+      "drawPile": [
+        {
+          "defId": "step_in",
+          "name": "足捌き・前",
+          "type": "move",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": -1,
+          "guard": 0,
+          "description": "間合いを詰める。",
+          "instanceId": "step_in-1"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-0"
+        },
+        {
+          "defId": "step_out",
+          "name": "足捌き・後",
+          "type": "move",
+          "cost": 1,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 1,
+          "guard": 0,
+          "description": "間合いを離す。安い。",
+          "instanceId": "step_out-1"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-0"
+        },
+        {
+          "defId": "brace",
+          "name": "呼吸を整える",
+          "type": "guard",
+          "cost": 2,
+          "effectiveRange": null,
+          "basePower": 0,
+          "shift": 0,
+          "guard": 6,
+          "description": "受けを固める。次の被弾を軽減。",
+          "instanceId": "brace-1"
+        },
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-0"
+        }
+      ],
+      "discardPile": [
+        {
+          "defId": "thrust",
+          "name": "突き",
+          "type": "attack",
+          "cost": 4,
+          "effectiveRange": "close",
+          "basePower": 9,
+          "shift": 0,
+          "guard": 0,
+          "description": "近接最大火力。",
+          "instanceId": "thrust-1"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-0"
+        },
+        {
+          "defId": "lunge",
+          "name": "踏み込み斬り",
+          "type": "attack",
+          "cost": 5,
+          "effectiveRange": "close",
+          "basePower": 7,
+          "shift": -1,
+          "guard": 0,
+          "description": "攻撃しつつ間合いを詰める。",
+          "instanceId": "lunge-1"
+        }
+      ],
+      "log": [
+        {
+          "id": 0,
+          "text": "戦闘開始。間合いは「中」。"
+        },
+        {
+          "id": 1,
+          "text": "「突き」で 5 ダメージ。"
+        },
+        {
+          "id": 2,
+          "text": "敵が間合い「中」でスタミナ回復（+2 → 20）。"
+        },
+        {
+          "id": 3,
+          "text": "敵「長柄の歪み兵」の薙ぎ払い。 8 ダメージ。"
+        },
+        {
+          "id": 4,
+          "text": "ターン2開始。間合い「中」でスタミナ回復（+2 → 18）。"
+        }
+      ],
+      "logSeq": 5,
+      "result": "ongoing"
+    }
+  }
+]

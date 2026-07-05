@@ -1,10 +1,11 @@
 # Plan: Unity 移行 First Step — 戦闘コア C# 移植 + 最小プレイアブル
 
-> **Status**: PLANNED（**実装は次セッション**）
+> **Status**: PARTIALLY IMPLEMENTED — Phase 0〜2（コア移植 + パリティ証明。標準の Unity プロジェクトではなく `unity-port/` 配下の netstandard2.1 単体ライブラリとして実施、branch `feat/unity-core-port`）2026-07-05 完了。Phase 3（実 Unity プロジェクト + UGUI）は Unity Editor 操作が必須のため未着手
 > **Created**: 2026-06-28
 > **Task**: MEMORY.md 進行中「Unity 移行 + 2.5D アニメキャラ art」の最初の実装一歩
 > **親プラン**: `2026-06-28-unity-migration-character-art.md`（全体戦略・ロードマップ）。本書はその **Phase 1 を具体化した実行計画**
 > **Project（移行先）**: 新規 Unity プロジェクト（現 Web リポは参照・並走保全）
+> **追記 (2026-07-04)**: 間合い UI の表現方針を追記（実現性は親プラン Phase 0b で検証、詳細は Phase 3 参照）
 
 ---
 
@@ -44,7 +45,7 @@ art（Live2D / アニメ立ち絵）は**この次のステップ**。本プラ�
 
 ### Non-goals
 
-art / Live2D / アニメ立ち絵（次ステップ）／全敵・全カードの横展開（パリティ確立後）／剣気・崩し等の新設計／3D 化／WebGL・デスクトップ配布（後フェーズ）。
+art / Live2D / アニメ立ち絵（次ステップ）／全敵・全カードの横展開（パリティ確立後）／剣気・崩し等の新設計／3D 化／WebGL・デスクトップ配布（後フェーズ）。**間合いの体勢表現（差分スプライト）は最小の仮アセットに限定**し、本格 art 制作はここに含めない（2026-07-04 追記）。
 
 ---
 
@@ -131,31 +132,31 @@ Unity プロジェクト
 
 > 環境の立ち上げ手順（Unity → Claude Code → MCP → 疎通確認）は前章「環境セットアップ（Unity → Claude Code → MCP の 4 段階）」を参照。本 Phase 0 はその上でのプロジェクト骨組み作成に集中する。
 
-- [ ] 0a. Unity 6（LTS 系最新）インストール、新規 2D プロジェクト作成。Unity 用 `.gitignore`（Library/ Temp/ 等除外）。
-- [ ] 0b. **リポジトリ配置を決定**（推奨: Web リポと別の新規リポ。Unity プロジェクトは構成が大きいため分離が綺麗。現 Web は参照・並走で残す）。
-- [ ] 0c. パッケージ: Test Framework（標準）。任意で AppUI（Redux 実装）。**Unity MCP は任意**（入れるなら read-only から + 確認ゲート）。
-- [ ] 0d. フォルダ骨組み（Core/Logic/Data/View/Tests）を作成。
+- [ ] 0a. Unity 6（LTS 系最新）インストール、新規 2D プロジェクト作成。Unity 用 `.gitignore`（Library/ Temp/ 等除外）。**未実施** — Unity Editor は Claude からは操作不可のため、代わりに Unity 非依存の netstandard2.1 単体ライブラリ（`unity-port/`）で Phase 1〜2 を先行（2026-07-05）。実 Unity プロジェクト化はこの Phase を人間が改めて行う。
+- [ ] 0b. **リポジトリ配置を決定**（推奨: Web リポと別の新規リポ。Unity プロジェクトは構成が大きいため分離が綺麗。現 Web は参照・並走で残す）。**未決のまま暫定**: 現 Web リポのサブフォルダ `unity-port/` に配置（別リポ移行はいつでも可能な軽い作業）。
+- [ ] 0c. パッケージ: Test Framework（標準）。任意で AppUI（Redux 実装）。**Unity MCP は任意**（入れるなら read-only から + 確認ゲート）。**未実施**（Unity プロジェクト自体が未作成のため）。
+- [ ] 0d. フォルダ骨組み（Core/Logic/Data/View/Tests）を作成。**Core/Tests のみ相当を作成**（`unity-port/BattleCore/` + `unity-port/BattleCore.Tests/`）。Logic/View は Phase 3 で。
 
 ### Phase 1 — 戦闘コアを純 C# へ移植
 
-- [ ] 1. `Types.cs`: `RangeBand`/`CardType`/`GameResult` を enum、`Card`/`EnemyAction`/`EnemyOutcome`/`LogEntry`/`BattleState` を **immutable record**、`BattleAction` を sealed record 階層（PlayCard/EndTurn/Restart）で。
-- [ ] 2. `Constants.cs`: `MAX_STAMINA`/`STAMINA_RECOVERY`/`FATIGUE_*`/`RANGE_MULT`/`RANGE_ORDER`/`RANGE_LABEL`/HP 等を**検証台と同値**で。
-- [ ] 3. `Combat.cs`: `RangeToIndex`/`ClampDistance`/`ShiftDistance`/`StaminaDamageMultiplier`/`RangeMultiplier`/`ComputeAttackDamage` を純関数移植。
-- [ ] 4. `Cards.cs`: カード定義 + `CreateInitialDeck`/`Shuffle(IRng)`/`DrawToHandSize`。**乱数は `IRng` 注入**。
-- [ ] 5. `Enemy.cs`: `ENEMY_DEF`/`ENEMY_ACTIONS`/`ChooseEnemyAction`/`ResolveEnemyTurn`（決定的・乱数なし）。
-- [ ] 6. `BattleReducer.cs`: `InitState(IRng)` + `Reduce(BattleState, BattleAction)`。敵フェーズは END_TURN 内で同期解決（検証台と同じ）。
-- [ ] 7. `ViewModel.cs`: `DescribeHand`/`DescribeCard`/`DistanceLabel`/`IsBattleOver`/`EnemyRangeHint` を移植。
+- [x] 1. `Types.cs`: `RangeBand`/`CardType`/`GameResult` を enum、`Card`/`EnemyAction`/`EnemyOutcome`/`LogEntry`/`BattleState` を **immutable record**、`BattleAction` を sealed record 階層（PlayCard/EndTurn/Restart）で。（2026-07-05, `unity-port/BattleCore/Types.cs`）
+- [x] 2. `Constants.cs`: `MAX_STAMINA`/`STAMINA_RECOVERY`/`FATIGUE_*`/`RANGE_MULT`/`RANGE_ORDER`/`RANGE_LABEL`/HP 等を**検証台と同値**で。
+- [x] 3. `Combat.cs`: `RangeToIndex`/`ClampDistance`/`ShiftDistance`/`StaminaDamageMultiplier`/`RangeMultiplier`/`ComputeAttackDamage` を純関数移植。
+- [x] 4. `Cards.cs`: カード定義 + `CreateInitialDeck`/`Shuffle(IRng)`/`DrawToHandSize`。**乱数は `IRng` 注入**。
+- [x] 5. `Enemy.cs`: `ENEMY_DEF`/`ENEMY_ACTIONS`/`ChooseEnemyAction`/`ResolveEnemyTurn`（決定的・乱数なし）。
+- [x] 6. `BattleReducer.cs`: `InitState(IRng)` + `Reduce(BattleState, BattleAction, IRng)`。**意図的な逸脱**: `Reduce` は3引数（`rng` 明示）にした——Combat/Cards/Enemy が全て静的純関数のため、この層も同スタイルに揃えた（RESTART の再初期化・END_TURN 内の山札尽き reshuffle にも rng が要るため）。敵フェーズは END_TURN 内で同期解決（検証台と同じ）。
+- [x] 7. `ViewModel.cs`: `DescribeHand`/`DescribeCard`/`DistanceLabel`/`IsBattleOver`/`EnemyRangeHint` を移植。
 
 ### Phase 2 — テスト移植 + Web パリティ証明
 
-- [ ] 8. 検証台の **47 テスト相当**を EditMode（NUnit）へ移植（combat / battleReducer / viewModel）。
-- [ ] 9. **パリティ harness**: 固定 RNG で `InitState` → 既定のアクション列を流し、検証台（TS）と**同一の state 系列・ダメージ・ログ**になることを突き合わせる（TS 側で期待値を JSON 出力 → C# テストで照合、等）。
-- [ ] 10. 純 C# 層は **headless（`dotnet test`）** でも回せるよう分離（Editor 起動なしの高速ループ）。
+- [x] 8. 検証台の **47 テスト相当**を EditMode（NUnit）へ移植（combat / battleReducer / viewModel）。実際は describeHand 分割等で 49 ユニットテストに（内容の欠落なし、role-qa 確認済み）。
+- [x] 9. **パリティ harness**: 固定 RNG で `InitState` → 既定のアクション列を流し、検証台（TS）と**同一の state 系列・ダメージ・ログ**になることを突き合わせる。想定通り「TS 側で期待値を JSON 出力 → C# テストで照合」を実施（一時テストで TS を実走させ `Fixtures/parity-fixture.json` を生成、`ParityTests.cs` が22ステップ全フィールドを突き合わせ）。
+- [x] 10. 純 C# 層は **headless（`dotnet test`）** でも回せるよう分離（Editor 起動なしの高速ループ）。`dotnet test unity-port/UnityCorePort.slnx` で 50/50 green。
 
 ### Phase 3 — 最小戦闘画面（UGUI・Web パリティ）
 
 - [ ] 11. `BattleStore` でコアを駆動（dispatch → 再描画）。
-- [ ] 12. UGUI で戦闘画面: 間合いトラック（近/中/遠 + 現在地）／両者パネル（HP・スタミナ・疲労・ガード）／手札（`DescribeHand` を描画・クリックで PlayCard）／ターン終了／ログ（新着順）／結果オーバーレイ（勝敗 + もう一度）。
+- [ ] 12. UGUI で戦闘画面: **間合い表現はタブ/トラック型ではなく、キャラクターと敵の画面上の実距離・体勢（差分スプライト）で表現**（2026-07-04 方針転換 — 検証は親プラン Phase 0b のミニ実装で先行実施。`DistanceLabel`/`EnemyRangeHint` 等 ViewModel の出力自体は変更なし、見せ方のみ差し替え）／両者パネル（HP・スタミナ・疲労・ガード）／手札（`DescribeHand` を描画・クリックで PlayCard）／ターン終了／ログ（新着順）／結果オーバーレイ（勝敗 + もう一度）。
 - [ ] 13. **受け入れ**: Unity Editor で **1 戦を最後までプレイ**（カードプレイ・ターン終了・勝敗・リスタート）できる。テスト green。固定シードで Web 版と挙動一致。
 
 > Phase 1〜2 は Claude 主担当（純ロジック + テスト）。Phase 3 の UGUI 配置・参照つなぎ・手触り確認は人間（または Unity MCP で一部自動化）。
@@ -176,11 +177,11 @@ Unity プロジェクト
 
 ## Verification
 
-- [ ] EditMode テスト（47 相当）green。
-- [ ] パリティ harness が固定シードで Web 版と一致（state 系列・ダメージ・ログ）。
-- [ ] 純 C# 層が `dotnet test`（headless）でも green。
-- [ ] Unity Editor で 1 戦プレイ可能（勝敗・リスタート動作）。
-- [ ] スコープ逸脱なし（art・全敵全カード・新要素を入れていない）。
+- [x] EditMode テスト（47 相当）green。（49件、`dotnet test` で確認・role-qa 監査済み）
+- [x] パリティ harness が固定シードで Web 版と一致（state 系列・ダメージ・ログ）。
+- [x] 純 C# 層が `dotnet test`（headless）でも green。（50/50）
+- [ ] Unity Editor で 1 戦プレイ可能（勝敗・リスタート動作）。**未着手**（Phase 3、Unity Editor 必須）
+- [x] スコープ逸脱なし（art・全敵全カード・新要素を入れていない）。role-qa 独立監査で確認済み
 
 ## リスクと対策
 
@@ -234,3 +235,4 @@ Unity MCP を使うなら read-only + 確認ゲートから。
 > ストア方式（手書き reducer / AppUI Redux）: （未定）
 > Unity MCP 導入の可否: （未定 — read-only から推奨）
 > Unity MCP 実装の選定（公式 / OSS）: （未定 — 着手時に最新の安定度を再確認）
+> 間合い UI の表現方式: **方針確定**（タブ/トラック型は不採用、実距離・体勢差分を採る）— 実現性・手触りは親プラン Phase 0b のミニ実装で検証中（2026-07-04）

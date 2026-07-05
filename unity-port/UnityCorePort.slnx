@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="BattleCore.Tests/BattleCore.Tests.csproj" />
+  <Project Path="BattleCore/BattleCore.csproj" />
+</Solution>
