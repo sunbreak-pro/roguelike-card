@@ -1,0 +1,4 @@
+# The parity fixture is written by Node (LF) and replayed by both the TS test
+# and the C# ParityTests. Pin it to LF so regenerating it on Windows (where
+# core.autocrlf=true) produces no spurious line-ending-only diff.
+unity-port/BattleCore.Tests/Fixtures/parity-fixture.json text eol=lf

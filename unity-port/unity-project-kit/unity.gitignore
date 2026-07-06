@@ -1,0 +1,49 @@
+# Rename this file to `.gitignore` at the root of your new Unity project.
+# Standard Unity ignore set (Unity 6 LTS). Keeps Library/Temp/Obj/Build out of
+# git while preserving Assets/**/*.meta (Unity needs those tracked).
+
+# Unity generated / cache
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# Asset meta files must stay tracked even if the folder above matches.
+!/[Aa]ssets/**/*.meta
+
+# Auto-generated IDE / project files
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity crash / info
+sysinfo.txt
+
+# Build artifacts
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# Addressables packed output
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# IDEs
+.idea/
+.vs/
+.vscode/

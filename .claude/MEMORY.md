@@ -16,9 +16,9 @@
 
 ## 直近の完了
 
+- Unity 以降のための作業土台（環境地固め・Logic/View 層・パリティ同期・Unity キット・Phase3 手順）✅（2026-07-06）— Phase 3 に先立ち Editor 抜きで用意できる土台を `unity-port/` に整備（branch `feat/unity-foundation`, commit `1769631`）。純 C# の `BattleStore`/`IBattleView` + ヘッドレステスト、TS↔C# ドリフト検出のワンコマンド化（`npm run parity:gen`/`parity:check`、`.gitattributes` で fixture を LF 固定）、Unity drop-in キット（asmdef/Unity gitignore/`BattleScreenView` 雛形）、`PHASE3-KICKOFF.md`（Windows 手順 + MCP 選定 IvanMurzak 第一候補/CoplayDev 代替）。**把握**: リモート/ローカル差異ゼロ・開発マシン=この Windows 11 に確定。**検証**: TS 204/204・build green、Workflow 敵対的レビューで C# 整合 CLEAN（dotnet 未導入で未コンパイル、導入後 `dotnet test` 58/58 想定）、minor 2 件修正済（parity-check の drift 基準を `git diff HEAD` に／docs の 50/50→58 統一）
 - Unity 移行 First Step — 戦闘コア C# 移植 + パリティ証明 ✅（2026-07-05）— 計画書のPhase0（0a AI art生成/Live2D・0b Unity Editorスパイク）は画像生成・Live2D・Unity Editor操作の手段を持たないため自動実行不可と判断、ユーザー確認の上コア移植（子プランP0-P2相当）へ直行。`unity-port/`（netstandard2.1 単体ライブラリ）に `src/ui/battle-lab/core/` を無改変移植元として C# 移植（Types/Constants/Combat/Cards/Enemy/BattleReducer/ViewModel + IRng注入）。TS実装を固定RNGで実走させたゴールドデータでパリティテスト作成。dotnet test 50/50 green、role-qa 独立監査 PASS（Blocker0・数値/ログ文言完全一致確認済み）。**残課題**: Phase3（実際のUnityプロジェクト作成 + UGUI最小戦闘画面）はUnity Editor操作が必須のため別途人間作業が必要（予定へ記載）
 - 戦闘エンジン Bake-off（Phase 1-3）✅（2026-07-02）— 検証済み「間合い×スタミナ」コアを `src/ui/battle-lab/core/` へ本番品質昇格（非コメント差分0で公平性担保）+ `viewModel` 抽出、Pixi/Phaser 2アダプタで同一コアを描画比較。tsc/test203/build 4エントリ green、独立QA Blocker0。実機評価で **Unity フル移行へ方針転換**（Phaser 低解像度・ボタン重なり・リアル感不足）→ エンジン選定 moot。PR #16 を main マージ（`853226a`）、feat ブランチ削除
-- Unity 移行 + 2.5D アニメキャラ art 調査・計画書 ✅（2026-07-02）— 全体戦略 `2026-06-28-unity-migration-character-art.md`（費用/2.5D/AI art 商用注意/Web→C# 移植、出典付き）+ first step 実装計画 `2026-06-28-unity-first-step-core-port.md`（Unity→Claude→MCP 環境セットアップ4段階含む）。PR #16 で main マージ
 
 > 完了履歴の全量は `README.md` の Development History を参照。
 
@@ -26,7 +26,7 @@
 
 ### 次のアクティブタスク
 
-- 🔜 **Unity 移行 First Step — 残課題（Phase3: 実UnityプロジェクトのUGUI最小戦闘画面）** — `unity-port/BattleCore` のコア移植・パリティ証明は完了済み（PR待ち）。残りはUnity Editorでの実プロジェクト作成・`BattleStore`駆動・UGUI戦闘画面（間合いは実距離・体勢表現）で、Unity Editor操作が必須のため人間主体の作業（環境セットアップは `.claude/docs/vision/plans/2026-06-28-unity-first-step-core-port.md` の4段階参照）
+- 🔜 **Unity 移行 Phase 3 — 実 Unity プロジェクト + UGUI 最小戦闘画面** — コア移植・パリティ・**作業土台（環境地固め・Logic/View 層・パリティ同期・Unity キット・Windows 手順）完了済**（2026-07-06, branch `feat/unity-foundation`）。残りは Unity Hub で 2D プロジェクト作成 → `unity-port/unity-project-kit/` を流し込み → シーン配線（間合いは実距離・体勢表現、`BattleStore` 駆動）で、Unity Editor 操作が必須の人間主体作業。手順は `unity-port/PHASE3-KICKOFF.md`（4 段階の環境セットアップ含む）。前提: `winget install Microsoft.DotNet.SDK.10` で本機のコンパイル検証（`dotnet test` 58/58）が可能に
 
 ### バックログ機能（旧 TODO.md より移管）
 

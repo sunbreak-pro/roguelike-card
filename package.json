@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "parity:gen": "node unity-port/tools/gen-parity.mjs",
+    "parity:check": "node unity-port/tools/parity-check.mjs"
   },
   "dependencies": {
     "@pixi/react": "^8.0.5",
