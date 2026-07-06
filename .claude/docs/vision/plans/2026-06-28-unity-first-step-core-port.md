@@ -1,6 +1,6 @@
 # Plan: Unity 移行 First Step — 戦闘コア C# 移植 + 最小プレイアブル
 
-> **Status**: PARTIALLY IMPLEMENTED — Phase 0〜2（コア移植 + パリティ証明。標準の Unity プロジェクトではなく `unity-port/` 配下の netstandard2.1 単体ライブラリとして実施、branch `feat/unity-core-port`）2026-07-05 完了。Phase 3（実 Unity プロジェクト + UGUI）は Unity Editor 操作が必須のため未着手
+> **Status**: PARTIALLY IMPLEMENTED — Phase 0〜2（コア移植 + パリティ証明。標準の Unity プロジェクトではなく `unity-port/` 配下の netstandard2.1 単体ライブラリとして実施、branch `feat/unity-core-port`）2026-07-05 完了。**2026-07-05 追加: Unity 以降のための作業土台（Logic/View 層・パリティ同期ワンコマンド・Unity キット・Windows 手順）を整備**（末尾「作業土台」節）。Phase 3（実 Unity プロジェクト + UGUI）は Unity Editor 操作が必須のため引き続き人間主体で未着手
 > **Created**: 2026-06-28
 > **Task**: MEMORY.md 進行中「Unity 移行 + 2.5D アニメキャラ art」の最初の実装一歩
 > **親プラン**: `2026-06-28-unity-migration-character-art.md`（全体戦略・ロードマップ）。本書はその **Phase 1 を具体化した実行計画**
@@ -151,7 +151,7 @@ Unity プロジェクト
 
 - [x] 8. 検証台の **47 テスト相当**を EditMode（NUnit）へ移植（combat / battleReducer / viewModel）。実際は describeHand 分割等で 49 ユニットテストに（内容の欠落なし、role-qa 確認済み）。
 - [x] 9. **パリティ harness**: 固定 RNG で `InitState` → 既定のアクション列を流し、検証台（TS）と**同一の state 系列・ダメージ・ログ**になることを突き合わせる。想定通り「TS 側で期待値を JSON 出力 → C# テストで照合」を実施（一時テストで TS を実走させ `Fixtures/parity-fixture.json` を生成、`ParityTests.cs` が22ステップ全フィールドを突き合わせ）。
-- [x] 10. 純 C# 層は **headless（`dotnet test`）** でも回せるよう分離（Editor 起動なしの高速ループ）。`dotnet test unity-port/UnityCorePort.slnx` で 50/50 green。
+- [x] 10. 純 C# 層は **headless（`dotnet test`）** でも回せるよう分離（Editor 起動なしの高速ループ）。`dotnet test unity-port/UnityCorePort.slnx` で 58/58 green（Phase 2 時点は 50/50、作業土台の BattleStore/View 8 件を加えて 58）。
 
 ### Phase 3 — 最小戦闘画面（UGUI・Web パリティ）
 
@@ -179,7 +179,7 @@ Unity プロジェクト
 
 - [x] EditMode テスト（47 相当）green。（49件、`dotnet test` で確認・role-qa 監査済み）
 - [x] パリティ harness が固定シードで Web 版と一致（state 系列・ダメージ・ログ）。
-- [x] 純 C# 層が `dotnet test`（headless）でも green。（50/50）
+- [x] 純 C# 層が `dotnet test`（headless）でも green。（58/58: 49 unit + 8 BattleStore/View + 1 parity。Phase 2 時点は 50）
 - [ ] Unity Editor で 1 戦プレイ可能（勝敗・リスタート動作）。**未着手**（Phase 3、Unity Editor 必須）
 - [x] スコープ逸脱なし（art・全敵全カード・新要素を入れていない）。role-qa 独立監査で確認済み
 
@@ -230,9 +230,22 @@ Unity MCP を使うなら read-only + 確認ゲートから。
 
 ## 決定記録（着手後に追記）
 
-> 開発マシン: （傾き — Windows 11 デスクトップ。GPU 有無を確認して確定。Web リポは照合用に clone して並走）
-> リポジトリ配置（別リポ / サブツリー）: （未定 — 推奨は別リポ）
-> ストア方式（手書き reducer / AppUI Redux）: （未定）
-> Unity MCP 導入の可否: （未定 — read-only から推奨）
-> Unity MCP 実装の選定（公式 / OSS）: （未定 — 着手時に最新の安定度を再確認）
+> 開発マシン: **確定（2026-07-05）= この Windows 11 デスクトップ**。GPU 有（NVIDIA、PhysX を PATH 確認）。Web リポは既に本機へ clone 済で並走中（本セッションが本機）。dotnet SDK は未導入 → `winget install Microsoft.DotNet.SDK.10`（`PHASE3-KICKOFF.md` 0a）。
+> リポジトリ配置（別リポ / サブツリー）: 暫定サブフォルダ `unity-port/` 継続。Unity プロジェクトは別リポ推奨（未着手・軽い移行）。
+> ストア方式（手書き reducer / AppUI Redux）: **確定（2026-07-05）= 手書き reducer ストア**。`BattleCore/BattleStore.cs`（純 C#・購読型・no-op 抑制・`ToViewModel()`）実装済、`BattleStoreTests.cs` でヘッドレス検証。AppUI Redux は不採用（依存増・Editor 前提のため）。
+> Unity MCP 導入の可否: read-only + 確認ゲートから推奨（変わらず）。
+> Unity MCP 実装の選定（公式 / OSS）: **暫定（2026-07-05 調査・確度 medium）= IvanMurzak/Unity-MCP 第一候補**（Apache-2.0・最活発・ドメインリロード自動再接続。制約「パスにスペース不可」は本リポ `C:\Users\user\orca\original-card-battle` でクリア）／**CoplayDev/unity-mcp を代替**（Claude Code ガイド有・MIT）。Unity 公式 `com.unity.ai.assistant` は preview + 有料サブスク必須のため個人開発では非採用。着手時に各 README を再確認。詳細は `unity-port/PHASE3-KICKOFF.md`。
 > 間合い UI の表現方式: **方針確定**（タブ/トラック型は不採用、実距離・体勢差分を採る）— 実現性・手触りは親プラン Phase 0b のミニ実装で検証中（2026-07-04）
+
+---
+
+## 作業土台（2026-07-05 追加 — Unity 以降のための地固め）
+
+Phase 3 の人間作業に先立ち、Editor 抜きで用意できる土台を `unity-port/` に整備した。
+
+- **① 環境地固め（Windows 本番化）**: `npm install` で TS 依存復旧（test 204/204・build green を本機で確認）。dotnet 導入手順を README/キックオフに明記。`unity-port/README.md` を Mac パス除去し Windows 前提へ全面刷新。
+- **② コード土台（Logic/View 層・純 C#）**: `BattleCore/BattleStore.cs`（React useReducer 相当の駆動層）+ `BattleCore/IBattleView.cs`（View 契約 + `BattleViewModel` 射影）。dotnet で型・テスト検証可能。`BattleCore.Tests/BattleStoreTests.cs` 追加。
+- **③ パリティ同期（TS↔C# ドリフト検出のワンコマンド化）**: `src/ui/battle-lab/core/__tests__/parity/parityFixture.test.ts`（常時ドリフトガード + `PARITY_WRITE=1` で再生成）/ `unity-port/tools/gen-parity.mjs` / `parity-check.mjs`（`npm run parity:gen` / `parity:check`）。fixture は `.gitattributes` で LF 固定。
+- **④ 実行キット + リポ整理**: `unity-port/unity-project-kit/`（asmdef・Unity gitignore・`BattleScreenView` 雛形）+ `unity-port/PHASE3-KICKOFF.md`（Windows 手順 + MCP 選定）。stale な `origin/feat/unity-core-port`（PR #17 マージ済）は削除。
+
+> これで Phase 3 は「Unity Hub でプロジェクト作成 → キットを流し込み → シーン配線」に集約される。純ロジック・テスト・データは Claude、Editor 配置・手触りは人間（一部 MCP）。
